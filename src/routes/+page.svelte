@@ -1,10 +1,32 @@
-<h1>Welcome to SvelteKit</h1>
-<p>
-  Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the
-  documentation
-</p>
+<script>
+  import { onMount } from "svelte";
 
-<h1 class="text-3xl font-bold underline">Hello world!</h1>
+  onMount(async () => {
+    const Matter = await import("matter-js");
+    const { Engine, Render, Runner, Bodies, Composite } = Matter;
 
-<h3 class="text-venice-300">Simon o Walk</h3>
-<h3 class="text-wine-500">Bot o Mason</h3>
+    // create an engine
+    const engine = Engine.create();
+
+    // create a renderer
+    const render = Render.create({
+      element: document.body,
+      engine: engine,
+    });
+
+    // create two boxes and a ground
+    const boxA = Bodies.rectangle(400, 200, 80, 80);
+    const boxB = Bodies.rectangle(450, 50, 80, 80);
+    const ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+
+    // add all the bodies to the world
+    Composite.add(engine.world, [boxA, boxB, ground]);
+
+    // run the renderer
+    Render.run(render);
+
+    // create runner
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+  });
+</script>
