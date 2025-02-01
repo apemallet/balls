@@ -7,3 +7,4 @@
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
 
 <h3 class="text-venice-300">Simon o Walk</h3>
+<h3 class="text-wine-500">Bot o Mason</h3>
