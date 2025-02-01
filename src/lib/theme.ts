@@ -2,7 +2,7 @@ import { writable, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
 
 // Constants
-const DEFAULT_ACCENT = "#e7bad0";
+export const DEFAULT_ACCENT = "#e7bad0";
 const PRIMARY_BG_DARK = "#18181b";
 const PRIMARY_BG_LIGHT = "#e7e7df";
 

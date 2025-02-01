@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { colorStore, updateTheme } from "$lib/theme";
+	import { colorStore, updateTheme, DEFAULT_ACCENT } from "$lib/theme";
 	import { fade } from "svelte/transition";
 	import { afterUpdate } from "svelte";
 	import { get } from "svelte/store";
 
-	let color: string = get(colorStore) || "#22C55D";
+	let color: string = get(colorStore) || DEFAULT_ACCENT;
 	let colorPickerElement: HTMLInputElement;
 
 	afterUpdate(() => {
@@ -13,7 +13,7 @@
 	});
 
 	function reset() {
-		color = "#22C55D";
+		color = DEFAULT_ACCENT;
 		updateTheme(color);
 		colorStore.set(color);
 	}
@@ -24,7 +24,7 @@
 </script>
 
 <div class="flex flex-row gap-2 items-center">
-	{#if color !== "#22C55D"}
+	{#if color !== DEFAULT_ACCENT}
 		<button
 			in:fade={{ duration: 200 }}
 			class="text-primaryfg/50 text-dynamicp hover:text-primaryfg/80 transition-colors duration-300 ease-in-out opacity-70"

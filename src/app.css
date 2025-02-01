@@ -37,4 +37,5 @@
 
 html {
 	@apply bg-primarybg transition-colors duration-500 ease-in-out;
+	@apply selection:bg-accentbg/20 selection:text-primaryfg;
 }
