@@ -1,32 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black-pearl-50: #f2f8fd;
-  --color-black-pearl-100: #e4effa;
-  --color-black-pearl-200: #c4def3;
-  --color-black-pearl-300: #90c3e9;
-  --color-black-pearl-400: #54a4dc;
-  --color-black-pearl-500: #2e8ac9;
-  --color-black-pearl-600: #1f6daa;
-  --color-black-pearl-700: #1a578a;
-  --color-black-pearl-800: #1a4a72;
-  --color-black-pearl-900: #1a3f60;
-  --color-black-pearl-950: #0a1724;
+	--color-black-pearl-50: #f2f8fd;
+	--color-black-pearl-100: #e4effa;
+	--color-black-pearl-200: #c4def3;
+	--color-black-pearl-300: #90c3e9;
+	--color-black-pearl-400: #54a4dc;
+	--color-black-pearl-500: #2e8ac9;
+	--color-black-pearl-600: #1f6daa;
+	--color-black-pearl-700: #1a578a;
+	--color-black-pearl-800: #1a4a72;
+	--color-black-pearl-900: #1a3f60;
+	--color-black-pearl-950: #0a1724;
 
-  --color-wine-50: #fbf4f8;
-  --color-wine-100: #f7ecf2;
-  --color-wine-200: #f1d9e6;
-  --color-wine-300: #e7bad0;
-  --color-wine-400: #d78fb2;
-  --color-wine-500: #c86c95;
-  --color-wine-600: #b34f77;
-  --color-wine-700: #9a3c5f;
-  --color-wine-800: #803450;
-  --color-wine-900: #6c2f45;
-  --color-wine-950: #4b1b2c;
+	--color-wine-50: #fbf4f8;
+	--color-wine-100: #f7ecf2;
+	--color-wine-200: #f1d9e6;
+	--color-wine-300: #e7bad0;
+	--color-wine-400: #d78fb2;
+	--color-wine-500: #c86c95;
+	--color-wine-600: #b34f77;
+	--color-wine-700: #9a3c5f;
+	--color-wine-800: #803450;
+	--color-wine-900: #6c2f45;
+	--color-wine-950: #4b1b2c;
+
+	/* masonic offwhite */
+	--color-primaryfg: #e4effa;
+	/* masonic offblack */
+	--color-primarybg: #0a1724;
+	/* same off black */
+	--color-accentfg: #0a1724;
+	/* tailwind wine 950 */
+	--color-accentbg: #e7bad0;
 }
 
 html {
-  @apply bg-black-pearl-950;
-  @apply text-black-pearl-100;
+	@apply bg-primarybg transition-colors duration-500 ease-in-out;
 }
