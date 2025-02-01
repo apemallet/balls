@@ -6,9 +6,4 @@
 
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
 
-<style>
-  @reference "tailwindcss/theme";
-  :global(html) {
-    background-color: theme(--color-gray-100);
-  }
-</style>
+<h3 class="text-venice-300">Simon o Walk</h3>

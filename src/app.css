@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@theme {
+  --color-black-pearl-50: #f2f8fd;
+  --color-black-pearl-100: #e4effa;
+  --color-black-pearl-200: #c4def3;
+  --color-black-pearl-300: #90c3e9;
+  --color-black-pearl-400: #54a4dc;
+  --color-black-pearl-500: #2e8ac9;
+  --color-black-pearl-600: #1f6daa;
+  --color-black-pearl-700: #1a578a;
+  --color-black-pearl-800: #1a4a72;
+  --color-black-pearl-900: #1a3f60;
+  --color-black-pearl-950: #0a1724;
+}
+
+html {
+  @apply bg-black-pearl-950;
+  @apply text-black-pearl-100;
+}
