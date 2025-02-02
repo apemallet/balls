@@ -8,13 +8,15 @@
   let height = $derived(canvas?.getBoundingClientRect().height);
 
   let theme = createThemer();
-  let {Engine, Render, Runner, Bodies, Composite, Body} = $derived(Matter() || Object);
+  let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
   let primaryColorEntities: any[] = [];
 
   function buildWheel(xOrigin: number, yOrigin: number, options: any = null) {
-    const degree = 20;
-    const radius = 30;
-    const thickness = 20;
+    const radius = 300;
+    const degree = .3 * radius;
+    const thickness = 30;
+    const tickLength = .3 * radius;
+    const tickSpacing = 9;
     const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
@@ -29,23 +31,33 @@
     })();
 
     let parts = [];
+    // TODO: might be viable to make each part static (wrt whole)
 
     for (let i = 0; i < degree; i++) {
       const theta = (i / degree) * 2 * Math.PI;
       const x = radius * Math.cos(theta);
       const y = radius * Math.sin(theta);
 
-      const part = Bodies.rectangle(x, y, segmentSize, thickness, {
-        // TODO: might be viable to make each part static (wrt whole)
-        isStatic: false,
+      const ringPart = Bodies.rectangle(x, y, segmentSize, thickness, {
         render: {
           fillStyle: color,
         },
       });
 
       // apply rotation
-      Body.rotate(part, theta + Math.PI / 2);
-      parts.push(part);
+      Body.rotate(ringPart, theta + Math.PI / 2);
+      parts.push(ringPart);
+
+      if (i % tickSpacing === 0) {
+        const tick = Bodies.rectangle(x, y, thickness, tickLength, {
+          render: {
+            fillStyle: color,
+          },
+        });
+
+        Body.rotate(tick, theta + Math.PI / 2);
+        parts.push(tick);
+      }
     }
 
     const wheel = Body.create({
@@ -57,33 +69,35 @@
     return wheel;
   }
 
+  function createTicket() {
+    const variance = 0.2;
+    const size = Common.random(10, 50);
+    const body = Bodies.circle(width/2, height/2, size, {
+      render: {
+        fillStyle: theme.color,
+      },
+    });
+
+    Body.setMass(body, 10 * size**2);
+    return body;
+  }
+
   function initSim() {
     if (!Matter()) return;
     if (!width || !height) return;
 
     console.log('Initializing sim.')
 
-    // create two boxes and a ground
-    const boxA = Bodies.rectangle(400, 300, 80, 80, {
-      render: {
-        fillStyle: theme.color,
-      },
-    });
-    primaryColorEntities.push(boxA);
+    const tickets = Array(30).fill(0).map(createTicket);
+    primaryColorEntities.push(...tickets);
 
-    const boxB = Bodies.rectangle(450, 50, 80, 80);
-
-    const ground = Bodies.rectangle(0.5 * width, 610, width / 4, 60, {
+    const wheel = buildWheel(width / 2, height / 2, {
       isStatic: true,
-    });
-
-    const wheel = buildWheel(520, 320, {
-      isStatic: false,
     });
     primaryColorEntities.push(wheel);
 
     const engine = Engine.create();
-    Composite.add(engine.world, [boxA, boxB, ground, wheel]);
+    Composite.add(engine.world, [wheel, ...tickets]);
 
     const render = Render.create({
       engine: engine,
@@ -99,6 +113,11 @@
     Render.run(render);
     const runner = Runner.create();
     Runner.run(runner, engine);
+
+    Events.on(engine, 'beforeUpdate', function(event) {
+      const deltaTime = ( Common.now() - event.source.timing.timestamp ) / 1000;
+      Body.rotate(wheel, 0.02 * deltaTime);
+    });
   }
 
   let initSimOnce = false;
