@@ -8,33 +8,37 @@
 	let width = $derived(canvas?.getBoundingClientRect().width);
 	let height = $derived(canvas?.getBoundingClientRect().height);
 
-	let colorThemer = createThemer();
-	let entities: Body[] = [];
+	let theme = createThemer();
+	let primaryColorEntities: any[] = [];
 
-	function initializeSim() {
+	let initSimOnce = false;
+	function initSim() {
 		if (!Matter()) return;
 		if (!width || !height) return;
+		if (initSimOnce) return;
 
+		console.log('Initializing sim.')
+
+		initSimOnce = true;
 		const {Engine, Render, Runner, Bodies, Composite} = Matter();
 
 		// create two boxes and a ground
 		const boxA = Bodies.rectangle(400, 300, 80, 80, {
 			render: {
-				fillStyle: colorThemer.color,
+				fillStyle: theme.color,
 			},
 		});
-		entities.push(boxA);
 
 		const boxB = Bodies.rectangle(450, 50, 80, 80);
-		entities.push(boxB);
 
 		const ground = Bodies.rectangle(0.5 * width, 610, width / 4, 60, {
 			isStatic: true,
 		});
-		entities.push(ground);
+
+		primaryColorEntities.push(boxA);
 
 		const engine = Engine.create();
-		Composite.add(engine.world, entities);
+		Composite.add(engine.world, [boxA, boxB, ground]);
 
 		const render = Render.create({
 			engine: engine,
@@ -52,7 +56,18 @@
 		Runner.run(runner, engine);
 	}
 
-	onMount(initializeSim);
+	$effect(() => {
+		// TODO: this doesn't work without the condition; report to svelte
+		if (theme.color) {
+			for (let entity of primaryColorEntities) {
+				entity.render.fillStyle = theme.color;
+			}
+		}
+	});
+
+	$effect(() => {
+		if (Matter()) initSim();
+	});
 </script>
 
 <div class="fixed">
