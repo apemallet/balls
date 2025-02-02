@@ -2,51 +2,57 @@
 	import ThemePicker from "$lib/components/ThemePicker.svelte";
 	import { createThemer } from "$lib/theme.svelte";
 	import Matter from "$lib/svelteMatter.svelte";
+	import {onMount} from "svelte";
 
 	let canvas: HTMLCanvasElement | undefined;
 	let width = $derived(canvas?.getBoundingClientRect().width);
 	let height = $derived(canvas?.getBoundingClientRect().height);
 
 	let colorThemer = createThemer();
+	let entities: Body[] = [];
 
-	const { Engine, Render, Runner, Bodies, Composite } = Matter();
+	function initializeSim() {
+		if (!Matter()) return;
+		if (!width || !height) return;
 
-	// create an engine
-	const engine = Engine.create();
+		const {Engine, Render, Runner, Bodies, Composite} = Matter();
 
-	const render = Render.create({
-		engine: engine,
-		canvas: canvas,
-		options: {
-			width: width,
-			height: height,
-			wireframes: false,
-			background: "transparent",
-		},
-	});
+		// create two boxes and a ground
+		const boxA = Bodies.rectangle(400, 300, 80, 80, {
+			render: {
+				fillStyle: colorThemer.color,
+			},
+		});
+		entities.push(boxA);
 
-	// create two boxes and a ground
-	const boxA = Bodies.rectangle(400, 300, 80, 80, {
-		render: {
-			fillStyle: colorThemer.color,
-		},
-	});
+		const boxB = Bodies.rectangle(450, 50, 80, 80);
+		entities.push(boxB);
 
-	const boxB = Bodies.rectangle(450, 50, 80, 80);
+		const ground = Bodies.rectangle(0.5 * width, 610, width / 4, 60, {
+			isStatic: true,
+		});
+		entities.push(ground);
 
-	const ground = Bodies.rectangle(0.5 * width, 610, width / 4, 60, {
-		isStatic: true,
-	});
+		const engine = Engine.create();
+		Composite.add(engine.world, entities);
 
-	// add all the bodies to the world
-	Composite.add(engine.world, [boxA, boxB, ground]);
+		const render = Render.create({
+			engine: engine,
+			canvas: canvas,
+			options: {
+				width: width,
+				height: height,
+				wireframes: false,
+				background: "transparent",
+			},
+		});
 
-	// run the renderer
-	Render.run(render);
+		Render.run(render);
+		const runner = Runner.create();
+		Runner.run(runner, engine);
+	}
 
-	// create runner
-	const runner = Runner.create();
-	Runner.run(runner, engine);
+	onMount(initializeSim);
 </script>
 
 <div class="fixed">
