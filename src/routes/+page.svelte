@@ -1,8 +1,15 @@
 <script lang="ts">
 	import ThemePicker from "$lib/components/ThemePicker.svelte";
+	import { createThemer } from "$lib/theme.svelte";
 	import { onMount } from "svelte";
 
 	let canvas: HTMLCanvasElement;
+	// TODO: need a better way to update colors of matter objects so that it works with themePicker changes
+	let colorThemer = createThemer();
+
+	$effect(() => {
+		console.log(colorThemer.color);
+	});
 
 	onMount(async () => {
 		const Matter = await import("matter-js");
@@ -13,10 +20,6 @@
 
 		const width = canvas.getBoundingClientRect().width;
 		const height = canvas.getBoundingClientRect().height;
-
-		// TODO: need a better way to update colors of matter objects so that it works with themePicker changes
-		const rootStyle = getComputedStyle(document.documentElement);
-		const primaryAccent = rootStyle.getPropertyValue("--color-accentbg").trim();
 
 		const render = Render.create({
 			engine: engine,
@@ -32,7 +35,7 @@
 		// create two boxes and a ground
 		const boxA = Bodies.rectangle(400, 300, 80, 80, {
 			render: {
-				fillStyle: primaryAccent,
+				fillStyle: colorThemer.color,
 			},
 		});
 		const boxB = Bodies.rectangle(450, 50, 80, 80);

@@ -1,27 +1,57 @@
-import { writable, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
 
 // Constants
-export const DEFAULT_ACCENT = "#e7bad0";
+const DEFAULT_ACCENT = "#e7bad0";
 const PRIMARY_BG_DARK = "#18181b";
 const PRIMARY_BG_LIGHT = "#e7e7df";
 
-// Initialize the color store
-const initialAccent = browser
-  ? localStorage.getItem("colorStore") || DEFAULT_ACCENT
-  : DEFAULT_ACCENT;
-export const colorStore: Writable<string> = writable<string>(initialAccent);
+// Global state
+let color = $state(DEFAULT_ACCENT);
+let themerInstance: ReturnType<typeof createThemer> | null = null;
 
-// Subscribe to changes and update localStorage
+// Client-side initialization
 if (browser) {
-  colorStore.subscribe((value) => {
-    localStorage.setItem("colorStore", value);
-  });
+    const stored = localStorage.getItem("colorStore");
+    if (stored) color = stored;
+		else color = DEFAULT_ACCENT;
 }
 
-// Theme update functions
-export function updateTheme(value: string) {
-  colorStore.set(value); // Update the store
+interface Themer {
+	get color(): string;
+	set color(value: string);
+	reset(): void;
+	isDefault(): boolean;
+}
+
+// single obj setup
+export function createThemer(): Themer {
+    if (themerInstance) return themerInstance;
+
+		$effect(() => {
+				if (browser) {
+						localStorage.setItem("colorStore", color);
+				}
+				updateTheme(color);
+		});
+
+    themerInstance = {
+        get color() { return color; },
+        set color(value: string) {
+            color = value;
+        },
+        reset() {
+            color = DEFAULT_ACCENT;
+        },
+        isDefault() {
+            return color == DEFAULT_ACCENT;
+        }
+    };
+
+    return themerInstance;
+}
+
+// Theme update functions and helpers
+function updateTheme(value: string) {
   updateCSSVariable("--color-accentbg", value);
   const backgroundColor = getContrastingColor(value);
   updateCSSVariable("--color-primarybg", backgroundColor);
@@ -57,3 +87,4 @@ function calculateContrast(value1: string, value2: string): number {
   const l2 = 0.2126 * color2[0] + 0.7152 * color2[1] + 0.0722 * color2[2];
   return Math.abs(l1 - l2) / 255;
 }
+
