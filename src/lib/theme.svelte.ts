@@ -23,7 +23,7 @@ interface Themer {
 	isDefault(): boolean;
 }
 
-// single obj setup
+// Singleton obj setup
 export function createThemer(): Themer {
     if (themerInstance) return themerInstance;
 
