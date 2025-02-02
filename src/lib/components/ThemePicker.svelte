@@ -1,50 +1,33 @@
 <script lang="ts">
-	import { colorStore, updateTheme, DEFAULT_ACCENT } from "$lib/theme";
+	import { createThemer } from "$lib/theme.svelte";
 	import { fade } from "svelte/transition";
-	import { afterUpdate } from "svelte";
-	import { get } from "svelte/store";
 
-	let color: string = get(colorStore) || DEFAULT_ACCENT;
 	let colorPickerElement: HTMLInputElement;
-
-	afterUpdate(() => {
-		updateTheme(color);
-		colorStore.set(color);
-	});
-
-	function reset() {
-		color = DEFAULT_ACCENT;
-		updateTheme(color);
-		colorStore.set(color);
-	}
-
-	const openColorPicker = () => {
-		colorPickerElement.click();
-	};
+	const colorThemer = createThemer();
 </script>
 
 <div class="flex flex-row gap-2 items-center">
-	{#if color !== DEFAULT_ACCENT}
+	{#if colorThemer.isDefault()}
 		<button
 			in:fade={{ duration: 200 }}
 			class="text-primaryfg/50 text-dynamicp hover:text-primaryfg/80 transition-colors duration-300 ease-in-out opacity-70"
-			on:click={() => reset()}
+			on:click={() => colorPickerElement.click()}
 		>
-			Reset
+			Change theme ->
 		</button>
 	{:else}
 		<button
 			in:fade={{ duration: 200 }}
 			class="text-primaryfg/50 text-dynamicp hover:text-primaryfg/80 transition-colors duration-300 ease-in-out opacity-70"
-			on:click={() => openColorPicker()}
+			on:click={() => colorThemer.reset()}
 		>
-			Change theme ->
+			Reset
 		</button>
 	{/if}
 	<input
 		bind:this={colorPickerElement}
 		class="bg-transparent cursor-pointer"
 		type="color"
-		bind:value={color}
+		bind:value={colorThemer.color}
 	/>
 </div>
