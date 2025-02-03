@@ -13,10 +13,14 @@ export class BallsSim extends MatterSim {
 
     const tickets = Array(30)
       .fill(0)
-      .map(() => this.createTicket());
+      .map((_, i) => this.createTicket(i));
 
+    const wheelColor = "white"; // TODO: recolor wheel
     this.wheel = this.buildWheel(this.center[0], this.center[1], {
-      isStatic: true
+      isStatic: true,
+      render: {
+        fillStyle: wheelColor
+      },
     });
 
     Composite.add(this.engine.world, [this.wheel, ...tickets]);
@@ -26,11 +30,14 @@ export class BallsSim extends MatterSim {
     Body.rotate(this.wheel, 0.5 * deltaTime);
   }
 
-  private createTicket() {
+  private createTicket(id: number) {
     const size = Common.random(10, 50) * this.planck;
-    const body = Bodies.circle(this.center[0], this.center[1], size, {
+    const colorId = id % this.theme.alts.length;
+    const color = this.theme.alts[colorId];
+
+    const body = Bodies.circle(...this.center, size, {
       render: {
-        fillStyle: this.theme.dominant,
+        fillStyle: color,
       },
     });
 
