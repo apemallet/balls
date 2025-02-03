@@ -126,14 +126,17 @@ function calculateContrast(hexVal1: string, hexVal2: string): number {
 
 // Color harmony functions
 function computeAnalogous(dominantHex: string) {
-	// TODO: Change saturation and lightness depending on dark and light mode
-	// This can be done by performing a compute contrast check on dominant and acting accordingly
 	const dHSL = chroma.color(dominantHex).hsl();
+	const isDark = getContrastingColor(dominantHex) == MAIN_DARK;
 
 	const steps = [-30, -15, 0, 15, 30]
   return steps.map(step => {
     const hue = (dHSL[0] + step + 360) % 360;
-		return chroma.color(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
+		if (isDark) {
+			return chroma.color(hue, 1, 0.5, 'hsl').hex();
+		} else {
+			return chroma.color(hue, 1, 0.3, 'hsl').hex();
+		}
   });
 }
 
