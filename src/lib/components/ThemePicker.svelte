@@ -2,22 +2,31 @@
 	import { getThemer, ColorHarmony, type Themer } from "$lib/theme.svelte";
 	import { fade } from "svelte/transition";
 
+	// Theme stuff
 	let colorPickerElement: HTMLInputElement;
 	const colorThemer: Themer = getThemer();
 
+	// Menu state
 	let menuOpen = true;
 </script>
 
 <div class="flex flex-col sm:flex-row gap-4 sm:items-center w-full">
 	<!-- collapse button -->
 	<button
-		class="p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-mainfg/60
+		class="group flex flex-row gap-2 p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105"
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
+		<div class="text-mainfg/60 group-hover:text-mainfg/80">
+			{#if menuOpen}
+				Theme settings
+			{:else}
+				Theme settings
+			{/if}
+		</div>
 		<svg
-			class="w-6 h-6 text-mainfg/80 group-hover:text-mainfg/90 transition-transform rotate-45"
+			class="w-6 h-6 text-mainfg/60 group-hover:text-mainfg/80 transition-transform rotate-45"
 			class:rotate-45={menuOpen}
 			fill="none"
 			viewBox="0 0 24 24"
@@ -34,30 +43,47 @@
 
 	{#if menuOpen}
 		<!-- color harmony dropdown -->
-		<select
-			bind:value={colorThemer.colorHarmony}
-			class="appearance-none backdrop-blur-sm px-4 py-2 rounded-lg
-						border-2 border-mainfg/60 text-mainfg/80 hover:border-mainfg/80
-						hover:bg-mainbg/20 focus:outline-none focus:ring-1 focus:ring-mainfg/30
-						transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer"
-		>
-			{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
-				<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
-			{/each}
-		</select>
+		<div class="relative">
+			<select
+				bind:value={colorThemer.colorHarmony}
+				class="appearance-none backdrop-blur-sm p-2 rounded-lg
+      border-2 border-mainfg/60 text-mainfg/80 hover:border-mainfg/80
+      hover:bg-mainbg/20 focus:outline-none focus:ring-1 focus:ring-mainfg/30
+      transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer"
+			>
+				{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
+					<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
+				{/each}
+			</select>
+
+			<!-- chevron svg -->
+			<svg
+				class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-mainfg/80 pointer-events-none transition-transform duration-300"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width={2}
+					d="M19 9l-7 7-7-7"
+				/>
+			</svg>
+		</div>
 
 		<!-- color picker -->
 		{#if colorThemer.isDefault()}
 			<button
 				in:fade={{ duration: 200 }}
-				class="flex flex-[2] justify-between gap-2 px-4 py-2
+				class="flex justify-between gap-2 p-2
 							rounded-lg bg-primary/10 hover:bg-primary/20
 							border-2 border-primaryfg/20 hover:border-primaryfg/40
 							text-mainfg/70 hover:text-mainfg/90
 							transform hover:scale-105 transition-all duration-300 ease-out"
 				on:click={() => colorPickerElement.click()}
 			>
-				<span>Select dominant</span>
+				<span class="truncate">Select dominant</span>
 				<svg
 					class="w-4 h-4 self-center"
 					fill="none"
@@ -75,7 +101,7 @@
 		{:else}
 			<button
 				in:fade={{ duration: 200 }}
-				class="flex flex-[2] justify-between gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20
+				class="flex justify-between gap-2 p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20
                    border-2 border-red-500/20 hover:border-red-500/40
                    text-red-500/80 hover:text-red-500/100
                    transform hover:scale-105 transition-all duration-300 ease-out"
@@ -101,9 +127,26 @@
 
 		<input
 			bind:this={colorPickerElement}
-			class="flex-[2] h-12 bg-transparent cursor-pointer"
+			class="h-8 bg-transparent cursor-pointer appearance-none"
 			type="color"
 			bind:value={colorThemer.dominant}
 		/>
+
+		<!-- pallete visualization -->
+		<div class="flex flex-wrap gap-4 bg-mainbg/10 rounded-xl">
+			{#each colorThemer.alts as altHex, index (index)}
+				<div
+					class="flex-1 w-24 bg-alt1bg truncate rounded-sm shadow-md transition-all hover:scale-105"
+					style="background-color: {altHex}"
+				>
+					<div class="p-4 h-full flex items-center justify-center">
+						<span
+							class="font-bold text-sm truncate"
+							style="color: var(--color-alt{index + 1}fg)">{altHex}</span
+						>
+					</div>
+				</div>
+			{/each}
+		</div>
 	{/if}
 </div>
