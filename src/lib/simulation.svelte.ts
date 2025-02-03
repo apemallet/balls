@@ -83,10 +83,10 @@ export class Simulation {
 
   private buildWheel(xOrigin: number, yOrigin: number, options: any = null) {
     const radius = 300 * this.planck;
-    const degree = .3 * radius;
+    const degree = .5 * radius;
     const thickness = .1 * radius;
     const tickLength = .25 * radius;
-    const tickSpacing = Math.round(.1 * degree);
+    const tickAmnt= Math.round(0.4 * Math.sqrt(radius));
     const tickRadiusFactor = 1 - 0.03; // unit-less
     const color = options.render?.fillStyle;
 
@@ -104,6 +104,7 @@ export class Simulation {
     let parts = [];
     // TODO: might be viable to make each part static (wrt whole)
 
+    const tickSpacing = Math.round(degree / tickAmnt);
     for (let i = 0; i < degree; i++) {
       const theta = (i / degree) * 2 * Math.PI;
       const x = radius * Math.cos(theta);
@@ -119,7 +120,7 @@ export class Simulation {
       Body.rotate(ringPart, theta + Math.PI / 2);
       parts.push(ringPart);
 
-      if (i % tickSpacing === 0) {
+      if (i % tickSpacing === 0 && degree - i > 0.5 * tickSpacing) {
         const tickX = x * tickRadiusFactor;
         const tickY = y * tickRadiusFactor;
         const tick = Bodies.rectangle(tickX, tickY, thickness, tickLength, {
