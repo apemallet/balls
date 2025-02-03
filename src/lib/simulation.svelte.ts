@@ -138,6 +138,9 @@ export class Simulation {
   }
 
   public reLayout(width, height) {
+    const oldWidth = this.width;
+    const oldHeight = this.height;
+
     const render = this.render;
     render.bounds.max.x = width;
     render.bounds.max.y = height;
@@ -146,5 +149,12 @@ export class Simulation {
     render.canvas.width = width;
     render.canvas.height = height;
     Render.setPixelRatio(render, window.devicePixelRatio); // added this
+
+    for (const body of Composite.allBodies(render.engine.world)) {
+      const pos = body.position;
+      const x = pos.x + (width - oldWidth) / 2;
+      const y = pos.y + (height - oldHeight) / 2;
+      Body.setPosition(body, {x, y});
+    }
   }
 }
