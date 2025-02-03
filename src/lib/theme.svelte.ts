@@ -6,19 +6,23 @@ const PRIMARY_BG_DARK = "#18181b";
 const PRIMARY_BG_LIGHT = "#e7e7df";
 
 // Global state
-let color = $state(DEFAULT_ACCENT);
 let themerInstance: ReturnType<typeof createThemer> | null = null;
 
-// Client-side initialization
-if (browser) {
-    const stored = localStorage.getItem("colorStore");
-    if (stored) color = stored;
-		else color = DEFAULT_ACCENT;
+enum ColorHarmony {
+	Analagous,
+	Monochromatic,
+	Triad,
+	Complimentary,
+	SplitComplimentary,
+	Square,
+	Compound,
+	Shades
 }
 
 interface Themer {
 	get color(): string;
 	set color(value: string);
+	set colorHarmony(value: ColorHarmony);
 	reset(): void;
 	isDefault(): boolean;
 }
@@ -26,6 +30,25 @@ interface Themer {
 // Singleton obj setup
 export function createThemer(): Themer {
     if (themerInstance) return themerInstance;
+
+		let color = $state(DEFAULT_ACCENT);
+
+		// Color pallete
+		let colorHarmony = $state(ColorHarmony.Analagous);
+		let dominant = $state(DEFAULT_ACCENT);
+		let alt1 = $state(DEFAULT_ACCENT);
+		let alt2 = $state(DEFAULT_ACCENT);
+		let alt3 = $state(DEFAULT_ACCENT);
+		let alt4 = $state(DEFAULT_ACCENT);
+		let alt5 = $state(DEFAULT_ACCENT);
+
+
+		// Client-side initialization
+		if (browser) {
+				const stored = localStorage.getItem("colorStore");
+				if (stored) color = stored;
+				else color = DEFAULT_ACCENT;
+		}
 
 		$effect(() => {
 				if (browser) {
@@ -39,6 +62,7 @@ export function createThemer(): Themer {
         set color(value: string) {
             color = value;
         },
+				set colorHarmony(value: ColorHarmony) { colorHarmony = value },
         reset() {
             color = DEFAULT_ACCENT;
         },
