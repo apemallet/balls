@@ -6,9 +6,6 @@ const DEFAULT_DOMINANT = "#e7bad0";
 const MAIN_DARK = "#18181b";
 const MAIN_LIGHT = "#e7e7df";
 
-// Global state
-let themerInstance: ReturnType<typeof createThemer> | null = null;
-
 enum ColorHarmony {
 	Analogous,
 	Monochromatic,
@@ -38,7 +35,8 @@ export interface Themer {
 }
 
 // Singleton obj setup
-export function createThemer(): Themer {
+let themerInstance: Themer;
+export function getThemer(): Themer {
     if (themerInstance) return themerInstance;
 
 		// Color pallete

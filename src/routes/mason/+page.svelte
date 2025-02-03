@@ -1,8 +1,8 @@
 <script>
 	import ThemePicker from "$lib/components/ThemePicker.svelte";
-	import { createThemer } from "$lib/theme.svelte";
+	import { getThemer } from "$lib/theme.svelte";
 
-	let theme = createThemer();
+	let theme = getThemer();
 </script>
 
 <ThemePicker />

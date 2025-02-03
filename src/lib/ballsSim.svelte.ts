@@ -1,46 +1,55 @@
 import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
+import {type Body} from "matter-js";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 
 export class BallsSim extends MatterSim {
   private readonly wheel: Body;
+  private readonly tickets: Body[] = [];
 
   public constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     console.log('Initializing BALLS sim.')
 
-    const tickets = Array(30)
+    this.tickets = Array(30)
       .fill(0)
-      .map((_, i) => this.createTicket(i));
+      .map(() => this.createTicket());
 
-    const wheelColor = "white"; // TODO: recolor wheel
     this.wheel = this.buildWheel(this.center[0], this.center[1], {
       isStatic: true,
-      render: {
-        fillStyle: wheelColor
-      },
     });
 
-    Composite.add(this.engine.world, [this.wheel, ...tickets]);
+    Composite.add(this.engine.world, [this.wheel, ...this.tickets]);
+    this.reTheme();
+  }
+
+  public reTheme(): void {
+    // 1. Wheel color
+
+    const wheelColor = this.theme.mainForeground;
+
+    for (const part of this.wheel.parts) {
+      part.render.fillStyle = wheelColor;
+    }
+
+    // 2. Ticket colors
+
+    for (const i in this.tickets) {
+      const ticket = this.tickets[i];
+      const colorId = i % this.theme.alts.length;
+      ticket.render.fillStyle = this.theme.alts[colorId];
+    }
   }
 
   protected fixedUpdate(deltaTime: number) {
     Body.rotate(this.wheel, 0.5 * deltaTime);
   }
 
-  private createTicket(id: number) {
+  private createTicket() {
     const size = Common.random(10, 50) * this.planck;
-    const colorId = id % this.theme.alts.length;
-    const color = this.theme.alts[colorId];
-
-    const body = Bodies.circle(...this.center, size, {
-      render: {
-        fillStyle: color,
-      },
-    });
-
+    const body = Bodies.circle(...this.center, size);
     Body.setMass(body, 10 * size ** 2);
     return body;
   }

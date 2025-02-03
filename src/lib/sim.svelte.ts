@@ -1,4 +1,4 @@
-import {createThemer, type Themer } from "$lib/theme.svelte";
+import {getThemer, type Themer } from "$lib/theme.svelte";
 import type {Engine, Render} from "matter-js";
 import Matter from "$lib/svelteMatter.svelte";
 
@@ -6,7 +6,7 @@ let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived
 
 
 export abstract class MatterSim {
-  protected readonly theme: Themer = createThemer();
+  protected readonly theme: Themer = getThemer();
   protected readonly canvas: HTMLCanvasElement;
   protected readonly engine: Engine;
   protected readonly render: Render;
@@ -60,6 +60,8 @@ export abstract class MatterSim {
   }
 
   protected abstract fixedUpdate(deltaTime: number): void;
+
+  public abstract reTheme(): void;
 
   public reLayout(width, height) {
     const oldWidth = this.width;

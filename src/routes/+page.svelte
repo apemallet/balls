@@ -3,6 +3,7 @@
   import Matter from "$lib/svelteMatter.svelte";
   import {BallsSim} from "$lib/ballsSim.svelte";
   import {CrankSim} from "$lib/crankSim.svelte";
+  import {getThemer} from "$lib/theme.svelte";
 
   let canvasBot: HTMLCanvasElement | undefined;
   let canvasTop: HTMLCanvasElement | undefined;
@@ -15,6 +16,15 @@
     if (!canvasTop) return;
     if (!balls) balls = new BallsSim(canvasBot);
     if (!crank) crank = new CrankSim(canvasTop);
+  });
+
+  $effect(() => {
+    if (getThemer().dominant) {
+      if (!balls) return;
+      if (!crank) return;
+      balls!.reTheme();
+      crank!.reTheme();
+    }
   });
 
   function onResize() {

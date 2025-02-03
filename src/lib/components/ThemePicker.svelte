@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { createThemer } from "$lib/theme.svelte";
+	import { getThemer } from "$lib/theme.svelte";
 	import { fade } from "svelte/transition";
 
 	let colorPickerElement: HTMLInputElement;
-	const colorThemer = createThemer();
+	const colorThemer = getThemer();
 </script>
 
 <div class="flex flex-row gap-2 items-center">
