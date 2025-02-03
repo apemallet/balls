@@ -10,11 +10,13 @@
 	let menuOpen = true;
 </script>
 
+<!-- TODO: at least on iphone safari, there is some weird color issues going on -->
 <div class="flex flex-col sm:flex-row gap-4 sm:items-center w-full">
 	<!-- collapse button -->
 	<button
-		class="group flex flex-row gap-2 p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-mainfg/60
-					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between"
+		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
+					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
+					 hover:bg-mainfg/10"
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
@@ -47,11 +49,14 @@
 		<div
 			class="relative group min-w-fit hover:scale-105 transition-all duration-300"
 		>
+			<!-- TODO: maybe this can be made a button that clicks a hidden dropdown in order to get button-styling perfected -->
+			<!-- or look into embedded icons in the select area, if possible without the absolute setup since  -->
+			<!-- it causes weird issues (ie overlap) these can also be fixed via margin or padding on the text though. -->
 			<select
 				bind:value={colorThemer.colorHarmony}
 				class="appearance-none backdrop-blur-sm p-2 rounded-lg
       border-2 border-mainfg/60 text-mainfg/60 group-hover:border-mainfg/80 group-hover:text-mainfg/80
-      focus:outline-none focus:ring-1 focus:ring-mainfg/30
+      focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
       transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
 				<!-- TODO: Chevron and text can overlap and button won't expand. needs fixing, especially for long names like Split Complementary  -->
@@ -139,10 +144,10 @@
 		</div>
 
 		<!-- pallete visualization -->
-		<div class="flex flex-wrap gap-4 bg-mainbg/10 rounded-xl">
+		<div class="flex flex-wrap gap-4 rounded-xl">
 			{#each colorThemer.alts as altHex, index (index)}
 				<div
-					class="flex-1 w-24 bg-alt1bg truncate rounded-sm shadow-md transition-all hover:scale-105"
+					class="flex-1 w-24 truncate rounded-sm shadow-md transition-all hover:scale-105"
 					style="background-color: {altHex}"
 				>
 					<div class="px-4 h-full flex items-center justify-center">
