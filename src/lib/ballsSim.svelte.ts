@@ -49,9 +49,7 @@ export class BallsSim extends MatterSim {
 
   private createTicket() {
     const size = Common.random(10, 50) * this.planck;
-    const body = Bodies.circle(...this.center, size);
-    Body.setMass(body, 10 * size ** 2);
-    return body;
+    return Bodies.circle(...this.center, size);
   }
 
   private buildWheel(xOrigin: number, yOrigin: number, options: any = null) {
