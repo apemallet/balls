@@ -20,6 +20,7 @@
 		class="p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-primary/20
 					 hover:bg-primary/20 hover:border-primary/40 transition-all duration-300
 					 group focus:outline-none focus:ring-2 focus:ring-primary/30"
+		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
 		<svg
@@ -41,11 +42,10 @@
 	<!-- color harmony dropdown -->
 	<select
 		bind:value={colorThemer.colorHarmony}
-		class="appearance-none backdrop-blur-sm px-4 py-2 pr-8 rounded-lg
-                   border-2 border-mainfg/20 text-mainfg/80
-                   hover:border-mainfg/40 hover:bg-mainbg/20
-                   focus:outline-none focus:ring-1 focus:ring-mainfg/30
-									 transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer"
+		class="appearance-none backdrop-blur-sm px-4 py-2 rounded-lg
+						border-2 border-mainfg/60 text-mainfg/80 hover:border-mainfg/80
+						hover:bg-mainbg/20 focus:outline-none focus:ring-1 focus:ring-mainfg/30
+						transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer"
 	>
 		{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
 			<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
@@ -56,10 +56,11 @@
 	{#if colorThemer.isDefault()}
 		<button
 			in:fade={{ duration: 200 }}
-			class="flex flex-[2] justify-between gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20
-                   border-2 border-primaryfg/20 hover:border-primaryfg/40
-                   text-mainfg/70 hover:text-mainfg/90
-                   transform hover:scale-105 transition-all duration-300 ease-out"
+			class="flex flex-[2] justify-between gap-2 px-4 py-2
+							rounded-lg bg-primary/10 hover:bg-primary/20
+							border-2 border-primaryfg/20 hover:border-primaryfg/40
+							text-mainfg/70 hover:text-mainfg/90
+							transform hover:scale-105 transition-all duration-300 ease-out"
 			on:click={() => colorPickerElement.click()}
 		>
 			<span>Select dominant</span>

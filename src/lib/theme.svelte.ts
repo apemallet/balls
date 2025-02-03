@@ -74,9 +74,8 @@ export function getThemer(): Themer {
 						localStorage.setItem("dominantColor", dominant);
 						localStorage.setItem("colorHarmony", ColorHarmony[colorHarmony]);
 				}
-				const mainColors = updateTheme(dominant);
-			 	mainBG = mainColors.background;
-				mainFG = mainColors.foreground;
+			 	mainBG = getContrastingColor(dominant);
+				mainFG = getContrastingColor(mainBG);
 		});
 
 		$effect(() => {
@@ -120,17 +119,6 @@ export function getThemer(): Themer {
     };
 
     return themerInstance;
-}
-
-// Update theme CSS and return background, foreground 
-function updateTheme(value: string): { background: string, foreground: string } {
-  updateCSSVariable("--color-accentbg", value);
-  const backgroundColor = getContrastingColor(value);
-  updateCSSVariable("--color-primarybg", backgroundColor);
-  updateCSSVariable("--color-accentfg", backgroundColor);
-  const foregroundColor = getContrastingColor(backgroundColor);
-  updateCSSVariable("--color-primaryfg", foregroundColor);
-	return { background: backgroundColor, foreground: foregroundColor };
 }
 
 function updateCSSVariable(name: string, value: string) {
