@@ -1,6 +1,6 @@
 import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
-import {type Body} from "matter-js";
+import {type Body, type Bodies} from "matter-js";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
@@ -9,7 +9,8 @@ export class BallsSim extends MatterSim {
   private readonly wheel: Body;
   private readonly tickets: Body[] = [];
 
-  public constructor(canvas: HTMLCanvasElement) {
+  // wheelRadius is in planck units
+  public constructor(canvas: HTMLCanvasElement, wheelRadius: number) {
     super(canvas);
     console.log('Initializing BALLS sim.')
 
@@ -17,7 +18,8 @@ export class BallsSim extends MatterSim {
       .fill(0)
       .map(() => this.createTicket());
 
-    this.wheel = this.buildWheel(this.center[0], this.center[1], {
+    const physicalWheelRadius = wheelRadius * this.planck;
+    this.wheel = this.buildWheel(this.center[0], this.center[1], physicalWheelRadius, {
       isStatic: true,
     });
 
@@ -49,11 +51,13 @@ export class BallsSim extends MatterSim {
 
   private createTicket() {
     const size = Common.random(10, 50) * this.planck;
-    return Bodies.circle(...this.center, size);
+    return Bodies.circle(...this.center, size, {
+      restitution: 0.9,
+      frictionAir: 0.02,
+    });
   }
 
-  private buildWheel(xOrigin: number, yOrigin: number, options: any = null) {
-    const radius = 300 * this.planck;
+  private buildWheel(xOrigin: number, yOrigin: number, radius: number, options: any = null) {
     const degree = .3 * radius;
     const thickness = .1 * radius;
     const tickLength = .25 * radius;

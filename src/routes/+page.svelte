@@ -10,12 +10,14 @@
   let balls: BallsSim;
   let crank: CrankSim;
 
+  const wheelRadius = 300; // in planck units
+
   $effect(() => {
     if (!Matter()) return;
     if (!canvasBot) return;
     if (!canvasTop) return;
-    if (!balls) balls = new BallsSim(canvasBot);
-    if (!crank) crank = new CrankSim(canvasTop);
+    if (!balls) balls = new BallsSim(canvasBot, wheelRadius);
+    if (!crank) crank = new CrankSim(canvasTop, wheelRadius);
   });
 
   $effect(() => {
