@@ -110,8 +110,8 @@ function getContrastingColor(accentColor: string): string {
 function calculateContrast(hexVal1: string, hexVal2: string): number {
 	const color1 = chroma(hexVal1).rgb();
 	const color2 = chroma(hexVal2).rgb();
-  const l1 = 0.2126 * color1.r + 0.7152 * color1.g + 0.0722 * color1.b;
-  const l2 = 0.2126 * color2.r + 0.7152 * color2.g + 0.0722 * color2.b;
+  const l1 = 0.2126 * color1[0] + 0.7152 * color1[1] + 0.0722 * color1[2];
+  const l2 = 0.2126 * color2[0] + 0.7152 * color2[1] + 0.0722 * color2[2];
   return Math.abs(l1 - l2) / 255;
 }
 
