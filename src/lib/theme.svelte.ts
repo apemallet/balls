@@ -20,7 +20,7 @@ enum ColorHarmony {
 	Shades
 }
 
-interface Themer {
+export interface Themer {
 	get colorHarmony(): ColorHarmony;
 	set colorHarmony(value: ColorHarmony);
 	get dominant(): string;

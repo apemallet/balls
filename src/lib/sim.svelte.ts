@@ -1,4 +1,4 @@
-import {createThemer} from "$lib/theme.svelte";
+import {createThemer, type Themer } from "$lib/theme.svelte";
 import type {Engine, Render} from "matter-js";
 import Matter from "$lib/svelteMatter.svelte";
 
@@ -6,7 +6,7 @@ let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived
 
 
 export abstract class MatterSim {
-  protected readonly theme = createThemer();
+  protected readonly theme: Themer = createThemer();
   protected readonly canvas: HTMLCanvasElement;
   protected readonly engine: Engine;
   protected readonly render: Render;

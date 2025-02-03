@@ -26,7 +26,7 @@
 
 <svelte:window on:resize={onResize}/>
 
-<div class="fixed">
+<div class="fixed z-20">
   <ThemePicker/>
 </div>
 
