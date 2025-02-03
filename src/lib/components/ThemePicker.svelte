@@ -5,27 +5,20 @@
 	let colorPickerElement: HTMLInputElement;
 	const colorThemer: Themer = getThemer();
 
-	let menuOpen = false;
+	let menuOpen = true;
 </script>
-
-{#if menuOpen}
-	Open theme settings
-{:else}
-	Close theme settings
-{/if}
 
 <div class="flex flex-col sm:flex-row gap-4 sm:items-center w-full">
 	<!-- collapse button -->
 	<button
-		class="p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-primary/20
-					 hover:bg-primary/20 hover:border-primary/40 transition-all duration-300
-					 group focus:outline-none focus:ring-2 focus:ring-primary/30"
+		class="p-2 rounded-lg bg-mainbg/10 backdrop-blur-sm border-2 border-mainfg/60
+					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105"
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
 		<svg
-			class="w-6 h-6 text-mainfg/80 group-hover:text-mainfg/90 transition-transform"
-			class:rotate-90={menuOpen}
+			class="w-6 h-6 text-mainfg/80 group-hover:text-mainfg/90 transition-transform rotate-45"
+			class:rotate-45={menuOpen}
 			fill="none"
 			viewBox="0 0 24 24"
 			stroke="currentColor"
@@ -39,76 +32,78 @@
 		</svg>
 	</button>
 
-	<!-- color harmony dropdown -->
-	<select
-		bind:value={colorThemer.colorHarmony}
-		class="appearance-none backdrop-blur-sm px-4 py-2 rounded-lg
+	{#if menuOpen}
+		<!-- color harmony dropdown -->
+		<select
+			bind:value={colorThemer.colorHarmony}
+			class="appearance-none backdrop-blur-sm px-4 py-2 rounded-lg
 						border-2 border-mainfg/60 text-mainfg/80 hover:border-mainfg/80
 						hover:bg-mainbg/20 focus:outline-none focus:ring-1 focus:ring-mainfg/30
 						transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer"
-	>
-		{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
-			<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
-		{/each}
-	</select>
+		>
+			{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
+				<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
+			{/each}
+		</select>
 
-	<!-- color picker -->
-	{#if colorThemer.isDefault()}
-		<button
-			in:fade={{ duration: 200 }}
-			class="flex flex-[2] justify-between gap-2 px-4 py-2
+		<!-- color picker -->
+		{#if colorThemer.isDefault()}
+			<button
+				in:fade={{ duration: 200 }}
+				class="flex flex-[2] justify-between gap-2 px-4 py-2
 							rounded-lg bg-primary/10 hover:bg-primary/20
 							border-2 border-primaryfg/20 hover:border-primaryfg/40
 							text-mainfg/70 hover:text-mainfg/90
 							transform hover:scale-105 transition-all duration-300 ease-out"
-			on:click={() => colorPickerElement.click()}
-		>
-			<span>Select dominant</span>
-			<svg
-				class="w-4 h-4 self-center"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
+				on:click={() => colorPickerElement.click()}
 			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5"
-				/>
-			</svg>
-		</button>
-	{:else}
-		<button
-			in:fade={{ duration: 200 }}
-			class="flex flex-[2] justify-between gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20
+				<span>Select dominant</span>
+				<svg
+					class="w-4 h-4 self-center"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width={2}
+						d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5"
+					/>
+				</svg>
+			</button>
+		{:else}
+			<button
+				in:fade={{ duration: 200 }}
+				class="flex flex-[2] justify-between gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20
                    border-2 border-red-500/20 hover:border-red-500/40
                    text-red-500/80 hover:text-red-500/100
                    transform hover:scale-105 transition-all duration-300 ease-out"
-			on:click={() => colorThemer.reset()}
-		>
-			Reset pallete
-			<svg
-				viewBox="0 0 1024 1024"
-				class="w-4 h-4 self-center"
-				fill="currentColor"
-				><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-					id="SVGRepo_tracerCarrier"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				></g><g id="SVGRepo_iconCarrier"
-					><path
-						d="M704 288h-281.6l177.6-202.88a32 32 0 0 0-48.32-42.24l-224 256a30.08 30.08 0 0 0-2.24 3.84 32 32 0 0 0-2.88 4.16v1.92a32 32 0 0 0 0 5.12A32 32 0 0 0 320 320a32 32 0 0 0 0 4.8 32 32 0 0 0 0 5.12v1.92a32 32 0 0 0 2.88 4.16 30.08 30.08 0 0 0 2.24 3.84l224 256a32 32 0 1 0 48.32-42.24L422.4 352H704a224 224 0 0 1 224 224v128a224 224 0 0 1-224 224H320a232 232 0 0 1-28.16-1.6 32 32 0 0 0-35.84 27.84 32 32 0 0 0 27.84 35.52A295.04 295.04 0 0 0 320 992h384a288 288 0 0 0 288-288v-128a288 288 0 0 0-288-288zM103.04 760a32 32 0 0 0-62.08 16A289.92 289.92 0 0 0 140.16 928a32 32 0 0 0 40-49.92 225.6 225.6 0 0 1-77.12-118.08zM64 672a32 32 0 0 0 22.72-9.28 37.12 37.12 0 0 0 6.72-10.56A32 32 0 0 0 96 640a33.6 33.6 0 0 0-9.28-22.72 32 32 0 0 0-10.56-6.72 32 32 0 0 0-34.88 6.72A32 32 0 0 0 32 640a32 32 0 0 0 2.56 12.16 37.12 37.12 0 0 0 6.72 10.56A32 32 0 0 0 64 672z"
-					></path></g
-				></svg
+				on:click={() => colorThemer.reset()}
 			>
-		</button>
-	{/if}
+				Reset pallete
+				<svg
+					viewBox="0 0 1024 1024"
+					class="w-4 h-4 self-center"
+					fill="currentColor"
+					><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+						id="SVGRepo_tracerCarrier"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					></g><g id="SVGRepo_iconCarrier"
+						><path
+							d="M704 288h-281.6l177.6-202.88a32 32 0 0 0-48.32-42.24l-224 256a30.08 30.08 0 0 0-2.24 3.84 32 32 0 0 0-2.88 4.16v1.92a32 32 0 0 0 0 5.12A32 32 0 0 0 320 320a32 32 0 0 0 0 4.8 32 32 0 0 0 0 5.12v1.92a32 32 0 0 0 2.88 4.16 30.08 30.08 0 0 0 2.24 3.84l224 256a32 32 0 1 0 48.32-42.24L422.4 352H704a224 224 0 0 1 224 224v128a224 224 0 0 1-224 224H320a232 232 0 0 1-28.16-1.6 32 32 0 0 0-35.84 27.84 32 32 0 0 0 27.84 35.52A295.04 295.04 0 0 0 320 992h384a288 288 0 0 0 288-288v-128a288 288 0 0 0-288-288zM103.04 760a32 32 0 0 0-62.08 16A289.92 289.92 0 0 0 140.16 928a32 32 0 0 0 40-49.92 225.6 225.6 0 0 1-77.12-118.08zM64 672a32 32 0 0 0 22.72-9.28 37.12 37.12 0 0 0 6.72-10.56A32 32 0 0 0 96 640a33.6 33.6 0 0 0-9.28-22.72 32 32 0 0 0-10.56-6.72 32 32 0 0 0-34.88 6.72A32 32 0 0 0 32 640a32 32 0 0 0 2.56 12.16 37.12 37.12 0 0 0 6.72 10.56A32 32 0 0 0 64 672z"
+						></path></g
+					></svg
+				>
+			</button>
+		{/if}
 
-	<input
-		bind:this={colorPickerElement}
-		class="flex-[2] h-12 bg-transparent cursor-pointer pr-4"
-		type="color"
-		bind:value={colorThemer.dominant}
-	/>
+		<input
+			bind:this={colorPickerElement}
+			class="flex-[2] h-12 bg-transparent cursor-pointer"
+			type="color"
+			bind:value={colorThemer.dominant}
+		/>
+	{/if}
 </div>
