@@ -30,6 +30,7 @@ export interface Themer {
   get alt4(): string;
   get alt5(): string;
   get alts(): string[];
+  get domAndAlts(): string[];
   reset(): void;
   isDefault(): boolean;
 }
@@ -144,6 +145,9 @@ export function getThemer(): Themer {
     },
     get alts() {
       return [alt1, alt2, alt3, alt4, alt5];
+    },
+    get domAndAlts() {
+      return [dominant, alt1, alt2, alt3, alt4, alt5];
     },
     reset() {
       dominant = DEFAULT_DOMINANT;

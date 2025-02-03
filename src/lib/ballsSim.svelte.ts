@@ -1,9 +1,9 @@
 import Matter from "$lib/svelteMatter.svelte";
-import {MatterSim} from "$lib/sim.svelte";
-import {type Body, type Bodies} from "matter-js";
+import { MatterSim } from "$lib/sim.svelte";
+import { type Body, type Bodies } from "matter-js";
 
-let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
-
+let { Engine, Render, Runner, Bodies, Composite, Body, Common, Events } =
+  $derived(Matter() || Object);
 
 export class BallsSim extends MatterSim {
   private readonly wheel: Body;
@@ -12,16 +12,21 @@ export class BallsSim extends MatterSim {
   // wheelRadius is in planck units
   public constructor(canvas: HTMLCanvasElement, wheelRadius: number) {
     super(canvas);
-    console.log('Initializing BALLS sim.')
+    console.log("Initializing BALLS sim.");
 
     this.tickets = Array(30)
       .fill(0)
       .map(() => this.createTicket());
 
     const physicalWheelRadius = wheelRadius * this.planck;
-    this.wheel = this.buildWheel(this.center[0], this.center[1], physicalWheelRadius, {
-      isStatic: true,
-    });
+    this.wheel = this.buildWheel(
+      this.center[0],
+      this.center[1],
+      physicalWheelRadius,
+      {
+        isStatic: true,
+      },
+    );
 
     Composite.add(this.engine.world, [this.wheel, ...this.tickets]);
     this.reTheme();
@@ -40,8 +45,8 @@ export class BallsSim extends MatterSim {
 
     for (const i in this.tickets) {
       const ticket = this.tickets[i];
-      const colorId = i % this.theme.alts.length;
-      ticket.render.fillStyle = this.theme.alts[colorId];
+      const colorId = i % this.theme.domAndAlts.length;
+      ticket.render.fillStyle = this.theme.domAndAlts[colorId];
     }
   }
 
@@ -57,23 +62,28 @@ export class BallsSim extends MatterSim {
     });
   }
 
-  private buildWheel(xOrigin: number, yOrigin: number, radius: number, options: any = null) {
-    const degree = .3 * radius;
-    const thickness = .1 * radius;
-    const tickLength = .25 * radius;
-    const tickAmnt= Math.round(0.4 * Math.sqrt(radius));
+  private buildWheel(
+    xOrigin: number,
+    yOrigin: number,
+    radius: number,
+    options: any = null,
+  ) {
+    const degree = 0.3 * radius;
+    const thickness = 0.1 * radius;
+    const tickLength = 0.25 * radius;
+    const tickAmnt = Math.round(0.4 * Math.sqrt(radius));
     const tickRadiusFactor = 1 - 0.02; // unit-less
     const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
-      const angle = 2 * Math.PI / degree;
+      const angle = (2 * Math.PI) / degree;
       const pointX = Math.cos(angle);
       const pointY = Math.sin(angle);
-      const midpointX = ((pointX - 1) / 2) + 1;
+      const midpointX = (pointX - 1) / 2 + 1;
       const midpointY = pointY / 2;
       const effectiveRadius = 1 / Math.sqrt(midpointX ** 2 + midpointY ** 2);
       const len = Math.sqrt((pointX - 1) ** 2 + pointY ** 2);
-      return (radius + thickness / 2) * effectiveRadius * len
+      return (radius + thickness / 2) * effectiveRadius * len;
     })();
 
     let parts = [];
@@ -111,10 +121,11 @@ export class BallsSim extends MatterSim {
 
     const wheel = Body.create({
       parts: parts,
-      ...options
+      ...options,
     });
 
-    Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
+    Body.setPosition(wheel, { x: xOrigin, y: yOrigin });
     return wheel;
   }
 }
+
