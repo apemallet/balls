@@ -22,6 +22,11 @@ export class Simulation {
     return [ this.width / 2, this.height / 2 ];
   };
 
+  private get planck() {
+    const len = Math.min(this.width, this.height);
+    return len / 1000;
+  }
+
   public constructor(canvas: HTMLCanvasElement) {
     console.log('Initializing sim.')
     if (!Matter()) throw new Error("Matter.js not loaded.");
@@ -65,7 +70,7 @@ export class Simulation {
   }
 
   private createTicket() {
-    const size = Common.random(10, 50);
+    const size = Common.random(10, 50) * this.planck;
     const body = Bodies.circle(this.center[0], this.center[1], size, {
       render: {
         fillStyle: this.theme.color,
@@ -77,12 +82,12 @@ export class Simulation {
   }
 
   private buildWheel(xOrigin: number, yOrigin: number, options: any = null) {
-    const radius = 300;
+    const radius = 300 * this.planck;
     const degree = .3 * radius;
-    const thickness = 30;
+    const thickness = .1 * radius;
     const tickLength = .25 * radius;
-    const tickSpacing = 9;
-    const tickRadiusFactor = 1 - 0.03;
+    const tickSpacing = Math.round(.1 * degree);
+    const tickRadiusFactor = 1 - 0.03; // unit-less
     const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
