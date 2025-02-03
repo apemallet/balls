@@ -1,31 +1,34 @@
 <script lang="ts">
   import ThemePicker from "$lib/components/ThemePicker.svelte";
   import Matter from "$lib/svelteMatter.svelte";
-  import {Simulation} from "$lib/simulation.svelte";
+  import {BallsSim} from "$lib/ballsSim.svelte";
+  import {CrankSim} from "$lib/crankSim.svelte";
 
-  let canvas: HTMLCanvasElement | undefined;
-  let sim: Simulation;
+  let canvasBot: HTMLCanvasElement | undefined;
+  let canvasTop: HTMLCanvasElement | undefined;
+  let balls: BallsSim;
+  let crank: CrankSim;
 
   $effect(() => {
     if (!Matter()) return;
-    if (sim) return;
-    if (!canvas) return;
-    sim = new Simulation(canvas);
+    if (!canvasBot) return;
+    if (!canvasTop) return;
+    if (!balls) balls = new BallsSim(canvasBot);
+    if (!crank) crank = new CrankSim(canvasTop);
   });
 
   function onResize() {
-    if (!sim) return;
     const {innerWidth, innerHeight} = window;
-    sim.reLayout(innerWidth, innerHeight);
+    balls?.reLayout(innerWidth, innerHeight);
+    crank?.reLayout(innerWidth, innerHeight);
   }
 </script>
 
 <svelte:window on:resize={onResize}/>
 
-<div class="fixed">
+<div class="fixed z-20">
   <ThemePicker/>
 </div>
 
-<canvas
-    class="w-screen h-screen" bind:this={canvas}>
-</canvas>
+<canvas class="absolute w-screen h-screen z-10" bind:this={canvasTop}></canvas>
+<canvas class="absolute w-screen h-screen" bind:this={canvasBot}></canvas>

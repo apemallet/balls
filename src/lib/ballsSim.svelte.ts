@@ -1,72 +1,29 @@
-import type Render from "matter-js";
 import Matter from "$lib/svelteMatter.svelte";
-import {createThemer} from "$lib/theme.svelte";
+import {MatterSim} from "$lib/sim.svelte";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 
-export class Simulation {
-  private readonly theme = createThemer();
-  private readonly render: Render;
-  private readonly canvas: HTMLCanvasElement;
-
-  private get width(): number {
-    return this.canvas.clientWidth;
-  }
-
-  private get height(): number {
-    return this.canvas.clientHeight;
-  }
-
-  private get center(): [number, number] {
-    return [ this.width / 2, this.height / 2 ];
-  };
-
-  private get planck() {
-    const len = Math.min(this.width, this.height);
-    return len / 1000;
-  }
+export class BallsSim extends MatterSim {
+  private readonly wheel: Body;
 
   public constructor(canvas: HTMLCanvasElement) {
-    console.log('Initializing sim.')
-    if (!Matter()) throw new Error("Matter.js not loaded.");
+    super(canvas);
+    console.log('Initializing BALLS sim.')
 
-    this.canvas = canvas;
     const tickets = Array(30)
       .fill(0)
       .map(() => this.createTicket());
 
-    const wheel = this.buildWheel(this.center[0], this.center[1], {
+    this.wheel = this.buildWheel(this.center[0], this.center[1], {
       isStatic: true
     });
 
-    const engine = Engine.create();
-    Composite.add(engine.world, [wheel, ...tickets]);
+    Composite.add(this.engine.world, [this.wheel, ...tickets]);
+  }
 
-    const render = Render.create({
-      engine: engine,
-      canvas: canvas,
-      options: {
-        width: this.width,
-        height: this.height,
-        devicePixelRatio: window.devicePixelRatio,
-        wireframes: false,
-        background: "transparent",
-      },
-    });
-    this.render = render;
-
-    Render.run(render);
-    const runner = Runner.create();
-    Runner.run(runner, engine);
-
-    let tLast = Common.now();
-    Events.on(engine, 'beforeUpdate', function (event) {
-      const deltaTime = (Common.now() - tLast) / 1000;
-      tLast = Common.now();
-
-      Body.rotate(wheel, 0.5 * deltaTime);
-    });
+  protected fixedUpdate(deltaTime: number) {
+    Body.rotate(this.wheel, 0.5 * deltaTime);
   }
 
   private createTicket() {
@@ -86,8 +43,8 @@ export class Simulation {
     const degree = .3 * radius;
     const thickness = .1 * radius;
     const tickLength = .25 * radius;
-    const tickSpacing = Math.round(.1 * degree);
-    const tickRadiusFactor = 1 - 0.03; // unit-less
+    const tickAmnt= Math.round(0.4 * Math.sqrt(radius));
+    const tickRadiusFactor = 1 - 0.02; // unit-less
     const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
@@ -104,6 +61,7 @@ export class Simulation {
     let parts = [];
     // TODO: might be viable to make each part static (wrt whole)
 
+    const tickSpacing = Math.round(degree / tickAmnt);
     for (let i = 0; i < degree; i++) {
       const theta = (i / degree) * 2 * Math.PI;
       const x = radius * Math.cos(theta);
@@ -119,7 +77,7 @@ export class Simulation {
       Body.rotate(ringPart, theta + Math.PI / 2);
       parts.push(ringPart);
 
-      if (i % tickSpacing === 0) {
+      if (i % tickSpacing === 0 && degree - i > 0.5 * tickSpacing) {
         const tickX = x * tickRadiusFactor;
         const tickY = y * tickRadiusFactor;
         const tick = Bodies.rectangle(tickX, tickY, thickness, tickLength, {
@@ -140,26 +98,5 @@ export class Simulation {
 
     Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
     return wheel;
-  }
-
-  public reLayout(width, height) {
-    const oldWidth = this.width;
-    const oldHeight = this.height;
-
-    const render = this.render;
-    render.bounds.max.x = width;
-    render.bounds.max.y = height;
-    render.options.width = width;
-    render.options.height = height;
-    render.canvas.width = width;
-    render.canvas.height = height;
-    Render.setPixelRatio(render, window.devicePixelRatio); // added this
-
-    for (const body of Composite.allBodies(render.engine.world)) {
-      const pos = body.position;
-      const x = pos.x + (width - oldWidth) / 2;
-      const y = pos.y + (height - oldHeight) / 2;
-      Body.setPosition(body, {x, y});
-    }
   }
 }
