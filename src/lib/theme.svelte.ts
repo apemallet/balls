@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import chroma from "chroma-js";
+import * as chroma from 'chroma.ts'
 
 // Constants
 const DEFAULT_DOMINANT = "#e7bad0";
@@ -25,6 +25,8 @@ export interface Themer {
 	set colorHarmony(value: ColorHarmony);
 	get dominant(): string;
 	set dominant(value: string);
+	get mainBackground(): string;
+	get mainForeground(): string;
 	get alt1(): string;
 	get alt2(): string;
 	get alt3(): string;
@@ -42,8 +44,9 @@ export function createThemer(): Themer {
 		// Color pallete
 		let colorHarmony = $state(ColorHarmony.Analogous);
 		let dominant = $state(DEFAULT_DOMINANT);
+		let mainBG = $state(MAIN_DARK);
+		let mainFG = $state(MAIN_LIGHT);
 		let [alt1,alt2,alt3,alt4,alt5] = $derived(computeAnalogous(dominant));
-
 
 		// Client-side initialization
 		if (browser) {
@@ -59,7 +62,9 @@ export function createThemer(): Themer {
 						localStorage.setItem("dominantColor", dominant);
 						localStorage.setItem("colorHarmony", ColorHarmony[colorHarmony]);
 				}
-				updateTheme(dominant);
+				const mainColors = updateTheme(dominant);
+			 	mainBG = mainColors.background;
+				mainFG = mainColors.foreground;
 		});
 
     themerInstance = {
@@ -67,6 +72,8 @@ export function createThemer(): Themer {
 				set colorHarmony(value: ColorHarmony) { colorHarmony = value },
 				get dominant() { return dominant; },
 				set dominant(value: string) { dominant = value; },
+				get mainBackground() { return mainBG; },
+				get mainForeground() { return mainFG; },
 				get alt1() { return alt1; },
 				get alt2() { return alt2; },
 				get alt3() { return alt3; },
@@ -84,14 +91,15 @@ export function createThemer(): Themer {
     return themerInstance;
 }
 
-// Theme update functions and helpers
-function updateTheme(value: string) {
+// Update theme CSS and return background, foreground 
+function updateTheme(value: string): { background: string, foreground: string } {
   updateCSSVariable("--color-accentbg", value);
   const backgroundColor = getContrastingColor(value);
   updateCSSVariable("--color-primarybg", backgroundColor);
   updateCSSVariable("--color-accentfg", backgroundColor);
   const foregroundColor = getContrastingColor(backgroundColor);
   updateCSSVariable("--color-primaryfg", foregroundColor);
+	return { background: backgroundColor, foreground: foregroundColor };
 }
 
 function updateCSSVariable(name: string, value: string) {
@@ -110,8 +118,8 @@ function getContrastingColor(accentColor: string): string {
 }
 
 function calculateContrast(hexVal1: string, hexVal2: string): number {
-	const color1 = chroma(hexVal1).rgb();
-	const color2 = chroma(hexVal2).rgb();
+	const color1 = chroma.color(hexVal1).rgb();
+	const color2 = chroma.color(hexVal2).rgb();
   const l1 = 0.2126 * color1[0] + 0.7152 * color1[1] + 0.0722 * color1[2];
   const l2 = 0.2126 * color2[0] + 0.7152 * color2[1] + 0.0722 * color2[2];
   return Math.abs(l1 - l2) / 255;
@@ -120,17 +128,18 @@ function calculateContrast(hexVal1: string, hexVal2: string): number {
 
 // Color harmony functions
 function computeAnalogous(dominantHex: string) {
-	const dHSL = chroma(dominantHex).hsl();
+	const dHSL = chroma.color(dominantHex).hsl();
 
 	const steps = [-30, -15, 0, 15, 30]
   return steps.map(step => {
     const hue = (dHSL[0] + step + 360) % 360;
-		return chroma(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
+		return chroma.color(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
   });
 }
 
 function computeMonochromatic(dominantHex: string) {
-	// TODO 
+	// TODO monochromatic likely keeps a single hue based on the dominant
+	// and then computes a few shades (tins) or other?
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
@@ -160,6 +169,7 @@ function computeCompound(dominantHex: string) {
 }
 
 function computeShades(dominantHex: string) {
+	// TODO: 
 	const dominantHSL = hexToHsl(dominantHex);
 
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
