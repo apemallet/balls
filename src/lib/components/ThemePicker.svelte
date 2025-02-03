@@ -28,6 +28,6 @@
 		bind:this={colorPickerElement}
 		class="bg-transparent cursor-pointer"
 		type="color"
-		bind:value={colorThemer.color}
+		bind:value={colorThemer.dominant}
 	/>
 </div>

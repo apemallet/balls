@@ -9,6 +9,34 @@
 	--color-accentfg: #18181b;
 	/* tailwind wine 950 */
 	--color-accentbg: #e7bad0;
+
+	/* 
+		Each color will either have a bg or fg of offblack or offwhite and then
+		the associated accenting color will be the other. Most of the pallete
+		color will be in the alt background colors. 
+	*/
+
+	/* masonic offblack and offwhite */
+	--color-mainbg: #181d21;
+	--color-mainfg: #e7e7df;
+
+	/* offblack and tailwind wine 950 */
+	--color-dominantfg: #181d21;
+	--color-dominantbg: #e7bad0;
+
+	/* alt colors, using default dominant and harmony of analogous */
+	--color-alt1bg: #d523de;
+	--color-alt2bg: #de2a23;
+	--color-alt3bg: #de237e;
+	--color-alt4bg: #9823de;
+	--color-alt5bg: #de4a23;
+
+	/* foreground colors are for text on the alt backgrounds */
+	--color-alt1fg: #e7e7df;
+	--color-alt2fg: #e7e7df;
+	--color-alt3fg: #e7e7df;
+	--color-alt4fg: #e7e7df;
+	--color-alt5fg: #e7e7df;
 }
 
 html {
