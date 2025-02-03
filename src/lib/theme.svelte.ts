@@ -1,10 +1,6 @@
 import { browser } from "$app/environment";
 import chroma from "chroma-js";
 
-console.log(chroma('#D4F880').darken().hex());
-console.log(chroma.hsl(32, 1, 0.5).hex()); // S=100%, L=50%
-console.log(chroma(32, 1, 0.5, 'hsl').hex())
-
 // Constants
 const DEFAULT_DOMINANT = "#e7bad0";
 const MAIN_DARK = "#18181b";
@@ -64,11 +60,6 @@ export function createThemer(): Themer {
 				}
 				updateTheme(dominant);
 		});
-
-		$effect(() => {
-			console.log(`Dom color changed: ${dominant}`)
-			console.log(`alt1: ${computeAnalogous(dominant)[0]}`)
-		})
 
     themerInstance = {
 				get colorHarmony(): ColorHarmony { return colorHarmony },
