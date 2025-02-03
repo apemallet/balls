@@ -212,29 +212,110 @@ function computeMonochromatic(dominantHex: string) {
   );
 }
 
+// Varies the hue from dominant by 120 degrees to form a triad. Each triad
+// point has a a pair of colors with different lightness value
 function computeTriad(dominantHex: string) {
-  // TODO: Research needed
-  return computeAnalogous(dominantHex);
+  const dHSL = chroma.color(dominantHex).hsl();
+  const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
+  const baseLightness = isDark ? 0.5 : 0.3;
+
+  // 3 hue setup
+  const hues = [dHSL[0], (dHSL[0] + 120) % 360, (dHSL[0] + 240) % 360];
+
+  // Lightness variations for each hue
+  return [-0.1, 0]
+    .map((lightnessOffset) =>
+      chroma.hsl(hues[0], 1, baseLightness + lightnessOffset).hex(),
+    )
+    .concat(
+      [-0.1, 0.1].map((lightnessOffset) =>
+        chroma.hsl(hues[1], 1, baseLightness + lightnessOffset).hex(),
+      ),
+      chroma.hsl(hues[2], 1, baseLightness).hex(),
+    );
 }
 
 function computeComplimentary(dominantHex: string) {
-  // TODO: Research needed
-  return computeAnalogous(dominantHex);
+  const dHSL = chroma.color(dominantHex).hsl();
+  const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
+  const baseLightness = isDark ? 0.5 : 0.3;
+  const compHue = (dHSL[0] + 180) % 360;
+
+  // Combine dominant and complementary variations
+  return [-0.2, -0.1, 0, 0.1, 0.2]
+    .map((step) => {
+      const lightness = Math.max(0, Math.min(1, baseLightness + step));
+      return chroma.hsl(dHSL[0], 1, lightness).hex();
+    })
+    .concat(
+      [-0.1, 0.1].map((step) =>
+        chroma.hsl(compHue, 1, baseLightness + step).hex(),
+      ),
+    )
+    .slice(0, 5); // Ensure 5 colors
 }
 
 function computeSplitComplimentary(dominantHex: string) {
-  // TODO: Research needed
-  return computeAnalogous(dominantHex);
+  const dHSL = chroma.color(dominantHex).hsl();
+  const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
+  const baseLightness = isDark ? 0.5 : 0.3;
+
+  // Split complementary hues (±150° from complement)
+  const hues = [dHSL[0], (dHSL[0] + 150) % 360, (dHSL[0] + 210) % 360];
+
+  // Generate colors with balanced variations
+  return [
+    chroma.hsl(hues[0], 1, baseLightness).hex(),
+    chroma.hsl(hues[0], 1, baseLightness + 0.15).hex(),
+    chroma.hsl(hues[1], 1, baseLightness - 0.1).hex(),
+    chroma.hsl(hues[1], 1, baseLightness + 0.1).hex(),
+    chroma.hsl(hues[2], 1, baseLightness).hex(),
+  ];
 }
 
 function computeSquare(dominantHex: string) {
-  // TODO: Research needed
-  return computeAnalogous(dominantHex);
+  const dHSL = chroma.color(dominantHex).hsl();
+  const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
+  const baseLightness = isDark ? 0.5 : 0.3;
+
+  // Square scheme: 4 hues spaced 90° apart
+  const squareHues = [0, 90, 180, 270].map(
+    (offset) => (dHSL[0] + offset) % 360,
+  );
+
+  // Generate 5 colors with balanced distribution
+  return [
+    // Dominant variations
+    chroma.hsl(squareHues[0], 1, baseLightness).hex(),
+    chroma.hsl(squareHues[0], 1, baseLightness + 0.15).hex(),
+    // Other square colors
+    chroma.hsl(squareHues[1], 1, baseLightness - 0.1).hex(),
+    chroma.hsl(squareHues[2], 1, baseLightness + 0.1).hex(),
+    chroma.hsl(squareHues[3], 1, baseLightness).hex(),
+  ];
 }
 
 function computeCompound(dominantHex: string) {
-  // TODO: Research needed
-  return computeAnalogous(dominantHex);
+  const dHSL = chroma.color(dominantHex).hsl();
+  const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
+  const baseLightness = isDark ? 0.5 : 0.3;
+
+  // Compound scheme: Original + complement + adjacent analogs
+  const compoundHues = [
+    dHSL[0], // Dominant
+    (dHSL[0] + 30) % 360, // Analog
+    (dHSL[0] + 180) % 360, // Complement
+    (dHSL[0] + 210) % 360, // Complement analog
+  ];
+
+  // Create balanced variations
+  return [
+    chroma.hsl(compoundHues[0], 1, baseLightness).hex(),
+    chroma.hsl(compoundHues[0], 1, baseLightness + 0.1).hex(),
+    chroma.hsl(compoundHues[1], 1, baseLightness - 0.05).hex(),
+    chroma.hsl(compoundHues[2], 1, baseLightness + 0.15).hex(),
+    chroma.hsl(compoundHues[3], 1, baseLightness).hex(),
+  ];
 }
 
 // Returns a pallete that forms by varying the lightness of dominant

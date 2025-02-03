@@ -20,9 +20,9 @@
 	>
 		<div class="text-mainfg/60 group-hover:text-mainfg/80">
 			{#if menuOpen}
-				Theme settings
+				Collapse
 			{:else}
-				Theme settings
+				Expand
 			{/if}
 		</div>
 		<svg
