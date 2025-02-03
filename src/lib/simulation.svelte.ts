@@ -137,16 +137,14 @@ export class Simulation {
     return wheel;
   }
 
-  public reLayout() {
+  public reLayout(width, height) {
     const render = this.render;
-    const canvas = this.canvas;
-
-    render.bounds.max.x = canvas.clientWidth;
-    render.bounds.max.y = canvas.clientHeight;
-    render.options.width = canvas.clientWidth;
-    render.options.height = canvas.clientHeight;
-    render.canvas.width = canvas.clientWidth;
-    render.canvas.height = canvas.clientHeight;
+    render.bounds.max.x = width;
+    render.bounds.max.y = height;
+    render.options.width = width;
+    render.options.height = height;
+    render.canvas.width = width;
+    render.canvas.height = height;
     Render.setPixelRatio(render, window.devicePixelRatio); // added this
   }
 }

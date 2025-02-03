@@ -15,8 +15,8 @@
 
   function onResize() {
     if (!sim) return;
-    console.log('res')
-    sim.reLayout();
+    const {innerWidth, innerHeight} = window;
+    sim.reLayout(innerWidth, innerHeight);
   }
 </script>
 
