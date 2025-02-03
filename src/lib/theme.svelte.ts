@@ -54,6 +54,8 @@ export function getThemer(): Themer {
       case ColorHarmony.Monochromatic:
         return computeMonochromatic(dominant);
       case ColorHarmony.Triad:
+        console.log("computing triad");
+        console.log(computeTriad(dominant));
         return computeTriad(dominant);
       case ColorHarmony.Complimentary:
         return computeComplimentary(dominant);
@@ -223,20 +225,17 @@ function computeTriad(dominantHex: string) {
   const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
   const baseLightness = isDark ? 0.5 : 0.3;
 
-  // 3 hue setup
+  // Triad hue setup
   const hues = [dHSL[0], (dHSL[0] + 120) % 360, (dHSL[0] + 240) % 360];
 
-  // Lightness variations for each hue
-  return [-0.1, 0]
-    .map((lightnessOffset) =>
-      chroma.hsl(hues[0], 1, baseLightness + lightnessOffset).hex(),
-    )
-    .concat(
-      [-0.1, 0.1].map((lightnessOffset) =>
-        chroma.hsl(hues[1], 1, baseLightness + lightnessOffset).hex(),
-      ),
-      chroma.hsl(hues[2], 1, baseLightness).hex(),
-    );
+  // Return the 1 variaiton of dominant, and 2 variations of the triad hues
+  return hues.flatMap((hue, idx) =>
+    idx === 0
+      ? [chroma.hsl(hue, 1, baseLightness * 0.8).hex()]
+      : [1, 0.6].map((multiplier) =>
+          chroma.hsl(hue, 1, baseLightness * multiplier).hex(),
+        ),
+  );
 }
 
 function computeComplimentary(dominantHex: string) {
