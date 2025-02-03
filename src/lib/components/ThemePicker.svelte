@@ -18,6 +18,7 @@
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
+		<!-- TODO: Ensure button size remains the same even when text changes (hidden perhaps?) -->
 		<div class="text-mainfg/60 group-hover:text-mainfg/80">
 			{#if menuOpen}
 				Collapse
@@ -43,21 +44,26 @@
 
 	{#if menuOpen}
 		<!-- color harmony dropdown -->
-		<div class="relative group min-w-fit">
+		<div
+			class="relative group min-w-fit hover:scale-105 transition-all duration-300"
+		>
 			<select
 				bind:value={colorThemer.colorHarmony}
 				class="appearance-none backdrop-blur-sm p-2 rounded-lg
       border-2 border-mainfg/60 text-mainfg/60 group-hover:border-mainfg/80 group-hover:text-mainfg/80
       focus:outline-none focus:ring-1 focus:ring-mainfg/30
-      transform hover:scale-105 transition-all duration-300 ease-out cursor-pointer w-full"
+      transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
+				<!-- TODO: Chevron and text can overlap and button won't expand. needs fixing, especially for long names like Split Complementary  -->
 				{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
 					<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
 				{/each}
 			</select>
 			<!-- chevron svg -->
+			<!-- TODO: Chevron SVG is sligtly off coompared to the + svg and needs to be fixed fundamentally -->
 			<svg
-				class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-mainfg/80 pointer-events-none transition-transform duration-300"
+				class="absolute right-2 top-1/2 -translate-y-1/2 mr-1 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
+							 pointer-events-none transition-transform duration-300"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
