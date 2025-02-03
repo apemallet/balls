@@ -21,6 +21,11 @@
 	});
 
 	$effect(() => {
+		// TODO: Depend on theme.colorHarmony properly. Was being strange
+		// when I tried to add it. To reproduce issue, reset colorHarmony to
+		// analogous and reset color. On app load, changing harmony will not
+		// refresh the balls until you first change color, then for some reaosn
+		// it all works as expected (even if only changing harmony and not dominant).
 		if (getThemer().dominant) {
 			if (!balls) return;
 			if (!crank) return;

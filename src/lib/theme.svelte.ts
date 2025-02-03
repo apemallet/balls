@@ -10,7 +10,7 @@ export enum ColorHarmony {
   Analogous,
   Monochromatic,
   Triad,
-  Complimentary,
+  Complementary,
   SplitComplimentary,
   Square,
   Compound,
@@ -54,11 +54,9 @@ export function getThemer(): Themer {
       case ColorHarmony.Monochromatic:
         return computeMonochromatic(dominant);
       case ColorHarmony.Triad:
-        console.log("computing triad");
-        console.log(computeTriad(dominant));
         return computeTriad(dominant);
-      case ColorHarmony.Complimentary:
-        return computeComplimentary(dominant);
+      case ColorHarmony.Complementary:
+        return computeComplementary(dominant);
       case ColorHarmony.SplitComplimentary:
         return computeSplitComplimentary(dominant);
       case ColorHarmony.Square:
@@ -238,24 +236,30 @@ function computeTriad(dominantHex: string) {
   );
 }
 
-function computeComplimentary(dominantHex: string) {
+function computeComplementary(dominantHex: string) {
   const dHSL = chroma.color(dominantHex).hsl();
   const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
   const baseLightness = isDark ? 0.5 : 0.3;
-  const compHue = (dHSL[0] + 180) % 360;
+  const compHue = (dHSL[0] + 180) % 360; // True complementary hue
 
-  // Combine dominant and complementary variations
-  return [-0.2, -0.1, 0, 0.1, 0.2]
-    .map((step) => {
-      const lightness = Math.max(0, Math.min(1, baseLightness + step));
-      return chroma.hsl(dHSL[0], 1, lightness).hex();
-    })
-    .concat(
-      [-0.1, 0.1].map((step) =>
-        chroma.hsl(compHue, 1, baseLightness + step).hex(),
-      ),
-    )
-    .slice(0, 5); // Ensure 5 colors
+  // Dominant variations (2 alternates, excluding base)
+  const dominantColors = [-0.1, 0.1].map((step) => {
+    const lightness = clamp(baseLightness + step);
+    return chroma.hsl(dHSL[0], 1, lightness).hex();
+  });
+
+  // Complementary variations (3 steps: darker, base, lighter)
+  const compColors = [-0.15, 0, 0.15].map((step) => {
+    const lightness = clamp(baseLightness + step);
+    return chroma.hsl(compHue, 1, lightness).hex();
+  });
+
+  return [...dominantColors, ...compColors];
+}
+
+// Clamp lightness between 0-1
+function clamp(value: number) {
+  return Math.max(0, Math.min(1, value));
 }
 
 function computeSplitComplimentary(dominantHex: string) {
