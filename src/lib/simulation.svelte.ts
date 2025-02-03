@@ -1,3 +1,4 @@
+import type Render from "matter-js";
 import Matter from "$lib/svelteMatter.svelte";
 import {createThemer} from "$lib/theme.svelte";
 
@@ -6,18 +7,26 @@ let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived
 
 export class Simulation {
   private readonly theme = createThemer();
-  private readonly width: number;
-  private readonly height: number;
-  private readonly center: [number, number];
+  private readonly render: Render;
+  private readonly canvas: HTMLCanvasElement;
+
+  private get width(): number {
+    return this.canvas.clientWidth;
+  }
+
+  private get height(): number {
+    return this.canvas.clientHeight;
+  }
+
+  private get center(): [number, number] {
+    return [ this.width / 2, this.height / 2 ];
+  };
 
   public constructor(canvas: HTMLCanvasElement) {
     console.log('Initializing sim.')
     if (!Matter()) throw new Error("Matter.js not loaded.");
 
-    this.width = canvas.getBoundingClientRect().width;
-    this.height = canvas.getBoundingClientRect().height;
-    this.center = [this.width / 2, this.height / 2];
-
+    this.canvas = canvas;
     const tickets = Array(30)
       .fill(0)
       .map(() => this.createTicket());
@@ -27,7 +36,6 @@ export class Simulation {
     });
 
     const engine = Engine.create();
-    console.log(tickets)
     Composite.add(engine.world, [wheel, ...tickets]);
 
     const render = Render.create({
@@ -36,16 +44,12 @@ export class Simulation {
       options: {
         width: this.width,
         height: this.height,
+        devicePixelRatio: window.devicePixelRatio,
         wireframes: false,
         background: "transparent",
       },
     });
-
-    setTimeout(() => {
-      console.log(canvas);
-      render.canvas = canvas;
-      console.log(render);
-    }, 3000);
+    this.render = render;
 
     Render.run(render);
     const runner = Runner.create();
@@ -131,5 +135,18 @@ export class Simulation {
 
     Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
     return wheel;
+  }
+
+  public reLayout() {
+    const render = this.render;
+    const canvas = this.canvas;
+
+    render.bounds.max.x = canvas.clientWidth;
+    render.bounds.max.y = canvas.clientHeight;
+    render.options.width = canvas.clientWidth;
+    render.options.height = canvas.clientHeight;
+    render.canvas.width = canvas.clientWidth;
+    render.canvas.height = canvas.clientHeight;
+    Render.setPixelRatio(render, window.devicePixelRatio); // added this
   }
 }
