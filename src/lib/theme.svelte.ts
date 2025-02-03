@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import chroma from "chroma-js";
+import * as chroma from 'chroma.ts'
 
 // Constants
 const DEFAULT_DOMINANT = "#e7bad0";
@@ -108,8 +108,8 @@ function getContrastingColor(accentColor: string): string {
 }
 
 function calculateContrast(hexVal1: string, hexVal2: string): number {
-	const color1 = chroma(hexVal1).rgb();
-	const color2 = chroma(hexVal2).rgb();
+	const color1 = chroma.color(hexVal1).rgb();
+	const color2 = chroma.color(hexVal2).rgb();
   const l1 = 0.2126 * color1[0] + 0.7152 * color1[1] + 0.0722 * color1[2];
   const l2 = 0.2126 * color2[0] + 0.7152 * color2[1] + 0.0722 * color2[2];
   return Math.abs(l1 - l2) / 255;
@@ -118,12 +118,12 @@ function calculateContrast(hexVal1: string, hexVal2: string): number {
 
 // Color harmony functions
 function computeAnalogous(dominantHex: string) {
-	const dHSL = chroma(dominantHex).hsl();
+	const dHSL = chroma.color(dominantHex).hsl();
 
 	const steps = [-30, -15, 0, 15, 30]
   return steps.map(step => {
     const hue = (dHSL[0] + step + 360) % 360;
-		return chroma(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
+		return chroma.color(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
   });
 }
 
