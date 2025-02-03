@@ -126,6 +126,8 @@ function calculateContrast(hexVal1: string, hexVal2: string): number {
 
 // Color harmony functions
 function computeAnalogous(dominantHex: string) {
+	// TODO: Change saturation and lightness depending on dark and light mode
+	// This can be done by performing a compute contrast check on dominant and acting accordingly
 	const dHSL = chroma.color(dominantHex).hsl();
 
 	const steps = [-30, -15, 0, 15, 30]
@@ -136,39 +138,37 @@ function computeAnalogous(dominantHex: string) {
 }
 
 function computeMonochromatic(dominantHex: string) {
-	// TODO monochromatic likely keeps a single hue based on the dominant
+	// TODO: monochromatic likely keeps a single hue based on the dominant
 	// and then computes a few shades (tins) or other?
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeTriad(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeComplimentary(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed 
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeSplitComplimentary(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeSquare(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeCompound(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeShades(dominantHex: string) {
-	// TODO: 
-	const dominantHSL = hexToHsl(dominantHex);
-
+	// TODO: Need to figure out the difference between shades and monochromatic
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
