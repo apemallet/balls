@@ -6,7 +6,7 @@ const DEFAULT_DOMINANT = "#e7bad0";
 const MAIN_DARK = "#18181b";
 const MAIN_LIGHT = "#e7e7df";
 
-enum ColorHarmony {
+export enum ColorHarmony {
 	Analogous,
 	Monochromatic,
 	Triad,
@@ -44,7 +44,21 @@ export function getThemer(): Themer {
 		let dominant = $state(DEFAULT_DOMINANT);
 		let mainBG = $state(MAIN_DARK);
 		let mainFG = $state(MAIN_LIGHT);
-		let [alt1,alt2,alt3,alt4,alt5] = $derived(computeAnalogous(dominant));
+		// TODO: Since alts are now derived by colorHarmony, simon needs to add logic
+		// for colorHarmony changing to update ballsSim colors in his code
+		let [alt1,alt2,alt3,alt4,alt5] = $derived.by(() => {
+			switch (colorHarmony) {
+				case ColorHarmony.Analogous: return computeAnalogous(dominant);
+				case ColorHarmony.Monochromatic: return computeMonochromatic(dominant);
+				case ColorHarmony.Triad: return computeTriad(dominant);
+				case ColorHarmony.Complimentary: return computeComplimentary(dominant);
+				case ColorHarmony.SplitComplimentary: return computeSplitComplimentary(dominant);
+				case ColorHarmony.Square: return computeSquare(dominant);
+				case ColorHarmony.Compound: return computeCompound(dominant);
+				case ColorHarmony.Shades: return computeShades(dominant);
+				default: return computeAnalogous(dominant);
+			}
+		});
 
 		// Client-side initialization
 		if (browser) {
@@ -63,6 +77,25 @@ export function getThemer(): Themer {
 				const mainColors = updateTheme(dominant);
 			 	mainBG = mainColors.background;
 				mainFG = mainColors.foreground;
+		});
+
+		$effect(() => {
+			updateCSSVariable("--color-alt1bg", alt1);
+			updateCSSVariable("--color-alt2bg", alt2);
+			updateCSSVariable("--color-alt3bg", alt3);
+			updateCSSVariable("--color-alt4bg", alt4);
+			updateCSSVariable("--color-alt5bg", alt5);
+			updateCSSVariable("--color-alt1fg", getContrastingColor(alt1));
+			updateCSSVariable("--color-alt2fg", getContrastingColor(alt2));
+			updateCSSVariable("--color-alt3fg", getContrastingColor(alt3));
+			updateCSSVariable("--color-alt4fg", getContrastingColor(alt4));
+			updateCSSVariable("--color-alt5fg", getContrastingColor(alt5));
+
+			updateCSSVariable("--color-dominantbg", dominant);
+			updateCSSVariable("--color-dominantfg", getContrastingColor(dominant));
+
+			updateCSSVariable("--color-mainbg", mainBG);
+			updateCSSVariable("--color-mainfg", mainFG);
 		});
 
     themerInstance = {
@@ -141,37 +174,48 @@ function computeAnalogous(dominantHex: string) {
 }
 
 function computeMonochromatic(dominantHex: string) {
-	// TODO: monochromatic likely keeps a single hue based on the dominant
-	// and then computes a few shades (tins) or other?
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
-}
+    const dHSL = chroma.color(dominantHex).hsl();
+    const isDark = getContrastingColor(dominantHex) === MAIN_DARK;
 
+    // Determine base lightness based on whether the dominant color is dark
+    const baseLightness = isDark ? 0.5 : 0.3;
+    // Lightness steps around the base lightness
+    const lightnessSteps = [-0.2, -0.1, 0, 0.1, 0.2].map(step => {
+        const lightness = baseLightness + step;
+        return Math.max(0, Math.min(1, lightness)); // Clamp between 0 and 1
+    });
+
+    // Generate colors with the dominant hue, full saturation, and varying lightness
+    return lightnessSteps.map(lightness => 
+        chroma.hsl(dHSL[0], 1, lightness).hex()
+    );
+}
 function computeTriad(dominantHex: string) {
 	// TODO: Research needed
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }
 
 function computeComplimentary(dominantHex: string) {
 	// TODO: Research needed 
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }
 
 function computeSplitComplimentary(dominantHex: string) {
 	// TODO: Research needed
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }
 
 function computeSquare(dominantHex: string) {
 	// TODO: Research needed
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }
 
 function computeCompound(dominantHex: string) {
 	// TODO: Research needed
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }
 
 function computeShades(dominantHex: string) {
 	// TODO: Need to figure out the difference between shades and monochromatic
-	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
+	return computeAnalogous(dominantHex);
 }

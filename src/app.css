@@ -1,15 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-	/* masonic offwhite */
-	--color-primaryfg: #e7e7df;
-	/* masonic offblack */
-	--color-primarybg: #181d21;
-	/* same off black */
-	--color-accentfg: #18181b;
-	/* tailwind wine 950 */
-	--color-accentbg: #e7bad0;
-
 	/* 
 		Each color will either have a bg or fg of offblack or offwhite and then
 		the associated accenting color will be the other. Most of the pallete
@@ -40,6 +31,6 @@
 }
 
 html {
-	@apply bg-primarybg transition-colors duration-500 ease-in-out;
-	@apply selection:bg-accentbg/20 selection:text-primaryfg;
+	@apply bg-mainbg transition-colors duration-500 ease-in-out;
+	@apply selection:bg-dominantbg/20 selection:text-mainfg;
 }
