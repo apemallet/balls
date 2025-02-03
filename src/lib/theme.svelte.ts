@@ -45,7 +45,7 @@ export function createThemer(): Themer {
 
 		// Client-side initialization
 		if (browser) {
-				const storedDominant = localStorage.getItem("dominantHexColor");
+				const storedDominant = localStorage.getItem("dominantColor");
 				dominant = storedDominant ?? DEFAULT_DOMINANT;
 
 				const storedColorHarmony = localStorage.getItem("colorHarmony");

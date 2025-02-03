@@ -73,7 +73,7 @@ export class Simulation {
     const size = Common.random(10, 50) * this.planck;
     const body = Bodies.circle(this.center[0], this.center[1], size, {
       render: {
-        fillStyle: this.theme.color,
+        fillStyle: this.theme.dominant,
       },
     });
 
