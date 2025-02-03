@@ -129,48 +129,51 @@ function calculateContrast(hexVal1: string, hexVal2: string): number {
 // Color harmony functions
 function computeAnalogous(dominantHex: string) {
 	const dHSL = chroma.color(dominantHex).hsl();
+	const isDark = getContrastingColor(dominantHex) == MAIN_DARK;
 
 	const steps = [-30, -15, 0, 15, 30]
   return steps.map(step => {
     const hue = (dHSL[0] + step + 360) % 360;
-		return chroma.color(hue, 1, 0.5, 'hsl').hex(); // S=100%, L=50%
+		if (isDark) {
+			return chroma.color(hue, 1, 0.5, 'hsl').hex();
+		} else {
+			return chroma.color(hue, 1, 0.3, 'hsl').hex();
+		}
   });
 }
 
 function computeMonochromatic(dominantHex: string) {
-	// TODO monochromatic likely keeps a single hue based on the dominant
+	// TODO: monochromatic likely keeps a single hue based on the dominant
 	// and then computes a few shades (tins) or other?
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeTriad(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeComplimentary(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed 
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeSplitComplimentary(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeSquare(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeCompound(dominantHex: string) {
-	// TODO 
+	// TODO: Research needed
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
 
 function computeShades(dominantHex: string) {
-	// TODO: 
-	const dominantHSL = hexToHsl(dominantHex);
-
+	// TODO: Need to figure out the difference between shades and monochromatic
 	return [dominantHex, dominantHex, dominantHex, dominantHex, dominantHex];
 }
