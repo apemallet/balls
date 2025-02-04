@@ -9,8 +9,8 @@
 	// Menu state
 	let menuOpen = true;
 
-	// Copy paste handler
-	function handleCopy(altHex: string, event: MouseEvent) {
+	// Copy paste handler. Maybe add cracked animation later
+	function handleCopy(altHex: string, _: MouseEvent) {
 		navigator.clipboard.writeText(altHex);
 	}
 </script>
@@ -24,7 +24,6 @@
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
-		<!-- TODO: Ensure button size remains the same even when text changes (hidden perhaps?) -->
 		<div class="text-mainfg/60 group-hover:text-mainfg/80">
 			{#if menuOpen}
 				Collapse
@@ -34,7 +33,7 @@
 		</div>
 		<!-- plus symbol svg -->
 		<svg
-			class="w-4 h-4 text-mainfg/60 group-hover:text-mainfg/80 transition-transform self-center"
+			class="w-4 h-4 text-mainfg/60 group-hover:text-mainfg/80 transition-transform self-center rotate-45"
 			class:rotate-45={menuOpen}
 			viewBox="0 0 24 24"
 			stroke="currentColor"
@@ -84,9 +83,9 @@
 			{#if colorThemer.isDefault()}
 				<button
 					in:fade={{ duration: 200 }}
-					class="flex justify-between gap-2 p-2 rounded-lg
+					class="flex justify-between gap-2 p-2 rounded-lg hover:bg-mainfg/10
 							border-2 border-primaryfg/60 hover:border-primaryfg/80
-							text-mainfg/60 hover:text-mainfg/80
+							text-mainfg/60 hover:text-mainfg/80 backdrop-blur-sm
 							transform hover:scale-105 transition-all duration-300 ease-out"
 					on:click={() => colorPickerElement.click()}
 				>
@@ -134,7 +133,7 @@
 
 			<input
 				bind:this={colorPickerElement}
-				class="h-8 min-w-8 bg-transparent cursor-pointer appearance-none self-center grow md:shrink"
+				class="h-8 min-w-8 bg-transparent backdrop-blur-sm border-transparent cursor-pointer appearance-none self-center grow md:shrink"
 				type="color"
 				bind:value={colorThemer.dominant}
 			/>
