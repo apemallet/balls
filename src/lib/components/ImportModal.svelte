@@ -5,11 +5,13 @@
 
 	function clipboardToNamesArray() {
 		navigator.clipboard.readText().then((text) => {
-			console.log(text);
-			const names: string[] = text.split(separator);
-			console.log(names);
+			const names: string[] = text.split(safeSeparator);
 			if (names.length > 0) {
-				namesList = names;
+				if (!overWrite) {
+					namesList = namesList!.concat(names);
+				} else {
+					namesList = names;
+				}
 				localStorage.setItem("lotteryNames", JSON.stringify(namesList));
 			}
 		});
@@ -21,6 +23,9 @@
 	}
 
 	let separator = $state("\n");
+	const safeSeparator = $derived(separator === "" ? "\n" : separator);
+
+	let overWrite = $state(false);
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -29,29 +34,48 @@
 	<svelte:fragment slot="content">
 		<!-- import from clipboard -->
 		<div
-			class="bg-mainfg/10 p-2 rounded-md"
+			class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4"
 		>
-			<p class="self-center pb-2 text-mainfg">Import list from clipboard</p>
 			<div class="flex flex-row justify-between gap-4 ">
+				<p class="self-center">Clipboard import</p>
+				<button class="crackedButton flex flex-row gap-2 justify-between flex-0"
+					onclick={clipboardToNamesArray}>
+					<div class="self-center">
+					Import 
+					</div>
+					<svg
+						class="h-6 w-6 self-center"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 512 512"
+						fill="currentColor"
+						><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path
+							d="M160 0c-23.7 0-44.4 12.9-55.4 32L48 32C21.5 32 0 53.5 0 80L0 400c0 26.5 21.5 48 48 48l144 0 0-272c0-44.2 35.8-80 80-80l48 0 0-16c0-26.5-21.5-48-48-48l-56.6 0C204.4 12.9 183.7 0 160 0zM272 128c-26.5 0-48 21.5-48 48l0 272 0 16c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-220.1c0-12.7-5.1-24.9-14.1-33.9l-67.9-67.9c-9-9-21.2-14.1-33.9-14.1L320 128l-48 0zM160 40a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"
+						/></svg
+					>
+				</button>
+			</div>
 			<input
 				type="text"
-				class="appearance-none w-1/2 p-2 rounded-md border border-mainfg/20 flex-1"
+				class="appearance-none p-2 rounded-md border border-mainfg/20 flex-1"
 				placeholder="Separator (default newline)"
 				bind:value={separator} />
-			<button class="crackedButton flex flex-row gap-2 justify-between flex-0"
-				onclick={clipboardToNamesArray}>
-				Import 
-				<svg
-					class="h-6 w-6"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 512 512"
-					fill="currentColor"
-					><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path
-						d="M160 0c-23.7 0-44.4 12.9-55.4 32L48 32C21.5 32 0 53.5 0 80L0 400c0 26.5 21.5 48 48 48l144 0 0-272c0-44.2 35.8-80 80-80l48 0 0-16c0-26.5-21.5-48-48-48l-56.6 0C204.4 12.9 183.7 0 160 0zM272 128c-26.5 0-48 21.5-48 48l0 272 0 16c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-220.1c0-12.7-5.1-24.9-14.1-33.9l-67.9-67.9c-9-9-21.2-14.1-33.9-14.1L320 128l-48 0zM160 40a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"
-					/></svg
+			<button
+				class="crackedButton
+				{overWrite
+					? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
+					: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+				"
+				onclick={() => {
+					overWrite = !overWrite;
+				}}
 				>
-			</button>
-				</div>
+				Overwrite list: 
+				{#if overWrite}
+					Yes
+				{:else}
+					No
+				{/if}
+				</button>
 		</div>
 
 		<!-- display list of names -->
