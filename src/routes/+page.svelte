@@ -13,22 +13,22 @@
 
 	const wheelRadius = 300; // in planck units
 
-	$effect(() => {
-		if (!Matter()) return;
-		if (!canvasBot) return;
-		if (!canvasTop) return;
-		if (!balls) balls = new BallsSim(canvasBot, wheelRadius);
-		if (!crank) crank = new CrankSim(canvasTop, wheelRadius);
-	});
+  $effect(() => {
+    if (!Matter()) return;
+    if (!canvasBot) return;
+    if (!canvasTop) return;
+    if (!balls) balls = new BallsSim(canvasBot, wheelRadius);
+    if (!crank) crank = new CrankSim(canvasTop, wheelRadius + 10);
+  });
 
-	$effect(() => {
-		if (typeof getThemer().colorHarmony == null) return;
-		if (typeof getThemer().dominant == null) return;
-		if (!balls) return;
-		if (!crank) return;
-		balls!.reTheme();
-		crank!.reTheme();
-	});
+  $effect(() => {
+    if (typeof(getThemer().colorHarmony) == null) return;
+    if (typeof(getThemer().dominant) == null) return;
+    if (!balls) return;
+    if (!crank) return;
+    balls!.reTheme();
+    crank!.reTheme();
+  });
 
 	function onResize() {
 		const { innerWidth, innerHeight } = window;

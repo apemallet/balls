@@ -2,8 +2,7 @@ import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
 import {type Body} from "matter-js";
 
-let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} =
-  $derived(Matter() || Object);
+let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 export class BallsSim extends MatterSim {
   private readonly wheel: Body;
@@ -11,10 +10,10 @@ export class BallsSim extends MatterSim {
 
   // wheelRadius is in planck units
   public constructor(canvas: HTMLCanvasElement, wheelRadius: number) {
-    super(canvas);
     console.log("Initializing BALLS sim.");
+    super(canvas);
 
-    this.tickets = Array(30)
+    this.tickets = Array(15)
       .fill(0)
       .map(() => this.createTicket());
 
@@ -55,7 +54,7 @@ export class BallsSim extends MatterSim {
   }
 
   private createTicket() {
-    const size = Common.random(10, 50) * this.planck;
+    const size = Common.random(25, 65) * this.planck;
     return Bodies.circle(...this.center, size, {
       restitution: 0.9,
       frictionAir: 0.02,
