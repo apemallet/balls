@@ -29,6 +29,7 @@ export interface Themer {
   get alt3(): string;
   get alt4(): string;
   get alt5(): string;
+  get alts(): string[];
   get palette(): string[];
   reset(): void;
   isDefault(): boolean;
@@ -140,6 +141,9 @@ export function getThemer(): Themer {
     },
     get alt5() {
       return alt5;
+    },
+    get alts() {
+      return [alt1, alt2, alt3, alt4, alt5];
     },
     get palette() {
       return [dominant, alt1, alt2, alt3, alt4, alt5];
