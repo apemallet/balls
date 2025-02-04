@@ -5,7 +5,7 @@
 	function clipboardToNamesArray() {
 		navigator.clipboard.readText().then((text) => {
 			console.log(text);
-			const names: string[] = text.split("\n");
+			const names: string[] = text.split(separator);
 			console.log(names);
 			if (names.length > 0) {
 				namesList = names;
@@ -14,6 +14,7 @@
 	}
 
 	let namesList: string[] | undefined = $state();
+	let separator = $state("\n");
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -22,10 +23,18 @@
 	<svelte:fragment slot="content">
 		<!-- import from clipboard -->
 		<div
-			class="flex flex-row justify-between gap-4 bg-mainfg/10 p-2 rounded-md"
+			class="bg-mainfg/10 p-2 rounded-md"
 		>
-			<p class="self-center">Import list from clipboard</p>
-			<button class="crackedButton">
+			<p class="self-center pb-2">Import list from clipboard</p>
+			<div class="flex flex-row justify-between gap-4 ">
+			<input
+				type="text"
+				class="w-1/2 p-2 rounded-md border border-mainfg/20 flex-1"
+				placeholder="Separator (default newline)"
+				bind:value={separator} />
+			<button class="crackedButton flex flex-row gap-2 justify-between flex-0"
+				onclick={clipboardToNamesArray}>
+				Import 
 				<svg
 					class="h-6 w-6"
 					xmlns="http://www.w3.org/2000/svg"
@@ -36,6 +45,7 @@
 					/></svg
 				>
 			</button>
+				</div>
 		</div>
 
 		<!-- display list of names -->
