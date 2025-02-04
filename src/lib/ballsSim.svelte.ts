@@ -23,20 +23,26 @@ export class BallsSim extends MatterSim {
   }
 
   private readonly ticketCollisionFilter = {
-    category: 0b001,
-    mask: 0b111,
+    category: 0b0001,
+    mask: 0b0111,
     group: 0
   }
 
   private readonly wallCollisionFilter = {
-    category: 0b010,
-    mask: 0b011,
+    category: 0b0010,
+    mask: 0b0011,
     group: 0
   }
 
   private readonly ghostTicketCollisionFilter = {
-    category: 0b100,
-    mask: 0b101,
+    category: 0b0100,
+    mask: 0b1101,
+    group: 0
+  }
+
+  private readonly ghostWallCollisionFilter = {
+    category: 0b01000,
+    mask: 0b1100,
     group: 0
   }
 
@@ -201,7 +207,7 @@ export class BallsSim extends MatterSim {
       render: {
         visible: false
       },
-      collisionFilter: this.ghostTicketCollisionFilter
+      collisionFilter: this.ghostWallCollisionFilter
     })
   }
 
