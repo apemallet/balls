@@ -59,7 +59,7 @@ export abstract class MatterSim {
     });
   }
 
-  protected abstract fixedUpdate(deltaTime: number): void;
+  protected fixedUpdate(deltaTime: number): void {}
 
   public abstract reTheme(): void;
 

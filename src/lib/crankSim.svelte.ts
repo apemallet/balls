@@ -17,7 +17,9 @@ export class CrankSim extends MatterSim {
 
     const scale = 0.12 * rightShift * this.planck;
     const crankLength = 4 * scale;
-    const o = [];
+    const baseMass = 0.5;
+
+    const crankParts = [];
 
     const crankCenter: [number, number] = [
       this.planck * rightShift + this.center[0],
@@ -31,11 +33,16 @@ export class CrankSim extends MatterSim {
       {x: scale, y: 0},
       {x: -.6 * scale, y: crankLength},
       {x: .6 * scale, y: crankLength},
-    ]]);
+    ]], {
+      mass: baseMass
+    });
 
-    this.base = Bodies.circle(0, 0, scale);
+    this.base = Bodies.circle(0, 0, scale, {
+      mass: baseMass * 3
+    });
 
     this.handle = Bodies.circle(0, crankLength, .5 * scale, {
+      mass: baseMass * 3,
       render: {
         lineWidth: .5 * scale,
       }
@@ -54,16 +61,12 @@ export class CrankSim extends MatterSim {
       });
     Body.rotate(this.socket, Math.PI / 4);
 
-    o.push(this.shaft);
-    o.push(this.base);
-    o.push(this.handle);
-
-    for (const body of o) {
-      Body.setStatic(body, true);
-    }
+    crankParts.push(this.shaft);
+    crankParts.push(this.base);
+    crankParts.push(this.handle);
 
     this.crank = Body.create({
-      parts: o
+      parts: crankParts
     });
 
     Body.setPosition(this.crank, {
@@ -73,19 +76,18 @@ export class CrankSim extends MatterSim {
 
     ///// Constraints
 
-    const constraint = Constraint.create({
+    const jointConstraint = Constraint.create({
       bodyA: this.crank,
       pointA: {x: 0, y: -crankLength / 2},
       bodyB: this.socket,
       stiffness: 1,
       length: 0
     });
-    Composite.add(this.engine.world, [this.crank, this.socket, constraint]);
-    this.reTheme();
-  }
 
-  protected fixedUpdate(deltaTime: number): void {
-    Body.rotate(this.crank, 3 * deltaTime)
+    Body.rotate(this.crank, Math.PI / 2);
+
+    Composite.add(this.engine.world, [this.crank, this.socket, jointConstraint]);
+    this.reTheme();
   }
 
   reTheme(): void {
