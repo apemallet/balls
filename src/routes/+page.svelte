@@ -115,17 +115,17 @@
 	<div
 		class="
 			absolute
-			text-md
-			font-bold
-			text-center
 			text-mainbg
 			-translate-x-1/2
 			-translate-y-1/2
-			w-10"
+			font-bold
+			text-xs
+			sm:text-sm
+			md:text-xl
+			lg:text-2xl
+			xl:text-4xl"
 		style="left: {x}px; top: {y}px;"
-	>
-		{text}
-	</div>
+	>{text}</div>
 {/each}
 
 <div class="fixed z-20 bottom-0 right-0">
