@@ -35,7 +35,7 @@
 			<div class="flex flex-row justify-between gap-4 ">
 			<input
 				type="text"
-				class="w-1/2 p-2 rounded-md border border-mainfg/20 flex-1"
+				class="appearance-none w-1/2 p-2 rounded-md border border-mainfg/20 flex-1"
 				placeholder="Separator (default newline)"
 				bind:value={separator} />
 			<button class="crackedButton flex flex-row gap-2 justify-between flex-0"

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getThemer, ColorHarmony, type Themer } from "$lib/theme.svelte";
-	import { fade } from "svelte/transition";
+	import { fade, scale } from "svelte/transition";
 
 	// Theme stuff
 	let colorPickerElement: HTMLInputElement;
@@ -15,34 +15,11 @@
 	}
 </script>
 
-<div class="flex flex-col md:flex-row gap-4 md:items-center w-full">
-	<!-- INFO: collapse button currently disabled, replaced flex with hidden -->
-	<button
-		class="group hidden flex-row gap-2 justify-between crackedButton"
-		aria-label="Toggle theme settings"
-		on:click={() => (menuOpen = !menuOpen)}
+{#if menuOpen}
+	<div
+		class="flex flex-col md:flex-row gap-4 md:items-center w-full"
+		transition:scale={{ duration: 200 }}
 	>
-		<div class="text-mainfg/60 group-hover:text-mainfg/80">
-			{#if menuOpen}
-				Collapse
-			{:else}
-				Expand
-			{/if}
-		</div>
-		<!-- plus symbol svg -->
-		<svg
-			class="w-4 h-4 text-mainfg/60 group-hover:text-mainfg/80 transition-transform self-center rotate-45"
-			class:rotate-45={menuOpen}
-			viewBox="0 0 24 24"
-			stroke="currentColor"
-			stroke-width={2}
-			fill="none"
-		>
-			<path stroke-linecap="round" d="M1 12h22M12 1v22" />
-		</svg>
-	</button>
-
-	{#if menuOpen}
 		<!-- color harmony dropdown -->
 		<div
 			class="relative group min-w-fit hover:scale-105 transition-all duration-300"
@@ -150,5 +127,5 @@
 				</button>
 			{/each}
 		</div>
-	{/if}
-</div>
+	</div>
+{/if}
