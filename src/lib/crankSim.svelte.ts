@@ -4,6 +4,8 @@ import Matter from "$lib/svelteMatter.svelte";
 let {Constraint, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 export class CrankSim extends MatterSim {
+  public anger: number = 0; // affects crank angular velocity
+
   private readonly handle: Body;
   private readonly shaft: Body;
   private readonly base: Body;
@@ -18,7 +20,6 @@ export class CrankSim extends MatterSim {
     const scale = 0.12 * rightShift * this.planck;
     const crankLength = 4 * scale;
     const baseMass = 0.5 * this.planck;
-    const degree = 6;
 
     const crankParts = [];
 
@@ -67,7 +68,7 @@ export class CrankSim extends MatterSim {
     crankParts.push(this.handle);
 
     this.crank = Body.create({
-      parts: crankParts
+      parts: crankParts,
     });
 
     Body.setPosition(this.crank, {
@@ -95,20 +96,43 @@ export class CrankSim extends MatterSim {
     this.reTheme();
   }
 
-  protected fixedUpdate(deltaTime: number): void {
-    const angle = this.crank.angle;
-    const force = 0.003 * this.planck;
+  public smackHandle() {
+    this.handleForce(0.02 * this.planck);
+    if (this.anger > 1) return;
+    this.anger = Math.min(1, this.anger + .1);
+    if (this.anger > .9) this.bust();
+  }
 
+  public bust() {
+    // turns very quickly then stops suddenly; zeroes anger
+    this.anger = 10;
+
+    setTimeout(() => {
+      this.anger = 0;
+    }, 4000);
+  }
+
+  private handleForce(force: number): void {
+    const angle = this.crank.angle;
     Body.applyForce(this.crank, this.handle.position, {
       x: -force * Math.cos(angle),
       y: -force * Math.sin(angle)
     });
+  }
+
+  protected fixedUpdate(deltaTime: number): void {
+    console.log(Math.round(this.anger * 100) / 100)
+    this.anger = Math.max(0, this.anger * (1 - 0.3 * deltaTime) - 0.1 * deltaTime);
+    const angle = this.crank.angle;
+
+    const force = 0.15 * this.planck * deltaTime * this.anger;
+    this.handleForce(force);
 
     const degree = 5;
     const err = Math.abs((angle + Math.PI) % (2 * Math.PI / degree));
 
-    if (err < .2) {
-      const vel = this.crank.angularVelocity * .3;
+    if (err < .08) {
+      const vel = this.crank.angularVelocity * .2;
       Body.setAngularVelocity(this.crank, vel);
     }
   }
