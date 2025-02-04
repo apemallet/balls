@@ -57,7 +57,9 @@ export class BallsSim extends MatterSim {
     const size = Common.random(25, 65) * this.planck;
     return Bodies.circle(...this.center, size, {
       restitution: 0.9,
-      frictionAir: 0.02,
+      frictionAir: 0,
+      friction: 0,
+      frictionStatic: 0
     });
   }
 

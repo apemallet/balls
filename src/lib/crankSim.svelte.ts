@@ -27,11 +27,10 @@ export class CrankSim extends MatterSim {
 
     this.base = Bodies.circle(0, 0, scale);
 
-    this.handle = Bodies.circle(0, crankLength, .7 * scale, {
+    this.handle = Bodies.circle(0, crankLength, .5 * scale, {
       render: {
-        fillStyle: this.theme.dominant
-      }
-    });
+        lineWidth: .5 * scale,
+    }});
 
     this.socket = Bodies.rectangle(0, 0, .6 * scale, .6 * scale);
     Body.rotate(this.socket, Math.PI / 4);
@@ -55,11 +54,18 @@ export class CrankSim extends MatterSim {
     }
 
     Composite.add(this.engine.world, o);
+    this.reTheme();
   }
 
   protected fixedUpdate(deltaTime: number): void {
   }
 
   reTheme(): void {
+    this.socket.render.fillStyle = this.theme.mainBackground;
+    this.base.render.fillStyle = this.theme.mainForeground;
+    this.shaft.render.fillStyle = this.theme.mainForeground;
+
+    this.handle.render.fillStyle = this.theme.mainBackground;
+    this.handle.render.strokeStyle = this.theme.alt3;
   }
 }
