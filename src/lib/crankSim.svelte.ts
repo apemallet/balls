@@ -17,7 +17,8 @@ export class CrankSim extends MatterSim {
 
     const scale = 0.12 * rightShift * this.planck;
     const crankLength = 4 * scale;
-    const baseMass = 0.5;
+    const baseMass = 0.5 * this.planck;
+    const degree = 6;
 
     const crankParts = [];
 
@@ -81,13 +82,35 @@ export class CrankSim extends MatterSim {
       pointA: {x: 0, y: -crankLength / 2},
       bodyB: this.socket,
       stiffness: 1,
-      length: 0
+      length: 0,
+      render: {
+        visible: false
+      }
     });
 
-    Body.rotate(this.crank, Math.PI / 2);
+    ///// Ignition
 
     Composite.add(this.engine.world, [this.crank, this.socket, jointConstraint]);
+    Body.rotate(this.crank, Math.PI / 5);
     this.reTheme();
+  }
+
+  protected fixedUpdate(deltaTime: number): void {
+    const angle = this.crank.angle;
+    const force = 0.003;
+
+    Body.applyForce(this.crank, this.handle.position, {
+      x: -force * Math.cos(angle),
+      y: -force * Math.sin(angle)
+    });
+
+    const degree = 5;
+    const err = Math.abs((angle + Math.PI) % (2 * Math.PI / degree));
+
+    if (err < .2) {
+      const vel = this.crank.angularVelocity * .3;
+      Body.setAngularVelocity(this.crank, vel);
+    }
   }
 
   reTheme(): void {
@@ -96,6 +119,6 @@ export class CrankSim extends MatterSim {
     this.shaft.render.fillStyle = this.theme.mainForeground;
 
     this.handle.render.fillStyle = this.theme.mainBackground;
-    this.handle.render.strokeStyle = this.theme.alt3;
+    this.handle.render.strokeStyle = this.theme.alt1;
   }
 }
