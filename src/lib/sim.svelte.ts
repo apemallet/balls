@@ -59,7 +59,7 @@ export abstract class MatterSim {
     });
   }
 
-  protected abstract fixedUpdate(deltaTime: number): void;
+  protected fixedUpdate(deltaTime: number): void {}
 
   public abstract reTheme(): void;
 
@@ -82,5 +82,11 @@ export abstract class MatterSim {
       const y = pos.y + (height - oldHeight) / 2;
       Body.setPosition(body, {x, y});
     }
+  }
+
+  public destroy() {
+    Render.stop(this.render);
+    this.render.canvas = null;
+    Engine.clear(this.engine);
   }
 }
