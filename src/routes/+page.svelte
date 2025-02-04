@@ -42,6 +42,7 @@
 	let winHistModalOpen = $state(false);
 	let importModalOpen = $state(false);
 	let importModal: ImportModal = $state();
+	let winHistModal: WinHistModal = $state();
 
 	// initialize the simulation
 	$effect(() => {
@@ -60,6 +61,7 @@
 			if (!balls) return;
 			balls.onReveal.do((i: number) => {
 				lastWinner = importModal.nameOf(i);
+				winHistModal.addWinner(lastWinner);
 				winModalOpen = true;
 			});
 		});
@@ -100,7 +102,7 @@
 </div>
 
 <div class="fixed z-30 top-0 p-4">
-	<WinHistModal bind:showModal={winHistModalOpen} />
+	<WinHistModal bind:this={winHistModal} bind:showModal={winHistModalOpen} />
 </div>
 
 <div class="fixed z-30 top-0 p-4">
