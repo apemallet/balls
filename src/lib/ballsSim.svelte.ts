@@ -24,7 +24,7 @@ export class BallsSim extends MatterSim {
 
   private readonly ticketCollisionFilter = {
     category: 0b0001,
-    mask: 0b0111,
+    mask: 0b0011,
     group: 0
   }
 
@@ -36,7 +36,7 @@ export class BallsSim extends MatterSim {
 
   private readonly ghostTicketCollisionFilter = {
     category: 0b0100,
-    mask: 0b1101,
+    mask: 0b1100,
     group: 0
   }
 
