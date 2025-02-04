@@ -274,7 +274,7 @@ export class BallsSim extends MatterSim {
       setTimeout(() => {
         this.onReveal.fire(targetIdx);
       }, 3000);
-    }, 1000);
+    }, 6000);
   }
 
   protected fixedUpdate(deltaTime: number) {
