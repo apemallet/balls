@@ -18,17 +18,20 @@ export class BallsSim extends MatterSim {
 
   private readonly ticketCollisionFilter = {
     category: 0b001,
-    mask: 0b111
+    mask: 0b111,
+    group: 0
   }
 
   private readonly wallCollisionFilter = {
     category: 0b010,
-    mask: 0b011
+    mask: 0b011,
+    group: 0
   }
 
   private readonly ghostTicketCollisionFilter = {
     category: 0b100,
-    mask: 0b101
+    mask: 0b101,
+    group: 0
   }
 
   private get anger() {
@@ -45,8 +48,8 @@ export class BallsSim extends MatterSim {
       .fill(0)
       .map(() => this.createBall());
 
-    const physicalWheelRadius = wheelRadius * this.planck;
     this.wheelRadius = wheelRadius;
+    const physicalWheelRadius = wheelRadius * this.planck;
 
     this.wheel = this.buildWheel(
       this.center[0],
@@ -98,13 +101,14 @@ export class BallsSim extends MatterSim {
 
   private createBall() {
     const size = Common.random(30, 70) * this.planck;
-    return Bodies.circle(...this.center, size, {
+    const ticket = Bodies.circle(...this.center, size, {
       restitution: 0.9,
       frictionAir: 0,
       friction: 0,
       frictionStatic: 0,
       collisionFilter: this.ticketCollisionFilter
     });
+    return ticket;
   }
 
   private buildWheel(
@@ -177,15 +181,33 @@ export class BallsSim extends MatterSim {
     if (this.tickets.length >= this.carryingCapacity) return;
 
     const ball = this.createBall();
-    ball.collisionFilter =  this.ghostTicketCollisionFilter;
+    ball.collisionFilter = this.ghostTicketCollisionFilter;
+    ball.frictionAir = 0.04;
 
     Body.setPosition(ball, {
       x: this.center[0],
-      y: -10
+      y: 0
     });
 
-    // this.tickets.push(ball);
-    // Composite.add(this.engine.world, [ball]);
+    this.tickets.push(ball);
+    // this.reTheme(); // TODO: avoid reTheme by spawning in with correct color
+    Composite.add(this.engine.world, [ball]);
+
+    // try to catch the ball
+
+    const radius = this.wheelRadius * this.planck;
+
+    const poll = setInterval(() => {
+      if (ball.position.y > this.center[1] - radius * 0.8) {
+        ball.collisionFilter = this.ticketCollisionFilter;
+        ball.frictionAir = 0;
+        clearInterval(poll);
+      }
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(poll);
+    }, 5000);
   }
 
   public revealBall() {
