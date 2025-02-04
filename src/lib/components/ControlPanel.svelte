@@ -7,9 +7,7 @@
 <div class="flex gap-3 items-center">
 	<!-- pallete menu button -->
 	<button
-		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
-					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
-					  text-mainfg/60 hover:text-mainfg/80
+		class="group flex flex-row gap-2 justify-between crackedButton
 					 {palleteMenuOpen
 			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-dominantbg/70 hover:via-alt1bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
@@ -27,9 +25,7 @@
 	</button>
 	<!-- settings modal button -->
 	<button
-		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
-					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
-					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
+		class="group flex flex-row gap-2 justify-between crackedButton"
 		on:click={() => (settingsModalOpen = !settingsModalOpen)}
 	>
 		<svg
@@ -44,9 +40,10 @@
 	</button>
 	<!-- info modal button -->
 	<button
-		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
-					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
-					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
+		class="group flex flex-row gap-2 justify-between crackedButton
+			{infoModalOpen
+			? 'bg-linear-120 from-alt1bg/50 via-alt3bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-alt1bg/70 hover:via-alt3bg/70 hover:to-alt5bg/70'
+			: 'hover:bg-mainfg/10'}"
 		on:click={() => (infoModalOpen = !infoModalOpen)}
 	>
 		<svg
