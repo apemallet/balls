@@ -18,7 +18,7 @@
 	></div>
 	<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
 		<div
-			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-md w-full gradient-border"
+			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-lg w-full gradient-border"
 			transition:scale={{ duration: 150 }}
 		>
 			<!-- content slots -->

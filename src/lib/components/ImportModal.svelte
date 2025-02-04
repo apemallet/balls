@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Modal from "./Modal.svelte";
+	import { browser } from "$app/environment";
 	let { showModal = $bindable(false) } = $props();
 
 	function clipboardToNamesArray() {
@@ -9,11 +10,16 @@
 			console.log(names);
 			if (names.length > 0) {
 				namesList = names;
+				localStorage.setItem("lotteryNames", JSON.stringify(namesList));
 			}
 		});
 	}
 
 	let namesList: string[] | undefined = $state();
+	if (browser) {
+		namesList = JSON.parse(localStorage.getItem("lotteryNames") || "[]");
+	}
+
 	let separator = $state("\n");
 </script>
 
@@ -25,7 +31,7 @@
 		<div
 			class="bg-mainfg/10 p-2 rounded-md"
 		>
-			<p class="self-center pb-2">Import list from clipboard</p>
+			<p class="self-center pb-2 text-mainfg">Import list from clipboard</p>
 			<div class="flex flex-row justify-between gap-4 ">
 			<input
 				type="text"
@@ -64,11 +70,11 @@
 						>
 							<span class="text-mainfg/80">{i + 1}. {name.trim()}</span>
 							<button
-								class="text-mainfg/40 hover:text-mainfg/60 transition-colors"
+								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
 								onclick={() =>
 									(namesList = namesList!.filter((_, idx) => idx !== i))}
 							>
-								×
+								x
 							</button>
 						</div>
 					{/each}
