@@ -45,8 +45,8 @@ export class BallsSim extends MatterSim {
 
     for (const i in this.tickets) {
       const ticket = this.tickets[i];
-      const colorId = i % this.theme.domAndAlts.length;
-      ticket.render.fillStyle = this.theme.domAndAlts[colorId];
+      const colorId = i % this.theme.palette.length;
+      ticket.render.fillStyle = this.theme.palette[colorId];
     }
   }
 
