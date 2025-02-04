@@ -2,6 +2,7 @@ import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
 import {type Body} from "matter-js";
 import type {CrankSim} from "$lib/crankSim.svelte";
+import {Event} from "$lib/utils";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
@@ -9,12 +10,17 @@ const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
   public carryingCapacity = 12;
+  public onReveal: Event<number> = Event();
 
   private readonly wheelRadius: number;
   private readonly wheel: Body;
   private readonly crankSim: CrankSim;
   private tickets: Body[] = [];
   private spin: number = 0;
+
+  public get ballsPos() {
+    return this.tickets.map(ticket => ticket.position);
+  }
 
   private readonly ticketCollisionFilter = {
     category: 0b001,
@@ -237,12 +243,26 @@ export class BallsSim extends MatterSim {
   }
 
   public revealBall() {
-    // TODO: return ball data
     setTimeout(() => {
-      const tickets = this.tickets.sort((a, b) => a.position.y - b.position.y);
-      const targetTicket = tickets[0];
-      targetTicket.collisionFilter = this.ghostTicketCollisionFilter;
-      targetTicket.frictionAir = 0.04;
+      let targetIdx = -1;
+      let targetBall = null;
+
+      for (let i = 0; i < this.tickets.length; i++) {
+        const ticket = this.tickets[i];
+        if (ticket.position.y > this.center[1] + this.wheelRadius * this.planck * 1.1) continue;
+        if (targetBall == null || (ticket.position.y > targetBall!.position.y)) {
+          targetIdx = i;
+          targetBall = ticket;
+        }
+      }
+
+      if (!targetBall) return;
+      targetBall.collisionFilter = this.ghostTicketCollisionFilter;
+      targetBall.frictionAir = 0.04;
+
+      setTimeout(() => {
+        this.onReveal.fire(targetIdx);
+      }, 3000);
     }, 1000);
   }
 
