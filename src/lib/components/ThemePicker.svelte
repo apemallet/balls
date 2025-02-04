@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getThemer, ColorHarmony, type Themer } from "$lib/theme.svelte";
-	import { fade, scale } from "svelte/transition";
+	import { fade, slide } from "svelte/transition";
 
 	// Theme stuff
 	let colorPickerElement: HTMLInputElement;
@@ -18,7 +18,7 @@
 {#if menuOpen}
 	<div
 		class="flex flex-col md:flex-row gap-4 md:items-center w-full"
-		transition:scale={{ duration: 200 }}
+		transition:slide={{ duration: 750, axis: "x" }}
 	>
 		<!-- color harmony dropdown -->
 		<div
