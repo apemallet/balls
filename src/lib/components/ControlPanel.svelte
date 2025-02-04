@@ -42,7 +42,7 @@
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton
 			{infoModalOpen
-			? 'bg-linear-45 from-alt1bg/50 via-alt3bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-alt1bg/70 hover:via-alt3bg/70 hover:to-alt5bg/70'
+			? 'bg-linear-120 from-alt1bg/50 via-alt3bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-alt1bg/70 hover:via-alt3bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
 		on:click={() => (infoModalOpen = !infoModalOpen)}
 	>
