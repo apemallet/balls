@@ -7,7 +7,7 @@
 	const colorThemer: Themer = getThemer();
 
 	// Menu state
-	let menuOpen = true;
+	export let menuOpen = true;
 
 	// Copy paste handler. Maybe add cracked animation later
 	function handleCopy(altHex: string, _: MouseEvent) {

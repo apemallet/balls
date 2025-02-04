@@ -1,11 +1,21 @@
+<script lang="ts">
+	export let palleteMenuOpen: boolean;
+	export let infoMenuOpen: boolean;
+	export let settingsMenuOpen: boolean;
+</script>
+
 <div class="flex gap-3 items-center">
 	<button
 		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
-					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
+					  text-mainfg/60 hover:text-mainfg/80
+					 {palleteMenuOpen
+			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50'
+			: 'hover:bg-mainfg/10'}"
+		on:click={() => (palleteMenuOpen = !palleteMenuOpen)}
 	>
 		<svg
-			class="h-5 w-5"
+			class="h-6 w-6"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 512 512"
 			><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path
@@ -20,7 +30,7 @@
 					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
 	>
 		<svg
-			class="w-5 h-5"
+			class="w-6 h-6"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="currentColor"
 			viewBox="0 0 512 512"
@@ -35,7 +45,7 @@
 					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
 	>
 		<svg
-			class="w-5 h-5"
+			class="w-6 h-6"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 192 512"
 			fill="currentColor"

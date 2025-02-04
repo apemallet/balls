@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ThemePicker from "$lib/components/ThemePicker.svelte";
-	import SpecialButtons from "$lib/components/SpecialButtons.svelte";
+	import ControlPanel from "$lib/components/ControlPanel.svelte";
 	import Matter from "$lib/svelteMatter.svelte";
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
@@ -35,16 +35,19 @@
 		balls?.reLayout(innerWidth, innerHeight);
 		crank?.reLayout(innerWidth, innerHeight);
 	}
+
+	// Menu state
+	let palleteMenuOpen = $state(true);
 </script>
 
 <svelte:window on:resize={onResize} />
 
 <div class="fixed z-20 w-screen p-4">
-	<ThemePicker />
+	<ThemePicker bind:menuOpen={palleteMenuOpen} />
 </div>
 
 <div class="fixed z-20 bottom-0 right-0 p-4">
-	<SpecialButtons />
+	<ControlPanel bind:palleteMenuOpen />
 </div>
 
 <canvas class="absolute w-screen h-dvh z-10" bind:this={canvasTop}></canvas>
