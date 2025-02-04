@@ -15,8 +15,9 @@
 	let canvasTop: HTMLCanvasElement | undefined;
 	let balls: BallsSim;
 	let crank: CrankSim;
+	let canCrank = $state(true); // prevents rapid cranking
 
-	let lastWinner = $state("?");
+	let lastWinner = $state("?"); // initial value should be unreachable
 	const wheelRadius = 300; // in planck units
 
 	// maintain theme
@@ -54,7 +55,10 @@
 		crank = new CrankSim(canvasTop, wheelRadius + 5);
 		balls = new BallsSim(canvasBot, crank, wheelRadius);
 
-		crank.onBust.do(() => balls!.revealBall());
+		crank.onBust.do(() => {
+			balls!.revealBall();
+			canCrank = false;
+		});
 
 		// react to winner
 		$effect(() => {
@@ -63,6 +67,7 @@
 				lastWinner = importModal.nameOf(i);
 				winHistModal.addWinner(lastWinner);
 				winModalOpen = true;
+				canCrank = true;
 			});
 		});
 	});
@@ -78,9 +83,9 @@
 		}, 10);
 	});
 
-	// crank button
 	function hitCrank() {
-		crank.smackHandle();
+		if (!canCrank) return;
+		crank?.smackHandle();
 	}
 
 	onMount(() => {
@@ -139,8 +144,11 @@
 	/>
 </div>
 
+<!-- TODO: raise issue: tailwind4 does not recognize svelte5 conditional classes -->
+
 <canvas
-	class="absolute w-screen h-dvh cursor-grab active:sepia-50 transition-filter"
+	class={`absolute w-screen h-dvh cursor-grab transition-filter
+		${canCrank ? "active:invert-15" : "invert-35"}`}
 	bind:this={canvasTop}
 	onclick={hitCrank}
 ></canvas>
