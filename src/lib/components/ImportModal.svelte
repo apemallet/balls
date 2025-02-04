@@ -113,24 +113,24 @@
 						No
 					{/if}
 				</button>
-				<button
-					class="crackedButton whitespace-nowrap
-					{!trimWhiteSpace
-						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
-						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
-					"
-					onclick={() => {
-						trimWhiteSpace = !trimWhiteSpace;
-					}}
-					>
-					Trim whitespace: 
-					{#if trimWhiteSpace}
-						Yes
-					{:else}
-						No
-					{/if}
-				</button>
 			</div>
+			<button
+				class="crackedButton whitespace-nowrap
+				{!trimWhiteSpace
+					? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
+					: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+				"
+				onclick={() => {
+					trimWhiteSpace = !trimWhiteSpace;
+				}}
+				>
+				Trim whitespace: 
+				{#if trimWhiteSpace}
+					Yes
+				{:else}
+					No
+				{/if}
+			</button>
 		</div>
 
 		<!-- display list of names -->
