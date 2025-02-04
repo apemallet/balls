@@ -1,10 +1,11 @@
 <script lang="ts">
 	export let palleteMenuOpen: boolean;
-	export let infoMenuOpen: boolean;
-	export let settingsMenuOpen: boolean;
+	export let infoModalOpen: boolean;
+	export let settingsModalOpen: boolean;
 </script>
 
 <div class="flex gap-3 items-center">
+	<!-- pallete menu button -->
 	<button
 		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
@@ -24,10 +25,12 @@
 			/></svg
 		>
 	</button>
+	<!-- settings modal button -->
 	<button
 		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
 					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
+		on:click={() => (settingsModalOpen = !settingsModalOpen)}
 	>
 		<svg
 			class="w-6 h-6"
@@ -39,10 +42,12 @@
 			/></svg
 		>
 	</button>
+	<!-- info modal button -->
 	<button
 		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
 					 hover:bg-mainfg/10 text-mainfg/60 hover:text-mainfg/80"
+		on:click={() => (infoModalOpen = !infoModalOpen)}
 	>
 		<svg
 			class="w-6 h-6"
