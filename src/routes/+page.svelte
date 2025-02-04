@@ -64,10 +64,11 @@
 		$effect(() => {
 			if (!balls) return;
 			balls.onReveal.do((i: number) => {
+				canCrank = true;
 				lastWinner = importModal.nameOf(i);
+				if (!lastWinner) return;
 				winHistModal.addWinner(lastWinner);
 				winModalOpen = true;
-				canCrank = true;
 			});
 		});
 	});
