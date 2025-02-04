@@ -9,7 +9,7 @@ let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived
 const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
-  public carryingCapacity = 12;
+  public carryingCapacity = 8;
   public onReveal: Event<number> = Event();
 
   private readonly wheelRadius: number;
@@ -176,7 +176,7 @@ export class BallsSim extends MatterSim {
   }
 
   private buildBall() {
-    const size = Common.random(30, 70) * this.planck;
+    const size = Common.random(40, 80) * this.planck;
     return Bodies.circle(...this.center, size, {
       restitution: 0.9,
       frictionAir: 0,

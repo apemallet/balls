@@ -34,7 +34,8 @@
 			localStorage.setItem("lotteryNames", JSON.stringify(namesList));
 	}
 
-	let namesList: string[] | undefined = $state();
+	let namesList: string[] = $state([]);
+	let namesAmnt = $derived(namesList.length);
 	if (browser) {
 		namesList = JSON.parse(localStorage.getItem("lotteryNames") || "[]");
 	}
@@ -45,6 +46,23 @@
 	let overWrite = $state(false);
 	let allowDuplicates = $state(false);
 	let trimWhiteSpace = $state(true);
+
+	//// Shortening & public functions
+
+	const short = $derived(namesList.map(name =>
+			name.split(" ")
+					.map(word => word.substring(0, 2))
+					.join("")));
+
+	const shuffleIdx = $derived(namesList.map((_, i) => i).sort(() => Math.random()));
+
+	export function shortOf(i: number) {
+		return short[shuffleIdx[i % namesAmnt]];
+	}
+
+	export function nameOf(i: number) {
+		return namesList[shuffleIdx[i % namesAmnt]];
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -138,7 +156,7 @@
 			<div
 				class="max-h-64 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent"
 			>
-				{#if !namesList || namesList.length === 0}
+				{#if namesList.length === 0}
 					<div class="text-center p-4 text-mainfg/50 italic">
 						No names added yet
 					</div>

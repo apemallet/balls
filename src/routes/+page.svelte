@@ -9,7 +9,6 @@
   import {CrankSim} from "$lib/crankSim.svelte";
   import {getThemer} from "$lib/theme.svelte";
   import {onMount} from "svelte";
-  import {nameOf, shortOf} from "$lib/nameSource";
 
   let canvasBot: HTMLCanvasElement | undefined;
   let canvasTop: HTMLCanvasElement | undefined;
@@ -29,17 +28,6 @@
     crank!.reTheme();
   });
 
-  // maintain labels
-  type Label = { x: number; y: number; text: string };
-  let labels: Label[] = $state([])
-  onMount(() => {
-    setInterval(() => {
-      const pos = balls.ballsPos;
-      const text = pos.map((_, i) => shortOf(i));
-      labels = text.map((t, i) => ({x: pos[i].x, y: pos[i].y, text: t}));
-    }, 10);
-  });
-
   function onResize() {
     const {innerWidth, innerHeight} = window;
     balls?.reLayout(innerWidth, innerHeight);
@@ -49,8 +37,9 @@
   // Menu state
   let palleteMenuOpen = $state(true);
   let infoModalOpen = $state(false);
-  let importModalOpen = $state(false);
   let winModalOpen = $state(false);
+  let importModalOpen = $state(false);
+  let importModal: ImportModal = $state();
 
   // initialize the simulation
   $effect(() => {
@@ -68,10 +57,21 @@
     $effect(() => {
       if (!balls) return;
       balls.onReveal.do((i: number) => {
-        lastWinner = nameOf(i);
+        lastWinner = importModal.nameOf(i);
         winModalOpen = true;
       });
     });
+  });
+
+  // maintain labels
+  type Label = { x: number; y: number; text: string };
+  let labels: Label[] = $state([])
+  onMount(() => {
+    setInterval(() => {
+      const pos = balls.ballsPos;
+      const text = pos.map((_, i) => importModal.shortOf(i));
+      labels = text.map((t, i) => ({x: pos[i].x, y: pos[i].y, text: t}));
+    }, 10);
   });
 
   // crank button
@@ -102,17 +102,17 @@
 </div>
 
 <div class="fixed z-30 top-0 p-4">
-  <ImportModal bind:showModal={importModalOpen}/>
+  <ImportModal bind:this={importModal} bind:showModal={importModalOpen}/>
 </div>
 
 {#each labels as {x, y, text}, i}
   <div
       class="
 			absolute
-			text-xs
+			text-md
 			font-bold
-			text-mainbg
 			text-center
+			text-mainbg
 			-translate-x-1/2
 			-translate-y-1/2
 			w-10"
