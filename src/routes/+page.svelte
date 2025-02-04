@@ -6,6 +6,7 @@
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
 	import { getThemer } from "$lib/theme.svelte";
+	import {onMount} from "svelte";
 
 	let canvasBot: HTMLCanvasElement | undefined;
 	let canvasTop: HTMLCanvasElement | undefined;
@@ -41,6 +42,13 @@
 	let palleteMenuOpen = $state(true);
 	let infoModalOpen = $state(false);
 	let settingsModalOpen = $state(false);
+
+	onMount(() => {
+		window['kill'] = () => {
+			crank?.destroy();
+			balls?.destroy();
+		}
+	});
 </script>
 
 <svelte:window on:resize={onResize} />

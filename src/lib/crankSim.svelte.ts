@@ -97,7 +97,7 @@ export class CrankSim extends MatterSim {
 
   protected fixedUpdate(deltaTime: number): void {
     const angle = this.crank.angle;
-    const force = 0.003;
+    const force = 0.003 * this.planck;
 
     Body.applyForce(this.crank, this.handle.position, {
       x: -force * Math.cos(angle),

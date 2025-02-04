@@ -83,4 +83,10 @@ export abstract class MatterSim {
       Body.setPosition(body, {x, y});
     }
   }
+
+  public destroy() {
+    Render.stop(this.render);
+    this.render.canvas = null;
+    Engine.clear(this.engine);
+  }
 }
