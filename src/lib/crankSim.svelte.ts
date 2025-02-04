@@ -101,7 +101,7 @@ export class CrankSim extends MatterSim {
   public smackHandle() {
     this.handleForce(0.02 * this.planck);
     if (this.anger > 1) return;
-    this.anger = Math.min(1, this.anger + .1);
+    this.anger = Math.min(1, this.anger + .6);
     if (this.anger > .9) this.bust();
   }
 
@@ -125,18 +125,20 @@ export class CrankSim extends MatterSim {
 
   protected fixedUpdate(deltaTime: number): void {
     this.anger = Math.max(0, this.anger * (1 - 0.3 * deltaTime) - 0.1 * deltaTime);
-    const angle = this.crank.angle;
 
     const force = 0.15 * this.planck * deltaTime * this.anger;
     this.handleForce(force);
 
+    // discrete, points of slow down
+    /*
     const degree = 5;
+    const angle = this.crank.angle;
     const err = Math.abs((angle + Math.PI) % (2 * Math.PI / degree));
 
     if (err < .08) {
       const vel = this.crank.angularVelocity * .2;
       Body.setAngularVelocity(this.crank, vel);
-    }
+    }*/
   }
 
   reTheme(): void {
