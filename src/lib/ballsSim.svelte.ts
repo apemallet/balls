@@ -13,7 +13,7 @@ export class BallsSim extends MatterSim {
     console.log("Initializing BALLS sim.");
     super(canvas);
 
-    this.tickets = Array(15)
+    this.tickets = Array(12)
       .fill(0)
       .map(() => this.createTicket());
 
@@ -54,9 +54,9 @@ export class BallsSim extends MatterSim {
   }
 
   private createTicket() {
-    const size = Common.random(25, 65) * this.planck;
+    const size = Common.random(30, 70) * this.planck;
     return Bodies.circle(...this.center, size, {
-      restitution: 0.9,
+      restitution: 1,
       frictionAir: 0,
       friction: 0,
       frictionStatic: 0
