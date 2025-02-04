@@ -7,7 +7,7 @@
 	const colorThemer: Themer = getThemer();
 
 	// Menu state
-	let menuOpen = true;
+	export let menuOpen = true;
 
 	// Copy paste handler. Maybe add cracked animation later
 	function handleCopy(altHex: string, _: MouseEvent) {
@@ -16,9 +16,9 @@
 </script>
 
 <div class="flex flex-col md:flex-row gap-4 md:items-center w-full">
-	<!-- collapse button -->
+	<!-- INFO: collapse button currently disabled, replaced flex with hidden -->
 	<button
-		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
+		class="group hidden flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
 					 hover:bg-mainfg/10"
 		aria-label="Toggle theme settings"
