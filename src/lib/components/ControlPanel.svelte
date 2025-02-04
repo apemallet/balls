@@ -1,19 +1,21 @@
 <script lang="ts">
 	export let palleteMenuOpen: boolean;
 	export let infoModalOpen: boolean;
-	export let settingsModalOpen: boolean;
+
+	// TODO: Handle importing of names
+	function handleImport() {
+		console.log("Importing names");
+	}
 </script>
 
-<div
-	class="flex gap-3 items-center gradient-border p-4 bg-dominantbg/5 backdrop-blur-sm"
->
+<div class="flex gap-3 items-center gradient-border p-4 bg-dominantbg/5">
 	<!-- pallete menu button -->
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton
 					 {palleteMenuOpen
 			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-dominantbg/70 hover:via-alt1bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
-		on:click={() => (palleteMenuOpen = !palleteMenuOpen)}
+		onclick={() => (palleteMenuOpen = !palleteMenuOpen)}
 	>
 		<span class="tooltip">Theme settings</span>
 		<svg
@@ -26,19 +28,19 @@
 			/></svg
 		>
 	</button>
-	<!-- settings modal button -->
+	<!-- import -->
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton"
-		on:click={() => (settingsModalOpen = !settingsModalOpen)}
+		onclick={() => handleImport()}
 	>
-		<span class="tooltip">History</span>
+		<span class="tooltip">Import names</span>
 		<svg
-			class="w-6 h-6"
+			class="h-6 w-6"
 			xmlns="http://www.w3.org/2000/svg"
-			fill="currentColor"
 			viewBox="0 0 512 512"
+			fill="currentColor"
 			><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path
-				d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9L0 168c0 13.3 10.7 24 24 24l110.1 0c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24l0 104c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65 0-94.1c0-13.3-10.7-24-24-24z"
+				d="M160 0c-23.7 0-44.4 12.9-55.4 32L48 32C21.5 32 0 53.5 0 80L0 400c0 26.5 21.5 48 48 48l144 0 0-272c0-44.2 35.8-80 80-80l48 0 0-16c0-26.5-21.5-48-48-48l-56.6 0C204.4 12.9 183.7 0 160 0zM272 128c-26.5 0-48 21.5-48 48l0 272 0 16c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-220.1c0-12.7-5.1-24.9-14.1-33.9l-67.9-67.9c-9-9-21.2-14.1-33.9-14.1L320 128l-48 0zM160 40a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"
 			/></svg
 		>
 	</button>
@@ -48,7 +50,7 @@
 			{infoModalOpen
 			? 'bg-linear-120 from-alt1bg/50 via-alt3bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-alt1bg/70 hover:via-alt3bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
-		on:click={() => (infoModalOpen = !infoModalOpen)}
+		onclick={() => (infoModalOpen = !infoModalOpen)}
 	>
 		<span class="tooltip">Info</span>
 		<svg
