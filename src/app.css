@@ -36,5 +36,5 @@ html {
 }
 
 .crackedButton {
-	@apply rounded-lg backdrop-blur-sm border-2 border-mainfg/60 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 hover:bg-mainfg/10 p-2 text-mainfg/60 hover:text-mainfg/80;
+	@apply rounded-lg backdrop-blur-sm border-2 border-mainfg/60 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 hover:bg-mainfg/10 p-2 text-mainfg/60 hover:text-mainfg/80 cursor-pointer;
 }
