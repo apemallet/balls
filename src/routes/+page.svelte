@@ -53,7 +53,7 @@
 	<InfoModal bind:showModal={infoModalOpen} />
 </div>
 
-<div class="fixed z-20 bottom-0 right-0 p-4">
+<div class="fixed z-20 bottom-0 right-0">
 	<ControlPanel
 		bind:palleteMenuOpen
 		bind:infoModalOpen

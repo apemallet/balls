@@ -4,7 +4,9 @@
 	export let settingsModalOpen: boolean;
 </script>
 
-<div class="flex gap-3 items-center">
+<div
+	class="flex gap-3 items-center gradient-border p-4 bg-dominantbg/5 backdrop-blur-sm"
+>
 	<!-- pallete menu button -->
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton
@@ -13,6 +15,7 @@
 			: 'hover:bg-mainfg/10'}"
 		on:click={() => (palleteMenuOpen = !palleteMenuOpen)}
 	>
+		<span class="tooltip">Theme settings</span>
 		<svg
 			class="h-6 w-6"
 			xmlns="http://www.w3.org/2000/svg"
@@ -28,6 +31,7 @@
 		class="group flex flex-row gap-2 justify-between crackedButton"
 		on:click={() => (settingsModalOpen = !settingsModalOpen)}
 	>
+		<span class="tooltip">History</span>
 		<svg
 			class="w-6 h-6"
 			xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +50,7 @@
 			: 'hover:bg-mainfg/10'}"
 		on:click={() => (infoModalOpen = !infoModalOpen)}
 	>
+		<span class="tooltip">Info</span>
 		<svg
 			class="w-6 h-6"
 			xmlns="http://www.w3.org/2000/svg"
@@ -57,3 +62,29 @@
 		>
 	</button>
 </div>
+
+<style>
+	@reference "tailwindcss/theme";
+	@reference "../../app.css";
+
+	.tooltip {
+		@apply absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 
+            text-sm bg-mainbg/90 text-mainfg rounded-md opacity-0 
+            transition-opacity duration-200 pointer-events-none
+            group-hover:opacity-100;
+		white-space: nowrap;
+	}
+
+	.gradient-border {
+		border: 0.2rem solid transparent;
+		border-image: linear-gradient(
+			45deg,
+			var(--color-dominantbg),
+			var(--color-alt2bg),
+			var(--color-alt4bg)
+		);
+		border-bottom: 0;
+		border-right: 0;
+		border-image-slice: 1;
+	}
+</style>
