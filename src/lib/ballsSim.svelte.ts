@@ -15,14 +15,14 @@ export class BallsSim extends MatterSim {
   private readonly wheelRadius: number;
   private readonly wheel: Body;
   private readonly crankSim: CrankSim;
-  private tickets: Body[] = [];
+  private balls: Body[] = [];
   private spin: number = 0;
 
   public get ballsPos() {
-    return this.tickets.map(ticket => ticket.position);
+    return this.balls.map(ticket => ticket.position);
   }
 
-  private readonly ticketCollisionFilter = {
+  private readonly ballCollisionFilter = {
     category: 0b0001,
     mask: 0b0011,
     group: 0
@@ -34,7 +34,7 @@ export class BallsSim extends MatterSim {
     group: 0
   }
 
-  private readonly ghostTicketCollisionFilter = {
+  private readonly ghostBallCollisionFilter = {
     category: 0b0100,
     mask: 0b1100,
     group: 0
@@ -56,7 +56,7 @@ export class BallsSim extends MatterSim {
     super(canvas);
     this.crankSim = crankSim;
 
-    this.tickets = Array(this.carryingCapacity)
+    this.balls = Array(this.carryingCapacity)
       .fill(0)
       .map(() => this.buildBall());
 
@@ -70,12 +70,12 @@ export class BallsSim extends MatterSim {
 
     const tray = this.buildTray();
 
-    Composite.add(this.engine.world, [tray, this.wheel, ...this.tickets]);
+    Composite.add(this.engine.world, [tray, this.wheel, ...this.balls]);
     this.reTheme();
 
     // try to add new balls & garbage collect
     setInterval(() => {
-      this.tickets = this.tickets.filter(ticket => {
+      this.balls = this.balls.filter(ticket => {
         const keep = ticket.position.y < this.height + 100;
         if (!keep) Composite.remove(this.engine.world, ticket);
         return keep;
@@ -101,9 +101,9 @@ export class BallsSim extends MatterSim {
 
     // 2. Ticket colors
 
-    for (const i: number in this.tickets) {
+    for (const i: number in this.balls) {
       // TODO: change based on ticket data
-      const ticket = this.tickets[i];
+      const ticket = this.balls[i];
       const color = this.colorBallOf(i);
       ticket.render.fillStyle = color;
     }
@@ -182,9 +182,9 @@ export class BallsSim extends MatterSim {
       frictionAir: 0,
       friction: 0,
       frictionStatic: 0,
-      collisionFilter: this.ticketCollisionFilter,
+      collisionFilter: this.ballCollisionFilter,
       render: {
-        fillStyle: this.colorBallOf(this.tickets.length)
+        fillStyle: this.colorBallOf(this.balls.length)
       }
     });
   }
@@ -211,16 +211,21 @@ export class BallsSim extends MatterSim {
     })
   }
 
+  private isBallActive(ball): boolean {
+    if (ball.position.y > this.center[1] + this.wheelRadius * this.planck * 1.1) return false;
+    if (ball.collisionFilter.category !== this.ballCollisionFilter.category) return false;
+    return true;
+  }
+
   private currentCapacity() {
-    const thresh = this.center[1] + this.wheelRadius * this.planck * 1.1;
-    return this.tickets.filter(ticket => ticket.position.y < thresh).length;
+    return this.balls.filter(ticket => this.isBallActive(ticket)).length;
   }
 
   public tryAddBall() {
     if (this.carryingCapacity <= this.currentCapacity()) return;
 
     const ball = this.buildBall();
-    ball.collisionFilter = this.ghostTicketCollisionFilter;
+    ball.collisionFilter = this.ghostBallCollisionFilter;
     ball.frictionAir = 0.04;
 
     Body.setPosition(ball, {
@@ -228,7 +233,7 @@ export class BallsSim extends MatterSim {
       y: 0
     });
 
-    this.tickets.push(ball);
+    this.balls.push(ball);
     Composite.add(this.engine.world, [ball]);
 
     // try to catch the ball
@@ -237,7 +242,7 @@ export class BallsSim extends MatterSim {
 
     const poll = setInterval(() => {
       if (ball.position.y > this.center[1] - radius * 0.8) {
-        ball.collisionFilter = this.ticketCollisionFilter;
+        ball.collisionFilter = this.ballCollisionFilter;
         ball.frictionAir = 0;
         clearInterval(poll);
       }
@@ -253,9 +258,9 @@ export class BallsSim extends MatterSim {
       let targetIdx = -1;
       let targetBall = null;
 
-      for (let i = 0; i < this.tickets.length; i++) {
-        const ticket = this.tickets[i];
-        if (ticket.position.y > this.center[1] + this.wheelRadius * this.planck * 1.1) continue;
+      for (let i = 0; i < this.balls.length; i++) {
+        const ticket = this.balls[i];
+        if (!this.isBallActive(ticket)) continue;
         if (targetBall == null || (ticket.position.y > targetBall!.position.y)) {
           targetIdx = i;
           targetBall = ticket;
@@ -263,7 +268,7 @@ export class BallsSim extends MatterSim {
       }
 
       if (!targetBall) return;
-      targetBall.collisionFilter = this.ghostTicketCollisionFilter;
+      targetBall.collisionFilter = this.ghostBallCollisionFilter;
       targetBall.frictionAir = 0.04;
 
       setTimeout(() => {
