@@ -9,39 +9,34 @@
 	}
 
 	interface WinnerHistoryEntry {
-		date: string; // This is the date (YYYY-MM-DD format)
+		date: string; // Date (YYYY-MM-DD format)
 		winners: Winner[];
 	}
 
 	let { showModal = $bindable(false) } = $props();
-
 	let winnerHistory = $state<WinnerHistoryEntry[]>([]);
-	let selectedDate = $state<string | null>(null);
+	let selectedDate = $state<string>(new Date().toISOString().split("T")[0]);
 
-	// Load from localStorage on init
 	if (browser) {
 		const saved = localStorage.getItem("winnerHistory");
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved) as WinnerHistoryEntry[];
 				winnerHistory = parsed;
-				if (parsed.length > 0) {
-					selectedDate = parsed[0].date;
-				}
 			} catch (e) {
 				console.error("Error loading winner history:", e);
 			}
 		}
 	}
 
-	// Save to localStorage whenever winnerHistory changes
+	// Update local storage
 	$effect(() => {
 		if (browser && winnerHistory) {
 			localStorage.setItem("winnerHistory", JSON.stringify(winnerHistory));
 		}
 	});
 
-	// Modified function: Now accepts just the winner's name
+	// Add winner and store
 	export function addWinner(name: string): void {
 		const now = new Date();
 		const today = now.toISOString().split("T")[0];
@@ -68,6 +63,13 @@
 			selectedDate = today;
 		}
 	}
+
+	let currentHistEntry: WinnerHistoryEntry | null = $derived.by(() => {
+		const curHist = winnerHistory.find((e) => e.date === selectedDate);
+		console.log(curHist);
+		if (curHist) return curHist;
+		return null;
+	});
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -87,24 +89,30 @@
 			{/each}
 		</div>
 
-		<div
-			class="h-[300px] overflow-y-auto mt-4 p-2 border border-gray-300 rounded"
-		>
-			{#if selectedDate}
-				{#each winnerHistory.find((e) => e.date === selectedDate)?.winners || [] as winner (winner.id)}
-					<div
-						class="flex justify-between items-center p-2 border-b border-gray-200 last:border-0"
-					>
-						<span class="font-medium">{winner.name}</span>
-						<span class="text-sm text-gray-500">{winner.timestamp}</span>
+		<div class="bg-mainbg/50 rounded-md border border-mainfg/20 mt-4">
+			<div
+				class="max-h-64 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent"
+			>
+				{#if !currentHistEntry}
+					<div class="text-center p-4 text-mainfg/50 italic">
+						No winners on this day
 					</div>
 				{:else}
-					<p class="text-center text-gray-500 italic py-4">
-						No winners for this date
-					</p>
-				{/each}
-			{/if}
+					{#each currentHistEntry.winners as winner}
+						<div
+							class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors"
+						>
+							<span class="text-mainfg/80">{winner.name}</span>
+							<button
+								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
+								onclick={() => {}}
+							>
+								x
+							</button>
+						</div>
+					{/each}
+				{/if}
+			</div>
 		</div>
 	</svelte:fragment>
 </Modal>
-
