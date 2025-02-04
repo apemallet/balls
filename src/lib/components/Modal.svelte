@@ -35,12 +35,7 @@
 
 				<!-- Close Button -->
 				<div class="mt-6 flex justify-end">
-					<button
-						on:click={closeModal}
-						class="px-4 py-2 bg-dominantbg text-dominantfg rounded-lg hover:bg-dominantbg/80
-										 hover:text-dominantfg/80
-                   transition-colors duration-200"
-					>
+					<button on:click={closeModal} class="px-4 py-2 crackedButton">
 						Close
 					</button>
 				</div>
