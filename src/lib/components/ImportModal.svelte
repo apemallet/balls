@@ -6,6 +6,7 @@
 	function clipboardToNamesArray() {
 			navigator.clipboard.readText().then((text) => {
 					const names: string[] = text.split(safeSeparator);
+					if (names.includes("")) names.splice(names.indexOf(""), 1);
 					if (names.length === 0) return;
 
 					if (!overWrite) {
@@ -28,6 +29,11 @@
 			});
 	}
 
+	function deleteName(i: number) {
+			namesList = namesList!.filter((_, idx) => idx !== i);
+			localStorage.setItem("lotteryNames", JSON.stringify(namesList));
+	}
+
 	let namesList: string[] | undefined = $state();
 	if (browser) {
 		namesList = JSON.parse(localStorage.getItem("lotteryNames") || "[]");
@@ -38,6 +44,7 @@
 
 	let overWrite = $state(false);
 	let allowDuplicates = $state(false);
+	let trimWhiteSpace = $state(true);
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -72,25 +79,25 @@
 				placeholder="Separator (default newline)"
 				bind:value={separator} />
 			<div class="flex flex-row justify-between gap-4">
-			<button
-				class="crackedButton whitespace-nowrap
-				{!overWrite
-					? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
-					: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
-				"
-				onclick={() => {
-					overWrite = !overWrite;
-				}}
-				>
-				Overwrite list: 
-				{#if overWrite}
-					Yes
-				{:else}
-					No
-				{/if}
+				<button
+					class="crackedButton whitespace-nowrap
+					{!overWrite
+						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
+						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+					"
+					onclick={() => {
+						overWrite = !overWrite;
+					}}
+					>
+					Overwrite list: 
+					{#if overWrite}
+						Yes
+					{:else}
+						No
+					{/if}
 				</button>
 				<button
-					class="crackedButton grow whitespace-nowrap
+					class="crackedButton whitespace-nowrap
 					{!allowDuplicates
 						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
 						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
@@ -101,6 +108,23 @@
 					>
 					Allow duplicates: 
 					{#if allowDuplicates}
+						Yes
+					{:else}
+						No
+					{/if}
+				</button>
+				<button
+					class="crackedButton whitespace-nowrap
+					{!trimWhiteSpace
+						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
+						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+					"
+					onclick={() => {
+						trimWhiteSpace = !trimWhiteSpace;
+					}}
+					>
+					Trim whitespace: 
+					{#if trimWhiteSpace}
 						Yes
 					{:else}
 						No
@@ -126,8 +150,7 @@
 							<span class="text-mainfg/80">{i + 1}. {name.trim()}</span>
 							<button
 								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
-								onclick={() =>
-									(namesList = namesList!.filter((_, idx) => idx !== i))}
+								onclick={() => deleteName(i)}
 							>
 								x
 							</button>
