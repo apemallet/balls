@@ -19,8 +19,11 @@
     if (!Matter()) return;
     if (!canvasBot) return;
     if (!canvasTop) return;
-    if (!crank) crank = new CrankSim(canvasTop, wheelRadius + 5);
-    if (!balls) balls = new BallsSim(canvasBot, crank, wheelRadius);
+    if (crank || balls) return;
+
+    crank = new CrankSim(canvasTop, wheelRadius + 5);
+    balls = new BallsSim(canvasBot, crank, wheelRadius);
+    crank.onBust.do(() => balls!.revealBall());
   });
 
   $effect(() => {

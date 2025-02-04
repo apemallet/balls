@@ -1,10 +1,12 @@
 import {MatterSim} from "$lib/sim.svelte";
 import Matter from "$lib/svelteMatter.svelte";
+import {Event} from "$lib/utils.ts";
 
 let {Constraint, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 export class CrankSim extends MatterSim {
   public anger: number = 0; // affects crank angular velocity
+  public readonly onBust: Event<void> = Event();
 
   private readonly handle: Body;
   private readonly shaft: Body;
@@ -106,6 +108,7 @@ export class CrankSim extends MatterSim {
   public bust() {
     // turns very quickly then stops suddenly; zeroes anger
     this.anger = 10;
+    this.onBust.fire();
 
     setTimeout(() => {
       this.anger = 0;

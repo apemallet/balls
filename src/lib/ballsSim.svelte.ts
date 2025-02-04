@@ -8,10 +8,28 @@ let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived
 const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
+  public carryingCapacity = 12;
+
+  private readonly wheelRadius: number;
   private readonly wheel: Body;
   private readonly tickets: Body[] = [];
   private readonly crankSim: CrankSim;
   private spin: number = 0;
+
+  private readonly ticketCollisionFilter = {
+    category: 0b001,
+    mask: 0b111
+  }
+
+  private readonly wallCollisionFilter = {
+    category: 0b010,
+    mask: 0b011
+  }
+
+  private readonly ghostTicketCollisionFilter = {
+    category: 0b100,
+    mask: 0b101
+  }
 
   private get anger() {
     return this.crankSim.anger;
@@ -23,22 +41,40 @@ export class BallsSim extends MatterSim {
     super(canvas);
     this.crankSim = crankSim;
 
-    this.tickets = Array(12)
+    this.tickets = Array(this.carryingCapacity)
       .fill(0)
-      .map(() => this.createTicket());
+      .map(() => this.createBall());
 
     const physicalWheelRadius = wheelRadius * this.planck;
+    this.wheelRadius = wheelRadius;
+
     this.wheel = this.buildWheel(
       this.center[0],
       this.center[1],
-      physicalWheelRadius,
-      {
-        isStatic: true,
-      },
-    );
+      physicalWheelRadius);
 
     Composite.add(this.engine.world, [this.wheel, ...this.tickets]);
     this.reTheme();
+
+    // try to add new balls & garbage collect
+    setInterval(() => {
+      let cull = new Set();
+
+      for (let i = 0; i < this.tickets.length; i++) {
+        const ticket = this.tickets[i];
+
+        if (ticket.position.y > this.height + 100) {
+          cull.add(ticket);
+        }
+      }
+
+      cull.forEach(ticket => {
+        Composite.remove(this.engine.world, ticket);
+        this.tickets.splice(this.tickets.indexOf(ticket), 1);
+      });
+
+      this.tryAddBall();
+    }, 5000);
   }
 
   public reTheme(): void {
@@ -53,34 +89,34 @@ export class BallsSim extends MatterSim {
     // 2. Ticket colors
 
     for (const i in this.tickets) {
+      // TODO: change based on ticket data
       const ticket = this.tickets[i];
       const colorId = i % this.theme.palette.length;
       ticket.render.fillStyle = this.theme.palette[colorId];
     }
   }
 
-  private createTicket() {
+  private createBall() {
     const size = Common.random(30, 70) * this.planck;
     return Bodies.circle(...this.center, size, {
-      restitution: 1,
+      restitution: 0.9,
       frictionAir: 0,
       friction: 0,
-      frictionStatic: 0
+      frictionStatic: 0,
+      collisionFilter: this.ticketCollisionFilter
     });
   }
 
   private buildWheel(
     xOrigin: number,
     yOrigin: number,
-    radius: number,
-    options: any = null,
+    radius: number
   ) {
     const degree = 0.3 * radius;
     const thickness = 0.1 * radius;
     const tickLength = 0.3 * radius;
     const tickAmnt = Math.round(0.4 * Math.sqrt(radius));
     const tickRadiusFactor = 1 - 0.01; // unit-less
-    const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
       const angle = (2 * Math.PI) / degree;
@@ -102,11 +138,7 @@ export class BallsSim extends MatterSim {
       const x = radius * Math.cos(theta);
       const y = radius * Math.sin(theta);
 
-      const ringPart = Bodies.rectangle(x, y, segmentSize, thickness, {
-        render: {
-          fillStyle: color,
-        },
-      });
+      const ringPart = Bodies.rectangle(x, y, segmentSize, thickness);
 
       // apply rotation
       Body.rotate(ringPart, theta + Math.PI / 2);
@@ -120,12 +152,6 @@ export class BallsSim extends MatterSim {
           {x: .4 * thickness, y: tickLength},
         ]]);
 
-        // const tick = Bodies.polygon(0, 0, 3, thickness, {
-        //   render: {
-        //     fillStyle: color,
-        //   },
-        // });
-
         const tickX = x * tickRadiusFactor;
         const tickY = y * tickRadiusFactor;
 
@@ -136,18 +162,45 @@ export class BallsSim extends MatterSim {
       }
     }
 
+    parts.forEach(part => part.collisionFilter = this.wallCollisionFilter);
     const wheel = Body.create({
       parts: parts,
-      ...options,
+      isStatic: true,
+      collisionFilter: this.wallCollisionFilter
     });
 
     Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
     return wheel;
   }
 
+  public tryAddBall() {
+    if (this.tickets.length >= this.carryingCapacity) return;
+
+    const ball = this.createBall();
+    ball.collisionFilter =  this.ghostTicketCollisionFilter;
+
+    Body.setPosition(ball, {
+      x: this.center[0],
+      y: -10
+    });
+
+    // this.tickets.push(ball);
+    // Composite.add(this.engine.world, [ball]);
+  }
+
+  public revealBall() {
+    // TODO: return ball data
+    setTimeout(() => {
+      const tickets = this.tickets.sort((a, b) => a.position.y - b.position.y);
+      const targetTicket = tickets.pop();
+      targetTicket.collisionFilter = this.ghostTicketCollisionFilter;
+      targetTicket.frictionAir = 0.04;
+    }, 1000);
+  }
+
   protected fixedUpdate(deltaTime: number) {
     const restSpin = 0.3 + 2 * Math.min(5, this.anger);
-    this.spin = lerp(this.spin, restSpin, 2 * deltaTime);
+    this.spin = lerp(this.spin, restSpin, deltaTime);
     Body.rotate(this.wheel, this.spin * deltaTime);
   }
 }
