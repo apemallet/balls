@@ -1,6 +1,6 @@
 <script>
 	import Modal from "./Modal.svelte";
-	export let showModal = false;
+	let { showModal = $bindable(false) } = $props();
 </script>
 
 <Modal bind:isOpen={showModal}>

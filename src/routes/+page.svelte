@@ -2,6 +2,7 @@
 	import ThemePicker from "$lib/components/ThemePicker.svelte";
 	import ControlPanel from "$lib/components/ControlPanel.svelte";
 	import InfoModal from "$lib/components/InfoModal.svelte";
+	import ImportModal from "$lib/components/ImportModal.svelte";
 	import Matter from "$lib/svelteMatter.svelte";
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
@@ -44,7 +45,7 @@
 	// Menu state
 	let palleteMenuOpen = $state(true);
 	let infoModalOpen = $state(false);
-	let settingsModalOpen = $state(false);
+	let importModalOpen = $state(false);
 
 	// crank button
 	function hitCrank() {
@@ -69,8 +70,12 @@
 	<InfoModal bind:showModal={infoModalOpen} />
 </div>
 
+<div class="fixed z-30 top-0 p-4">
+	<ImportModal bind:showModal={importModalOpen} />
+</div>
+
 <div class="fixed z-20 bottom-0 right-0">
-	<ControlPanel bind:palleteMenuOpen bind:infoModalOpen />
+	<ControlPanel bind:palleteMenuOpen bind:infoModalOpen bind:importModalOpen />
 </div>
 
 <canvas

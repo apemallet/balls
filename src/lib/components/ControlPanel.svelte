@@ -1,11 +1,7 @@
 <script lang="ts">
 	export let palleteMenuOpen: boolean;
 	export let infoModalOpen: boolean;
-
-	// TODO: Handle importing of names
-	function handleImport() {
-		console.log("Importing names");
-	}
+	export let importModalOpen: boolean;
 </script>
 
 <div class="flex gap-3 items-center gradient-border p-4 bg-dominantbg/5">
@@ -13,7 +9,7 @@
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton
 					 {palleteMenuOpen
-			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-dominantbg/70 hover:via-alt1bg/70 hover:to-alt5bg/70'
+			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50 hover:bg-linear-30 hover:from-dominantbg/70 hover:via-alt1bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
 		onclick={() => (palleteMenuOpen = !palleteMenuOpen)}
 	>
@@ -30,8 +26,12 @@
 	</button>
 	<!-- import -->
 	<button
-		class="group flex flex-row gap-2 justify-between crackedButton"
-		onclick={() => handleImport()}
+		class="group flex flex-row gap-2 justify-between crackedButton
+		{importModalOpen
+			? 'bg-linear-120 from-alt3/50 via-alt5bg/50 to-alt1bg/50 hover:from-alt3/70 hover:via-alt5bg/70 hover:to-alt1bg/70'
+			: 'hover:bg-mainfg/10'}
+		"
+		onclick={() => (importModalOpen = !importModalOpen)}
 	>
 		<span class="tooltip">Import names</span>
 		<svg
@@ -40,7 +40,7 @@
 			viewBox="0 0 512 512"
 			fill="currentColor"
 			><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path
-				d="M160 0c-23.7 0-44.4 12.9-55.4 32L48 32C21.5 32 0 53.5 0 80L0 400c0 26.5 21.5 48 48 48l144 0 0-272c0-44.2 35.8-80 80-80l48 0 0-16c0-26.5-21.5-48-48-48l-56.6 0C204.4 12.9 183.7 0 160 0zM272 128c-26.5 0-48 21.5-48 48l0 272 0 16c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-220.1c0-12.7-5.1-24.9-14.1-33.9l-67.9-67.9c-9-9-21.2-14.1-33.9-14.1L320 128l-48 0zM160 40a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"
+				d="M288 109.3L288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-242.7-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352l128 0c0 35.3 28.7 64 64 64s64-28.7 64-64l128 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"
 			/></svg
 		>
 	</button>

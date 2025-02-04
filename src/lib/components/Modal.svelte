@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { fade, scale } from "svelte/transition";
-	export let isOpen: boolean = false;
+	let { isOpen = $bindable(false) } = $props();
 
-	function closeModal(src: string) {
-		console.log(src);
+	function closeModal() {
 		isOpen = false;
 	}
 </script>
@@ -13,8 +12,8 @@
 		role="button"
 		tabindex="0"
 		class="fixed inset-0 z-50 bg-mainfg/10 backdrop-blur-sm transition-all duration-300"
-		on:click={() => closeModal("backgroud")}
-		on:keydown={(e) => e.key === "Enter" && closeModal("backgrun key")}
+		onclick={() => closeModal()}
+		onkeydown={(e) => e.key === "Enter" && closeModal()}
 		transition:fade={{ duration: 200 }}
 	></div>
 	<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
@@ -37,10 +36,7 @@
 
 			<!-- universal close button -->
 			<div class="mt-6 flex justify-end">
-				<button
-					on:click={() => closeModal("close")}
-					class="px-4 py-2 crackedButton"
-				>
+				<button onclick={() => closeModal()} class="px-4 py-2 crackedButton">
 					Close
 				</button>
 			</div>
