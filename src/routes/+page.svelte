@@ -47,11 +47,5 @@
 	<ThemePicker />
 </div>
 
-<canvas class="absolute w-screen h-dscreen z-10" bind:this={canvasTop}></canvas>
-<canvas class="absolute w-screen h-dscreen" bind:this={canvasBot}></canvas>
-
-<style>
-	.h-dscreen {
-		height: 100dvh;
-	}
-</style>
+<canvas class="absolute w-screen h-dvh z-10" bind:this={canvasTop}></canvas>
+<canvas class="absolute w-screen h-dvh" bind:this={canvasBot}></canvas>

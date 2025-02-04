@@ -8,10 +8,14 @@
 
 	// Menu state
 	let menuOpen = true;
+
+	// Copy paste handler
+	function handleCopy(altHex: string, event: MouseEvent) {
+		navigator.clipboard.writeText(altHex);
+	}
 </script>
 
-<!-- TODO: at least on iphone safari, there is some weird color issues going on -->
-<div class="flex flex-col sm:flex-row gap-4 sm:items-center w-full">
+<div class="flex flex-col md:flex-row gap-4 md:items-center w-full">
 	<!-- collapse button -->
 	<button
 		class="group flex flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
@@ -28,19 +32,16 @@
 				Expand
 			{/if}
 		</div>
+		<!-- plus symbol svg -->
 		<svg
-			class="w-6 h-6 text-mainfg/60 group-hover:text-mainfg/80 transition-transform rotate-45"
+			class="w-4 h-4 text-mainfg/60 group-hover:text-mainfg/80 transition-transform self-center"
 			class:rotate-45={menuOpen}
-			fill="none"
 			viewBox="0 0 24 24"
 			stroke="currentColor"
+			stroke-width={2}
+			fill="none"
 		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width={2}
-				d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-			/>
+			<path stroke-linecap="round" d="M1 12h22M12 1v22" />
 		</svg>
 	</button>
 
@@ -49,26 +50,22 @@
 		<div
 			class="relative group min-w-fit hover:scale-105 transition-all duration-300"
 		>
-			<!-- TODO: maybe this can be made a button that clicks a hidden dropdown in order to get button-styling perfected -->
-			<!-- or look into embedded icons in the select area, if possible without the absolute setup since  -->
-			<!-- it causes weird issues (ie overlap) these can also be fixed via margin or padding on the text though. -->
 			<select
 				bind:value={colorThemer.colorHarmony}
-				class="appearance-none backdrop-blur-sm p-2 rounded-lg
+				class="appearance-none backdrop-blur-sm p-2 pr-8 rounded-lg mr-6 /* Added padding-right */
       border-2 border-mainfg/60 text-mainfg/60 group-hover:border-mainfg/80 group-hover:text-mainfg/80
       focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
       transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
-				<!-- TODO: Chevron and text can overlap and button won't expand. needs fixing, especially for long names like Split Complementary  -->
 				{#each Object.entries(ColorHarmony).filter( ([key]) => isNaN(Number(key)), ) as [name, value]}
 					<option {value}>{name.split(/(?=[A-Z])/).join(" ")}</option>
 				{/each}
 			</select>
+
 			<!-- chevron svg -->
-			<!-- TODO: Chevron SVG is sligtly off coompared to the + svg and needs to be fixed fundamentally -->
 			<svg
-				class="absolute right-2 top-1/2 -translate-y-1/2 mr-1 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
-							 pointer-events-none transition-transform duration-300"
+				class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
+           pointer-events-none transition-transform duration-300"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -117,7 +114,7 @@
                    transform hover:scale-105 transition-all duration-300 ease-out"
 					on:click={() => colorThemer.reset()}
 				>
-					Reset pallete
+					Reset
 					<svg
 						viewBox="0 0 1024 1024"
 						class="w-4 h-4 self-center"
@@ -137,26 +134,27 @@
 
 			<input
 				bind:this={colorPickerElement}
-				class="h-8 min-w-8 bg-transparent cursor-pointer appearance-none self-center grow sm:shrink"
+				class="h-8 min-w-8 bg-transparent cursor-pointer appearance-none self-center grow md:shrink"
 				type="color"
 				bind:value={colorThemer.dominant}
 			/>
 		</div>
 
-		<!-- pallete visualization -->
-		<div class="flex flex-wrap gap-4 rounded-xl">
+		<div class="flex flex-wrap gap-2 rounded-xl grow">
 			{#each colorThemer.alts as altHex, index (index)}
-				<div
-					class="flex-1 w-24 truncate rounded-sm shadow-md transition-all hover:scale-105"
-					style="background-color: {altHex}"
+				<button
+					class="flex-1 w-24 overflow-hidden whitespace-nowrap rounded-sm shadow-md transition-all hover:scale-105 cursor-pointer select-none min-w-0"
+					style="background-color: {altHex}; 
+								 color: var(--color-alt{index + 1}fg)"
+					on:click={(e) => handleCopy(altHex, e)}
 				>
-					<div class="px-4 h-full flex items-center justify-center">
-						<span
-							class="font-bold text-sm truncate"
-							style="color: var(--color-alt{index + 1}fg)">{altHex}</span
-						>
-					</div>
-				</div>
+					<span
+						class="font-bold text-sm px-0.5"
+						style="color: var(--color-alt{index + 1}fg)"
+					>
+						{altHex}
+					</span>
+				</button>
 			{/each}
 		</div>
 	{/if}
