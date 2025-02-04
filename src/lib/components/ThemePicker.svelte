@@ -18,9 +18,7 @@
 <div class="flex flex-col md:flex-row gap-4 md:items-center w-full">
 	<!-- INFO: collapse button currently disabled, replaced flex with hidden -->
 	<button
-		class="group hidden flex-row gap-2 p-2 rounded-lg backdrop-blur-sm border-2 border-mainfg/60
-					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
-					 hover:bg-mainfg/10"
+		class="group hidden flex-row gap-2 justify-between crackedButton"
 		aria-label="Toggle theme settings"
 		on:click={() => (menuOpen = !menuOpen)}
 	>
@@ -51,8 +49,7 @@
 		>
 			<select
 				bind:value={colorThemer.colorHarmony}
-				class="appearance-none backdrop-blur-sm p-2 pr-8 rounded-lg mr-6 /* Added padding-right */
-      border-2 border-mainfg/60 text-mainfg/60 group-hover:border-mainfg/80 group-hover:text-mainfg/80
+				class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
       focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
       transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
@@ -83,10 +80,7 @@
 			{#if colorThemer.isDefault()}
 				<button
 					in:fade={{ duration: 200 }}
-					class="flex justify-between gap-2 p-2 rounded-lg hover:bg-mainfg/10
-							border-2 border-primaryfg/60 hover:border-primaryfg/80
-							text-mainfg/60 hover:text-mainfg/80 backdrop-blur-sm
-							transform hover:scale-105 transition-all duration-300 ease-out"
+					class="flex justify-between gap-2 crackedButton"
 					on:click={() => colorPickerElement.click()}
 				>
 					<span class="truncate">Select dominant</span>
