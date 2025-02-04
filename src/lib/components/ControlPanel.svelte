@@ -10,7 +10,7 @@
 					 hover:border-mainfg/80 transition-all duration-300 hover:scale-105 justify-between
 					  text-mainfg/60 hover:text-mainfg/80
 					 {palleteMenuOpen
-			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50'
+			? 'bg-linear-45 from-dominantbg/50 via-alt1bg/50 to-alt5bg/50 hover:bg-linear-20 hover:from-dominantbg/70 hover:via-alt1bg/70 hover:to-alt5bg/70'
 			: 'hover:bg-mainfg/10'}"
 		on:click={() => (palleteMenuOpen = !palleteMenuOpen)}
 	>
