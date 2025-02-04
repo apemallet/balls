@@ -73,15 +73,17 @@
 </script>
 
 <Modal bind:isOpen={showModal}>
-	<svelte:fragment slot="title">Winner History</svelte:fragment>
+	<svelte:fragment slot="title">Winner history</svelte:fragment>
 
 	<svelte:fragment slot="content">
-		<div class="flex gap-2 overflow-x-auto pb-2">
+		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
+			<div class="flex flex-row justify-between">
+				<p>Date picker</p>
+				<input type="date" bind:value={selectedDate} class="" />
+			</div>
 			{#each winnerHistory as entry (entry.date)}
 				<button
 					class="crackedButton"
-					class:bg-blue-600={selectedDate === entry.date}
-					class:text-white={selectedDate === entry.date}
 					onclick={() => (selectedDate = entry.date)}
 				>
 					{entry.date}
@@ -98,11 +100,13 @@
 						No winners on this day
 					</div>
 				{:else}
-					{#each currentHistEntry.winners as winner}
+					{#each currentHistEntry.winners as winner, i}
 						<div
-							class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors"
+							class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors gap-2"
 						>
+							<span class="text-mainfg/80">{i + 1}. </span>
 							<span class="text-mainfg/80">{winner.name}</span>
+							<span class="text-mainfg/80">{winner.timestamp}</span>
 							<button
 								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
 								onclick={() => {}}
