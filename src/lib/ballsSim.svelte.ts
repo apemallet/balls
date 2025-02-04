@@ -1,8 +1,8 @@
 import Matter from "$lib/svelteMatter.svelte";
-import { MatterSim } from "$lib/sim.svelte";
-import { type Body, type Bodies } from "matter-js";
+import {MatterSim} from "$lib/sim.svelte";
+import {type Body} from "matter-js";
 
-let { Engine, Render, Runner, Bodies, Composite, Body, Common, Events } =
+let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} =
   $derived(Matter() || Object);
 
 export class BallsSim extends MatterSim {
@@ -70,9 +70,9 @@ export class BallsSim extends MatterSim {
   ) {
     const degree = 0.3 * radius;
     const thickness = 0.1 * radius;
-    const tickLength = 0.25 * radius;
+    const tickLength = 0.3 * radius;
     const tickAmnt = Math.round(0.4 * Math.sqrt(radius));
-    const tickRadiusFactor = 1 - 0.02; // unit-less
+    const tickRadiusFactor = 1 - 0.01; // unit-less
     const color = options.render?.fillStyle;
 
     const segmentSize = (() => {
@@ -106,15 +106,25 @@ export class BallsSim extends MatterSim {
       parts.push(ringPart);
 
       if (i % tickSpacing === 0 && degree - i > 0.5 * tickSpacing) {
+        const tick = Bodies.fromVertices(0, 0, [[
+          {x: -1.4 * thickness, y: 0},
+          {x: 1.4 * thickness, y: 0},
+          {x: -.4 * thickness, y: tickLength},
+          {x: .4 * thickness, y: tickLength},
+        ]]);
+
+        // const tick = Bodies.polygon(0, 0, 3, thickness, {
+        //   render: {
+        //     fillStyle: color,
+        //   },
+        // });
+
         const tickX = x * tickRadiusFactor;
         const tickY = y * tickRadiusFactor;
-        const tick = Bodies.rectangle(tickX, tickY, thickness, tickLength, {
-          render: {
-            fillStyle: color,
-          },
-        });
 
-        Body.rotate(tick, theta + Math.PI / 2);
+        Body.rotate(tick, -Math.PI / 2);
+        Body.setPosition(tick, {x: tickX, y: tickY});
+        Body.rotate(tick, theta + Math.PI);
         parts.push(tick);
       }
     }
@@ -124,7 +134,7 @@ export class BallsSim extends MatterSim {
       ...options,
     });
 
-    Body.setPosition(wheel, { x: xOrigin, y: yOrigin });
+    Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
     return wheel;
   }
 }
