@@ -45,8 +45,7 @@ export function getThemer(): Themer {
   let dominant = $state(DEFAULT_DOMINANT);
   let mainBG = $state(MAIN_DARK);
   let mainFG = $state(MAIN_LIGHT);
-  // TODO: Since alts are now derived by colorHarmony, simon needs to add logic
-  // for colorHarmony changing to update ballsSim colors in his code
+
   let [alt1, alt2, alt3, alt4, alt5] = $derived.by(() => {
     switch (colorHarmony) {
       case ColorHarmony.Analogous:
