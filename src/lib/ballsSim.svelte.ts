@@ -12,8 +12,8 @@ export class BallsSim extends MatterSim {
 
   private readonly wheelRadius: number;
   private readonly wheel: Body;
-  private readonly tickets: Body[] = [];
   private readonly crankSim: CrankSim;
+  private tickets: Body[] = [];
   private spin: number = 0;
 
   private readonly ticketCollisionFilter = {
@@ -63,19 +63,10 @@ export class BallsSim extends MatterSim {
 
     // try to add new balls & garbage collect
     setInterval(() => {
-      let cull = new Set();
-
-      for (let i = 0; i < this.tickets.length; i++) {
-        const ticket = this.tickets[i];
-
-        if (ticket.position.y > this.height + 100) {
-          cull.add(ticket);
-        }
-      }
-
-      cull.forEach(ticket => {
-        Composite.remove(this.engine.world, ticket);
-        this.tickets.splice(this.tickets.indexOf(ticket), 1);
+      this.tickets = this.tickets.filter(ticket => {
+        const keep = ticket.position.y < this.height + 100;
+        if (!keep) Composite.remove(this.engine.world, ticket);
+        return keep;
       });
 
       this.tryAddBall();
@@ -200,8 +191,14 @@ export class BallsSim extends MatterSim {
     })
   }
 
+  private currentCapacity() {
+    const thresh = this.center[1] + this.wheelRadius * this.planck * 1.1;
+    return this.tickets.filter(ticket => ticket.position.y < thresh).length;
+  }
+
   public tryAddBall() {
-    if (this.tickets.length >= this.carryingCapacity) return;
+    console.log(this.currentCapacity())
+    if (this.tickets.length >= this.currentCapacity()) return;
 
     const ball = this.buildBall();
     ball.collisionFilter = this.ghostTicketCollisionFilter;
@@ -237,7 +234,7 @@ export class BallsSim extends MatterSim {
     // TODO: return ball data
     setTimeout(() => {
       const tickets = this.tickets.sort((a, b) => a.position.y - b.position.y);
-      const targetTicket = tickets.pop();
+      const targetTicket = tickets[0];
       targetTicket.collisionFilter = this.ghostTicketCollisionFilter;
       targetTicket.frictionAir = 0.04;
     }, 1000);
