@@ -4,17 +4,28 @@
 	let { showModal = $bindable(false) } = $props();
 
 	function clipboardToNamesArray() {
-		navigator.clipboard.readText().then((text) => {
-			const names: string[] = text.split(safeSeparator);
-			if (names.length > 0) {
-				if (!overWrite) {
-					namesList = namesList!.concat(names);
-				} else {
-					namesList = names;
-				}
-				localStorage.setItem("lotteryNames", JSON.stringify(namesList));
-			}
-		});
+			navigator.clipboard.readText().then((text) => {
+					const names: string[] = text.split(safeSeparator);
+					if (names.length === 0) return;
+
+					if (!overWrite) {
+							// Append mode
+							let namesToAdd = names;
+							
+							if (!allowDuplicates) {
+									// Deduplicate new names and remove existing ones
+									const uniqueNewNames = [...new Set(names)];
+									namesToAdd = uniqueNewNames.filter(name => !namesList!.includes(name));
+							}
+							
+							namesList = namesList!.concat(namesToAdd);
+					} else {
+							// Overwrite mode
+							namesList = allowDuplicates ? names : [...new Set(names)];
+					}
+
+					localStorage.setItem("lotteryNames", JSON.stringify(namesList));
+			});
 	}
 
 	let namesList: string[] | undefined = $state();
@@ -26,6 +37,7 @@
 	const safeSeparator = $derived(separator === "" ? "\n" : separator);
 
 	let overWrite = $state(false);
+	let allowDuplicates = $state(false);
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -59,9 +71,10 @@
 				class="appearance-none p-2 rounded-md border border-mainfg/20 flex-1"
 				placeholder="Separator (default newline)"
 				bind:value={separator} />
+			<div class="flex flex-row justify-between gap-4">
 			<button
-				class="crackedButton
-				{overWrite
+				class="crackedButton whitespace-nowrap
+				{!overWrite
 					? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
 					: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
 				"
@@ -76,6 +89,24 @@
 					No
 				{/if}
 				</button>
+				<button
+					class="crackedButton grow whitespace-nowrap
+					{!allowDuplicates
+						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
+						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+					"
+					onclick={() => {
+						allowDuplicates = !allowDuplicates;
+					}}
+					>
+					Allow duplicates: 
+					{#if allowDuplicates}
+						Yes
+					{:else}
+						No
+					{/if}
+				</button>
+			</div>
 		</div>
 
 		<!-- display list of names -->
