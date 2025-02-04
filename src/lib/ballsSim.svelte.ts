@@ -46,7 +46,7 @@ export class BallsSim extends MatterSim {
 
     this.tickets = Array(this.carryingCapacity)
       .fill(0)
-      .map(() => this.createBall());
+      .map(() => this.buildBall());
 
     this.wheelRadius = wheelRadius;
     const physicalWheelRadius = wheelRadius * this.planck;
@@ -56,7 +56,9 @@ export class BallsSim extends MatterSim {
       this.center[1],
       physicalWheelRadius);
 
-    Composite.add(this.engine.world, [this.wheel, ...this.tickets]);
+    const tray = this.buildTray();
+
+    Composite.add(this.engine.world, [tray, this.wheel, ...this.tickets]);
     this.reTheme();
 
     // try to add new balls & garbage collect
@@ -99,16 +101,15 @@ export class BallsSim extends MatterSim {
     }
   }
 
-  private createBall() {
+  private buildBall() {
     const size = Common.random(30, 70) * this.planck;
-    const ticket = Bodies.circle(...this.center, size, {
+    return Bodies.circle(...this.center, size, {
       restitution: 0.9,
       frictionAir: 0,
       friction: 0,
       frictionStatic: 0,
       collisionFilter: this.ticketCollisionFilter
     });
-    return ticket;
   }
 
   private buildWheel(
@@ -177,10 +178,32 @@ export class BallsSim extends MatterSim {
     return wheel;
   }
 
+  private buildTray() {
+    const thickness = 20;
+    const base = Bodies.rectangle(this.center[0], this.height, this.width, thickness);
+
+    const rightGuard = Bodies.rectangle(0, 0, thickness, this.height);
+    Body.rotate(rightGuard, .2 * Math.PI);
+    Body.setPosition(rightGuard, {x: this.width, y: this.height});
+
+    const leftGuard = Bodies.rectangle(0, 0, thickness, this.height);
+    Body.rotate(leftGuard, -.2 * Math.PI);
+    Body.setPosition(leftGuard, {x: 0, y: this.height});
+
+    return Body.create({
+      parts: [base, leftGuard, rightGuard],
+      isStatic: true,
+      render: {
+        visible: false
+      },
+      collisionFilter: this.ghostTicketCollisionFilter
+    })
+  }
+
   public tryAddBall() {
     if (this.tickets.length >= this.carryingCapacity) return;
 
-    const ball = this.createBall();
+    const ball = this.buildBall();
     ball.collisionFilter = this.ghostTicketCollisionFilter;
     ball.frictionAir = 0.04;
 
