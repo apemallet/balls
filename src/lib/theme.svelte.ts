@@ -148,6 +148,9 @@ export function getThemer(): Themer {
     get domAndAlts() {
       return [dominant, alt1, alt2, alt3, alt4, alt5];
     },
+    // TODO: Get alts variated. It returns a super long list
+    // of at least 25 to account for all balls and slightly
+    // variates the alt colors to add some depth
     reset() {
       dominant = DEFAULT_DOMINANT;
     },
