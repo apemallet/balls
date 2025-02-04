@@ -121,7 +121,6 @@ export class CrankSim extends MatterSim {
   }
 
   protected fixedUpdate(deltaTime: number): void {
-    console.log(Math.round(this.anger * 100) / 100)
     this.anger = Math.max(0, this.anger * (1 - 0.3 * deltaTime) - 0.1 * deltaTime);
     const angle = this.crank.angle;
 

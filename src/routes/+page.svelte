@@ -19,8 +19,8 @@
     if (!Matter()) return;
     if (!canvasBot) return;
     if (!canvasTop) return;
-    if (!balls) balls = new BallsSim(canvasBot, wheelRadius);
     if (!crank) crank = new CrankSim(canvasTop, wheelRadius + 5);
+    if (!balls) balls = new BallsSim(canvasBot, crank, wheelRadius);
   });
 
   $effect(() => {

@@ -1,17 +1,27 @@
 import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
 import {type Body} from "matter-js";
+import type {CrankSim} from "$lib/crankSim.svelte";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
+
+const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
   private readonly wheel: Body;
   private readonly tickets: Body[] = [];
+  private readonly crankSim: CrankSim;
+  private spin: number = 0;
+
+  private get anger() {
+    return this.crankSim.anger;
+  }
 
   // wheelRadius is in planck units
-  public constructor(canvas: HTMLCanvasElement, wheelRadius: number) {
+  public constructor(canvas: HTMLCanvasElement, crankSim: CrankSim, wheelRadius: number) {
     console.log("Initializing BALLS sim.");
     super(canvas);
+    this.crankSim = crankSim;
 
     this.tickets = Array(12)
       .fill(0)
@@ -47,10 +57,6 @@ export class BallsSim extends MatterSim {
       const colorId = i % this.theme.palette.length;
       ticket.render.fillStyle = this.theme.palette[colorId];
     }
-  }
-
-  protected fixedUpdate(deltaTime: number) {
-    Body.rotate(this.wheel, 0.5 * deltaTime);
   }
 
   private createTicket() {
@@ -137,6 +143,12 @@ export class BallsSim extends MatterSim {
 
     Body.setPosition(wheel, {x: xOrigin, y: yOrigin});
     return wheel;
+  }
+
+  protected fixedUpdate(deltaTime: number) {
+    const restSpin = 0.3 + 2 * Math.min(5, this.anger);
+    this.spin = lerp(this.spin, restSpin, 2 * deltaTime);
+    Body.rotate(this.wheel, this.spin * deltaTime);
   }
 }
 
