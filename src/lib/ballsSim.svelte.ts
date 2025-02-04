@@ -73,6 +73,11 @@ export class BallsSim extends MatterSim {
     }, 5000);
   }
 
+  private colorBallOf(i: number) {
+    const idx = i % this.theme.palette.length;
+    return this.theme.palette[idx];
+  }
+
   public reTheme(): void {
     // 1. Wheel color
 
@@ -84,23 +89,12 @@ export class BallsSim extends MatterSim {
 
     // 2. Ticket colors
 
-    for (const i in this.tickets) {
+    for (const i: number in this.tickets) {
       // TODO: change based on ticket data
       const ticket = this.tickets[i];
-      const colorId = i % this.theme.palette.length;
-      ticket.render.fillStyle = this.theme.palette[colorId];
+      const color = this.colorBallOf(i);
+      ticket.render.fillStyle = color;
     }
-  }
-
-  private buildBall() {
-    const size = Common.random(30, 70) * this.planck;
-    return Bodies.circle(...this.center, size, {
-      restitution: 0.9,
-      frictionAir: 0,
-      friction: 0,
-      frictionStatic: 0,
-      collisionFilter: this.ticketCollisionFilter
-    });
   }
 
   private buildWheel(
@@ -169,6 +163,20 @@ export class BallsSim extends MatterSim {
     return wheel;
   }
 
+  private buildBall() {
+    const size = Common.random(30, 70) * this.planck;
+    return Bodies.circle(...this.center, size, {
+      restitution: 0.9,
+      frictionAir: 0,
+      friction: 0,
+      frictionStatic: 0,
+      collisionFilter: this.ticketCollisionFilter,
+      render: {
+        fillStyle: this.colorBallOf(this.tickets.length)
+      }
+    });
+  }
+
   private buildTray() {
     const thickness = 20;
     const base = Bodies.rectangle(this.center[0], this.height, this.width, thickness);
@@ -197,8 +205,7 @@ export class BallsSim extends MatterSim {
   }
 
   public tryAddBall() {
-    console.log(this.currentCapacity())
-    if (this.tickets.length >= this.currentCapacity()) return;
+    if (this.carryingCapacity <= this.currentCapacity()) return;
 
     const ball = this.buildBall();
     ball.collisionFilter = this.ghostTicketCollisionFilter;
@@ -210,7 +217,6 @@ export class BallsSim extends MatterSim {
     });
 
     this.tickets.push(ball);
-    // this.reTheme(); // TODO: avoid reTheme by spawning in with correct color
     Composite.add(this.engine.world, [ball]);
 
     // try to catch the ball
