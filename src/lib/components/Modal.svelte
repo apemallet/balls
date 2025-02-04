@@ -2,44 +2,61 @@
 	import { fade, scale } from "svelte/transition";
 	export let isOpen: boolean = false;
 
-	function closeModal() {
+	function closeModal(src: string) {
+		console.log(src);
 		isOpen = false;
 	}
 </script>
 
 {#if isOpen}
 	<div
-		role="dialog"
-		class="fixed inset-0 z-50 bg-mainfg/20 backdrop-blur-sm transition-all duration-300"
-		on:click={closeModal}
+		role="button"
+		tabindex="0"
+		class="fixed inset-0 z-50 bg-mainfg/10 backdrop-blur-sm transition-all duration-300"
+		on:click={() => closeModal("backgroud")}
+		on:keydown={(e) => e.key === "Enter" && closeModal("backgrun key")}
 		transition:fade={{ duration: 200 }}
-	>
-		<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
-			<div
-				class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-md w-full
-               border border-gray-200"
-				transition:scale={{ duration: 150 }}
-			>
-				<!-- Content Slot -->
-				<div class="space-y-4">
-					<h2 class="text-xl font-semibold text-mainfg/80">
-						<slot name="title">Default title</slot>
-					</h2>
+	></div>
+	<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
+		<div
+			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-md w-full gradient-border"
+			transition:scale={{ duration: 150 }}
+		>
+			<!-- content slots -->
+			<div class="space-y-4">
+				<h2 class="text-xl font-semibold text-mainfg/80">
+					<slot name="title">Default title</slot>
+				</h2>
 
-					<p class="text-mainfg/80">
-						<slot name="content">
-							This is a default modal content. Add your message here.
-						</slot>
-					</p>
-				</div>
+				<p class="text-mainfg/80">
+					<slot name="content">
+						This is a default modal content. Add your message here.
+					</slot>
+				</p>
+			</div>
 
-				<!-- Close Button -->
-				<div class="mt-6 flex justify-end">
-					<button on:click={closeModal} class="px-4 py-2 crackedButton">
-						Close
-					</button>
-				</div>
+			<!-- universal close button -->
+			<div class="mt-6 flex justify-end">
+				<button
+					on:click={() => closeModal("close")}
+					class="px-4 py-2 crackedButton"
+				>
+					Close
+				</button>
 			</div>
 		</div>
 	</div>
 {/if}
+
+<style>
+	.gradient-border {
+		border: 2px solid transparent;
+		border-image: linear-gradient(
+			45deg,
+			var(--color-dominantbg),
+			var(--color-alt1bg),
+			var(--color-alt5bg)
+		);
+		border-image-slice: 1;
+	}
+</style>
