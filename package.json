@@ -23,7 +23,9 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.2",
     "@types/matter-js": "^0.19.8",
+    "@vercel/analytics": "^1.4.1",
     "chroma.ts": "^1.0.10",
+    "i": "^0.3.7",
     "matter-js": "^0.20.0",
     "tailwindcss": "^4.0.2"
   }
