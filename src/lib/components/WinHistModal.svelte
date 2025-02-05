@@ -108,31 +108,34 @@
 			</button>
 		</div>
 
-		<div class="bg-mainbg/50 rounded-md border border-mainfg/20 mt-4">
-			<div
-				class="grid md:grid-cols-2 gap-2 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent"
-			>
-				{#if !currentHistEntry}
-					<div class="text-center p-4 text-mainfg/50 italic">
-						No winners on this day
-					</div>
-				{:else}
-					{#each currentHistEntry.winners as winner, i}
-						<div
-							class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors gap-2"
-						>
-							<span class="text-mainfg/80">{i + 1}. </span>
+		<div
+			class="max-h-[31dvh] overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent
+						bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
+		>
+			{#if !currentHistEntry}
+				<div class="text-center p-4 text-mainfg/50 italic">
+					No winners on this day
+				</div>
+			{:else}
+				{#each currentHistEntry.winners as winner, i}
+					<div
+						class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors gap-2"
+					>
+						<div class="flex flex-row gap-2">
+							<span class="min-w-6">{i + 1}</span>
 							<span class="text-mainfg/80">{winner.name}</span>
-							<button
-								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
-								onclick={() => deleteEntry(i)}
-							>
-								x
-							</button>
 						</div>
-					{/each}
-				{/if}
-			</div>
+						<button
+							class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
+							onclick={() => {
+								deleteEntry(i);
+							}}
+						>
+							x
+						</button>
+					</div>
+				{/each}
+			{/if}
 		</div>
 	</svelte:fragment>
 </Modal>
