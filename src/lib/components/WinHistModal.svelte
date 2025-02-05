@@ -143,7 +143,7 @@
 							? 'bg-green-500/10 hover:!bg-green-500/20'
 							: 'bg-red-500/10 hover:!bg-red-500/20'}"
 					>
-						<div class="flex flex-row gap-2">
+						<div class="flex flex-row gap-2 min-w-0">
 							<span class="min-w-6 self-center">{i + 1}</span>
 							<span class="text-mainfg/80 self-center">{winner.name}</span>
 						</div>
@@ -155,6 +155,7 @@
 									openMenuId = openMenuId === winner.id ? null : winner.id;
 								}}
 							>
+								<!-- cogwheel svg -->
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 512 512"
