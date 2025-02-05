@@ -5,7 +5,7 @@
 	export let winHistModalOpen: boolean;
 </script>
 
-<div class="flex gap-3 items-center gradient-border p-4 bg-dominantbg/5">
+<div class="flex gap-3 items-center gradient-border p-4 bg-mainbg/50">
 	<!-- pallete menu button -->
 	<button
 		class="group flex flex-row gap-2 justify-between crackedButton
