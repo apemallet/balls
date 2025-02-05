@@ -135,32 +135,34 @@
 			{:else}
 				{#each currentHistEntry.winners as winner, i}
 					<div
-						class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors gap-2"
+						class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md transition-colors gap-2
+								{winner.markedPresent
+							? 'bg-green-500/10 hover:!bg-green-500/20'
+							: 'bg-red-500/10 hover:!bg-red-500/20'}"
 					>
 						<div class="flex flex-row gap-2">
 							<span class="min-w-6 self-center">{i + 1}</span>
 							<span class="text-mainfg/80 self-center">{winner.name}</span>
 						</div>
-						<div class="flex flex-row gap-2 flex-wrap">
-							<button
-								class="{winner.markedPresent
-									? 'bg-green-500/10 hover:!bg-green-500/20'
-									: 'bg-red-500/10 hover:!bg-red-500/20'} p-1 rounded-sm crackedButton"
-								onclick={() => {
-									togglePresent(winner.id);
-								}}
-							>
-								present?
-							</button>
-							<button
-								class="crackedButton text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 hover:bg-red-500/20 p-1 rounded-sm"
-								onclick={() => {
-									deleteEntry(i);
-								}}
-							>
-								x
-							</button>
-						</div>
+						<!-- <button -->
+						<!-- 	class=" -->
+						<!-- 		{winner.markedPresent -->
+						<!-- 		? 'bg-green-500/10 hover:!bg-green-500/20' -->
+						<!-- 		: 'bg-red-500/10 hover:!bg-red-500/20'} p-1 rounded-sm crackedButton" -->
+						<!-- 	onclick={() => { -->
+						<!-- 		togglePresent(winner.id); -->
+						<!-- 	}} -->
+						<!-- > -->
+						<!-- 	present? -->
+						<!-- </button> -->
+						<button
+							class="crackedButton text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 hover:bg-red-500/20 p-1 rounded-sm"
+							onclick={() => {
+								deleteEntry(i);
+							}}
+						>
+							...
+						</button>
 					</div>
 				{/each}
 			{/if}
