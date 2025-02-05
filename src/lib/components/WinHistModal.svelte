@@ -109,8 +109,8 @@
 		</div>
 
 		<div
-			class="max-h-[31dvh] overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent
-						bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
+			class="max-h-[31dvh] grid md:grid-cols-2 col-span-3 gap-2 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-mainfg/20
+						scrollbar-track-transparent bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
 		>
 			{#if !currentHistEntry}
 				<div class="text-center p-4 text-mainfg/50 italic">
@@ -122,11 +122,11 @@
 						class="flex items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors gap-2"
 					>
 						<div class="flex flex-row gap-2">
-							<span class="min-w-6">{i + 1}</span>
-							<span class="text-mainfg/80">{winner.name}</span>
+							<span class="min-w-6 self-center">{i + 1}</span>
+							<span class="text-mainfg/80 self-center">{winner.name}</span>
 						</div>
 						<button
-							class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
+							class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 hover:bg-red-500/20 p-1 rounded-sm"
 							onclick={() => {
 								deleteEntry(i);
 							}}
