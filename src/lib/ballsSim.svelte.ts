@@ -190,19 +190,17 @@ export class BallsSim extends MatterSim {
   }
 
   private buildTray() {
-    const thickness = 20;
-    const base = Bodies.rectangle(this.center[0], this.height, this.width, thickness);
+    const thick = 20;
+    const halfWidth = this.center[0];
+    const halfHeight= this.center[1];
 
-    const rightGuard = Bodies.rectangle(0, 0, thickness, this.height);
-    Body.rotate(rightGuard, .2 * Math.PI);
-    Body.setPosition(rightGuard, {x: this.width, y: this.height});
-
-    const leftGuard = Bodies.rectangle(0, 0, thickness, this.height);
-    Body.rotate(leftGuard, -.2 * Math.PI);
-    Body.setPosition(leftGuard, {x: 0, y: this.height});
+    const bottom = Bodies.rectangle(halfWidth, this.height, this.width, thick);
+    const left = Bodies.rectangle(-thick/2, halfHeight, thick, this.height);
+    const right = Bodies.rectangle(this.width + thick/2, halfHeight, thick, this.height);
+    const top = Bodies.rectangle(halfWidth, -30 * this.planck, this.width, thick);
 
     return Body.create({
-      parts: [base, leftGuard, rightGuard],
+      parts: [ bottom, left, right, top ],
       isStatic: true,
       render: {
         visible: false
