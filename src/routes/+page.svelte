@@ -102,6 +102,11 @@
 		winHistModal.togglePresent(lastWinner!.id);
 		lastWinner!.markedPresent = !lastWinner!.markedPresent;
 	}
+
+	function countWins(): [number, number, number] | undefined {
+		if (!lastWinner) return;
+		return winHistModal.countWins(lastWinner!.name);
+	}
 </script>
 
 <svelte:window on:resize={onResize} />
@@ -111,7 +116,12 @@
 </div>
 
 <div class="fixed z-30 top-0">
-	<WinModal winner={lastWinner} {togglePresent} bind:showModal={winModalOpen} />
+	<WinModal
+		winner={lastWinner}
+		{togglePresent}
+		{countWins}
+		bind:showModal={winModalOpen}
+	/>
 </div>
 
 <div class="fixed z-30 top-0">

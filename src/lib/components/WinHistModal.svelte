@@ -7,7 +7,7 @@
 	let { showModal = $bindable(false) } = $props();
 	let winnerHistory = $state<WinnerHistoryEntry[]>([]);
 	let selectedDate = $state<string>(getLocalDateString(new Date()));
-	let openMenuId = $state<number | null>(null); // mini ... menu state
+	let openMenuId = $state<number | null>(null); // mini menu state
 
 	function getLocalDateString(date: Date): string {
 		const year = date.getFullYear();
@@ -113,37 +113,32 @@
 		winner.markedPresent = !winner.markedPresent;
 	}
 
-	function countWins(name: string): number {
-		return winnerHistory.reduce((acc, entry) => {
-			return (
-				acc +
-				entry.winners.reduce((acc, winner) => {
-					return acc + (winner.name === name ? 1 : 0);
-				}, 0)
-			);
-		}, 0);
-	}
+	export function countWins(name: string): [number, number, number] {
+		return winnerHistory.reduce(
+			([totalWins, totalAbsent, totalPresent], entry) => {
+				let winsInEntry = 0;
+				let absentInEntry = 0;
+				let presentInEntry = 0;
 
-	function countAbsent(name: string): number {
-		return winnerHistory.reduce((acc, entry) => {
-			return (
-				acc +
-				entry.winners.reduce((acc, winner) => {
-					return acc + (winner.name === name && !winner.markedPresent ? 1 : 0);
-				}, 0)
-			);
-		}, 0);
-	}
+				for (const winner of entry.winners) {
+					if (winner.name === name) {
+						winsInEntry++;
+						if (!winner.markedPresent) {
+							absentInEntry++;
+						} else {
+							presentInEntry++;
+						}
+					}
+				}
 
-	function countPresent(name: string): number {
-		return winnerHistory.reduce((acc, entry) => {
-			return (
-				acc +
-				entry.winners.reduce((acc, winner) => {
-					return acc + (winner.name === name && winner.markedPresent ? 1 : 0);
-				}, 0)
-			);
-		}, 0);
+				return [
+					totalWins + winsInEntry,
+					totalAbsent + absentInEntry,
+					totalPresent + presentInEntry,
+				];
+			},
+			[0, 0, 0] as [number, number, number],
+		);
 	}
 </script>
 
@@ -212,18 +207,18 @@
 									<div class="flex flex-col gap-1 p-1 min-w-32">
 										<div class="self-center">
 											<span class="font-bold gradient-text">
-												{#if countWins(winner.name) != 1}
-													{countWins(winner.name)} wins
+												{#if countWins(winner.name)[0] != 1}
+													{countWins(winner.name)[0]} wins
 												{:else}
-													{countWins(winner.name)} win
+													{countWins(winner.name)[0]} win
 												{/if}
 											</span>
 											(<span class="text-green-500/80"
-												>{countPresent(winner.name)}</span
+												>{countWins(winner.name)[2]}</span
 											>
 											+
 											<span class="text-red-500/80"
-												>{countAbsent(winner.name)}</span
+												>{countWins(winner.name)[1]}</span
 											>)
 										</div>
 										<button
