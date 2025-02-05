@@ -6,6 +6,7 @@
 		id: number;
 		name: string;
 		timestamp: string; // exact time
+		markedPresent: boolean;
 	}
 
 	interface WinnerHistoryEntry {
@@ -53,6 +54,7 @@
 			id: Date.now(),
 			name,
 			timestamp,
+			markedPresent: false,
 		};
 
 		const dateEntry = winnerHistory.find((entry) => entry.date === today);
@@ -92,6 +94,20 @@
 		const curEntry = winnerHistory.find((e) => e.date === selectedDate);
 		curEntry?.winners.splice(i, 1);
 	}
+
+	function togglePresent(id: number) {
+		const curEntry = winnerHistory.find((e) => e.date === selectedDate);
+		if (!curEntry) {
+			console.error("No entry found for date", selectedDate);
+			return;
+		}
+		const winner = curEntry.winners.find((w) => w.id === id);
+		if (!winner) {
+			console.error("No winner found with id", id);
+			return;
+		}
+		winner.markedPresent = !winner.markedPresent;
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -125,14 +141,26 @@
 							<span class="min-w-6 self-center">{i + 1}</span>
 							<span class="text-mainfg/80 self-center">{winner.name}</span>
 						</div>
-						<button
-							class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 hover:bg-red-500/20 p-1 rounded-sm"
-							onclick={() => {
-								deleteEntry(i);
-							}}
-						>
-							x
-						</button>
+						<div class="flex flex-row gap-2 flex-wrap">
+							<button
+								class="{winner.markedPresent
+									? 'bg-green-500/10 hover:!bg-green-500/20'
+									: 'bg-red-500/10 hover:!bg-red-500/20'} p-1 rounded-sm crackedButton"
+								onclick={() => {
+									togglePresent(winner.id);
+								}}
+							>
+								present?
+							</button>
+							<button
+								class="crackedButton text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 hover:bg-red-500/20 p-1 rounded-sm"
+								onclick={() => {
+									deleteEntry(i);
+								}}
+							>
+								x
+							</button>
+						</div>
 					</div>
 				{/each}
 			{/if}
