@@ -142,7 +142,7 @@
 	}
 
 	let menuTop = $state<number>(0);
-	let menuRight = $state<number>(0);
+	let menuLeft = $state<number>(0);
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -188,8 +188,8 @@
 									e.stopPropagation();
 									const cogWheel = e.currentTarget.getBoundingClientRect();
 									const modalEl = document.getElementById("modal")!;
-									menuTop = cogWheel.bottom -modalEl.getBoundingClientRect().top;
-									menuRight = cogWheel.left -modalEl.getBoundingClientRect().left;
+									menuTop = cogWheel.bottom - modalEl.getBoundingClientRect().top;
+									menuLeft = cogWheel.left - modalEl.getBoundingClientRect().left;
 									openMenuId = openMenuId === winner.id ? null : winner.id;
 								}}
 							>
@@ -209,7 +209,7 @@
 							{#if openMenuId === winner.id}
 								<div
 									class="fixed bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
-									style="top: {menuTop}px; right: {menuRight}px;"
+									style="top: {menuTop}px; left: {menuLeft}px;"
 									transition:slide={{ duration: 200 }}
 								>
 									<div class="flex flex-col gap-1 p-1 min-w-32">
