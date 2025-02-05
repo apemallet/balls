@@ -66,10 +66,20 @@
 
 	let currentHistEntry: WinnerHistoryEntry | null = $derived.by(() => {
 		const curHist = winnerHistory.find((e) => e.date === selectedDate);
-		console.log(curHist);
 		if (curHist) return curHist;
 		return null;
 	});
+
+	function copyWinnersList() {
+		if (!currentHistEntry) return;
+
+		const names = currentHistEntry.winners.map((w) => w.name);
+		const text = names.join("\n");
+
+		navigator.clipboard.writeText(text).catch((e) => {
+			console.error("Failed to copy text:", e);
+		});
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -77,18 +87,13 @@
 
 	<svelte:fragment slot="content">
 		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
-			<div class="flex flex-row justify-between">
+			<div class="flex flex-row justify-between gap-2">
 				<p>Date picker</p>
-				<input type="date" bind:value={selectedDate} class="" />
+				<input type="date" bind:value={selectedDate} />
 			</div>
-			{#each winnerHistory as entry (entry.date)}
-				<button
-					class="crackedButton"
-					onclick={() => (selectedDate = entry.date)}
-				>
-					{entry.date}
-				</button>
-			{/each}
+			<button class="crackedButton" on:click={copyWinnersList}>
+				Copy as list
+			</button>
 		</div>
 
 		<div class="bg-mainbg/50 rounded-md border border-mainfg/20 mt-4">
@@ -107,12 +112,6 @@
 							<span class="text-mainfg/80">{i + 1}. </span>
 							<span class="text-mainfg/80">{winner.name}</span>
 							<span class="text-mainfg/80">{winner.timestamp}</span>
-							<button
-								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
-								onclick={() => {}}
-							>
-								x
-							</button>
 						</div>
 					{/each}
 				{/if}
