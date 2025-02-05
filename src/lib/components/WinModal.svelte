@@ -46,8 +46,8 @@
 		<button
 			class="crackedButton w-full
 				{winner?.markedPresent
-				? 'bg-green-500/10 hover:bg-green-500/20!'
-				: 'bg-red-500/20 hover:bg-red-500/20!'}
+				? 'bg-green-500/10 hover:bg-green-500/20! border-green-500/20 hover:border-green-500/40!'
+				: 'bg-red-500/20 hover:bg-red-500/20! border-red-500/20 hover:border-red-500/40!'}
 			"
 			onclick={() => togglePresent()}
 		>

@@ -74,7 +74,7 @@
 			class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4"
 		>
 			<div class="flex flex-row justify-between gap-4 ">
-				<p class="self-center">Clipboard import</p>
+				<p class="self-center">Import from clipboard</p>
 				<button class="crackedButton flex flex-row gap-2 justify-between flex-0"
 					onclick={clipboardToNamesArray}>
 					<div class="self-center">
@@ -98,10 +98,10 @@
 				bind:value={separator} />
 			<div class="flex flex-row justify-between gap-4">
 				<button
-					class="crackedButton whitespace-nowrap
+					class="crackedButton whitespace-nowrap grow
 					{!overWrite
-						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
-						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+						? 'bg-red-500/10! hover:bg-red-500/20!'
+						: 'bg-green-500/10! hover:bg-green/20!'}
 					"
 					onclick={() => {
 						overWrite = !overWrite;
@@ -115,10 +115,10 @@
 					{/if}
 				</button>
 				<button
-					class="crackedButton whitespace-nowrap
+					class="crackedButton whitespace-nowrap grow
 					{!allowDuplicates
-						? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
-						: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+						? 'bg-red-500/10! hover:bg-red-500/20!'
+						: 'bg-green-500/10! hover:bg-green/20!'}
 					"
 					onclick={() => {
 						allowDuplicates = !allowDuplicates;
@@ -135,8 +135,8 @@
 			<button
 				class="crackedButton whitespace-nowrap
 				{!trimWhiteSpace
-					? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/80 hover:border-red-500'
-					: 'bg-green-500/10 hover:bg-green/20 border-green-500/80 hover:border-green-500'}
+					? 'bg-red-500/10 hover:bg-red-500/20!'
+					: 'bg-green-500/10 hover:bg-green-500/20!'}
 				"
 				onclick={() => {
 					trimWhiteSpace = !trimWhiteSpace;
