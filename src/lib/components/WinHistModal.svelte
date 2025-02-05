@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
 	import Modal from "./Modal.svelte";
+	import { slide } from "svelte/transition";
 	import { type Winner, type WinnerHistoryEntry } from "$lib/winTypes";
 
 	let { showModal = $bindable(false) } = $props();
@@ -161,8 +162,8 @@
 		</div>
 
 		<div
-			class="max-h-[31dvh] grid md:grid-cols-2 col-span-3 gap-2 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-mainfg/20
-						scrollbar-track-transparent bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
+			class="max-h-[31dvh] grid md:grid-cols-2 col-span-3 gap-2 overflow-y-auto p-2
+						bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
 		>
 			{#if !currentHistEntry}
 				<div class="text-center p-4 text-mainfg/50 italic col-span-2">
@@ -206,11 +207,16 @@
 							{#if openMenuId === winner.id}
 								<div
 									class="absolute right-0 top-full bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
+									transition:slide={{ duration: 200 }}
 								>
 									<div class="flex flex-col gap-1 p-1 min-w-32">
 										<div class="self-center">
-											<span class="font-bold gradient-text"
-												>{countWins(winner.name)} wins
+											<span class="font-bold gradient-text">
+												{#if countWins(winner.name) != 1}
+													{countWins(winner.name)} wins
+												{:else}
+													{countWins(winner.name)} win
+												{/if}
 											</span>
 											(<span class="text-green-500/80"
 												>{countPresent(winner.name)}</span
