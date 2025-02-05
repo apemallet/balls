@@ -179,7 +179,7 @@
 				</div>
 			{/if}
 
-			<!-- Global settings -->
+			<!-- global settings -->
 			<button
 				class="crackedButton whitespace-nowrap overflow-hidden
 					{!trimWhiteSpace
@@ -190,6 +190,7 @@
 				Trim whitespace: {trimWhiteSpace ? 'Yes' : 'No'}
 			</button>
 		</div>
+
 		<!-- display list of names -->
 		<div
 			class="bg-mainbg/50 rounded-md border border-mainfg/20 mt-4 max-h-64 overflow-y-auto p-2 space-y-2 "
@@ -201,7 +202,7 @@
 			{:else}
 				{#each namesList! as name, i}
 					<div
-						class="inline-flex w-full items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors"
+						class="inline-flex w-full items-center justify-between p-2 bg-mainfg/5 rounded-md hover:bg-mainfg/10 transition-colors break-words"
 					>
 						<span class="text-mainfg/80 min-w-0">{i + 1}. {name.trim()}</span>
 						<button
