@@ -145,7 +145,7 @@
 	let menuLeft = $state<number>(0);
 </script>
 
-<Modal bind:isOpen={showModal}>
+<Modal bind:isOpen={showModal} id="histModal">
 	<svelte:fragment slot="title">Winner history</svelte:fragment>
 
 	<svelte:fragment slot="content">
@@ -182,14 +182,12 @@
 							>
 						</div>
 						<div class="relative">
-						<!-- TODO: there is a niche bug where if multiple modals exist then the location of the minimenu will be -->
-						<!-- positioned to the wrong one -->
 							<button
 								class="crackedButton text-mainfg/60 hover:text-mainfg/80 transition-colors bg-mainfg/10 hover:bg-mainfg/20 p-1! rounded-sm"
 								onclick={(e) => {
 									e.stopPropagation();
 									const cogWheel = e.currentTarget.getBoundingClientRect();
-									const modalEl = document.getElementById("modal")!;
+									const modalEl = document.getElementById("histModal")!;
 									menuTop = cogWheel.bottom - modalEl.getBoundingClientRect().top;
 									menuLeft = cogWheel.left - modalEl.getBoundingClientRect().left;
 									openMenuId = openMenuId === winner.id ? null : winner.id;

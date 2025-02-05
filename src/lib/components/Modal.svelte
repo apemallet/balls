@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade, scale } from "svelte/transition";
-	let { isOpen = $bindable(false) } = $props();
+	let { isOpen = $bindable(false), id = "modal" } = $props();
 
 	function closeModal() {
 		isOpen = false;
@@ -17,7 +17,7 @@
 		transition:fade={{ duration: 200 }}
 	></div>
 	<div
-		id="modal"
+		{id}
 		class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60"
 	>
 		<div
