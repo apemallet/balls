@@ -83,37 +83,37 @@
 	<svelte:fragment slot="title">Manage lottery names</svelte:fragment>
 
 	<svelte:fragment slot="content">
-		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
-			<div
-				class="relative group min-w-fit transition-all duration-300"
+		<div
+			class="relative group min-w-fit transition-all duration-300 pb-4"
+		>
+			<select
+				bind:value={importType}
+				class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
+			focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
+			transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
-				<select
-					bind:value={importType}
-					class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
-				focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
-				transform transition-all duration-300 ease-out cursor-pointer w-full"
-				>
-					<option value="clipboard">Import from clipboard</option>
-					<option value="manual">Add manually</option>
-				</select>
+				<option value="clipboard">Import from clipboard</option>
+				<option value="manual">Add manually</option>
+			</select>
 
-				<!-- chevron svg -->
-				<svg
-					class="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
-						 pointer-events-none transition-transform duration-300"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width={2}
-						d="M19 9l-7 7-7-7"
-					/>
-				</svg>
-			</div>
+			<!-- chevron svg -->
+			<svg
+				class="absolute right-2 top-3 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
+					 pointer-events-none transition-transform duration-300 group-hover:scale-105"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width={2}
+					d="M19 9l-7 7-7-7"
+				/>
+			</svg>
+		</div>
 
+		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
 			{#if importType === 'clipboard'}
 				<!-- Clipboard import section -->
 				<div class="flex flex-row justify-between gap-4">
