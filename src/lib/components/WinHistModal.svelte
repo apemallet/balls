@@ -111,6 +111,39 @@
 		}
 		winner.markedPresent = !winner.markedPresent;
 	}
+
+	function countWins(name: string): number {
+		return winnerHistory.reduce((acc, entry) => {
+			return (
+				acc +
+				entry.winners.reduce((acc, winner) => {
+					return acc + (winner.name === name ? 1 : 0);
+				}, 0)
+			);
+		}, 0);
+	}
+
+	function countAbsent(name: string): number {
+		return winnerHistory.reduce((acc, entry) => {
+			return (
+				acc +
+				entry.winners.reduce((acc, winner) => {
+					return acc + (winner.name === name && !winner.markedPresent ? 1 : 0);
+				}, 0)
+			);
+		}, 0);
+	}
+
+	function countPresent(name: string): number {
+		return winnerHistory.reduce((acc, entry) => {
+			return (
+				acc +
+				entry.winners.reduce((acc, winner) => {
+					return acc + (winner.name === name && winner.markedPresent ? 1 : 0);
+				}, 0)
+			);
+		}, 0);
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -123,7 +156,7 @@
 				<input type="date" bind:value={selectedDate} />
 			</div>
 			<button class="crackedButton" onclick={copyWinnersList}>
-				Copy as list
+				Copy winners as list
 			</button>
 		</div>
 
@@ -171,9 +204,21 @@
 								<div
 									class="absolute right-0 top-full bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
 								>
-									<div class="flex flex-col gap-1 p-1 min-w-[120px]">
+									<div class="flex flex-col gap-1 p-1 min-w-32">
+										<div class="self-center">
+											<span class="font-bold gradient-text"
+												>{countWins(winner.name)} wins
+											</span>
+											(<span class="text-green-500/80"
+												>{countPresent(winner.name)}</span
+											>
+											+
+											<span class="text-red-500/80"
+												>{countAbsent(winner.name)}</span
+											>)
+										</div>
 										<button
-											class="crackedButton text-sm px-2 py-1 hover:bg-mainfg/10 text-left"
+											class="crackedButton text-sm py-1! px-2! hover:bg-mainfg/10 text-left"
 											onclick={() => {
 												togglePresent(winner.id);
 												openMenuId = null;
@@ -182,7 +227,7 @@
 											{winner.markedPresent ? "Mark Absent" : "Mark Present"}
 										</button>
 										<button
-											class="crackedButton text-sm px-2 py-1 hover:bg-red-500/10 text-red-500/80 text-left"
+											class="crackedButton text-sm py-1! px-2! hover:bg-red-500/10 text-red-500/80 text-left"
 											onclick={() => {
 												deleteEntry(i);
 												openMenuId = null;
@@ -200,3 +245,21 @@
 		</div>
 	</svelte:fragment>
 </Modal>
+
+<style>
+	.gradient-text {
+		background-image: linear-gradient(
+			45deg,
+			var(--color-dominantbg),
+			var(--color-alt1bg),
+			var(--color-alt2bg),
+			var(--color-alt3bg),
+			var(--color-alt4bg),
+			var(--color-alt5bg)
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		display: inline-block;
+	}
+</style>
