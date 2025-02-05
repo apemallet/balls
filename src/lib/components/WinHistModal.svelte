@@ -165,7 +165,7 @@
 						scrollbar-track-transparent bg-mainbg/50 rounded-md border border-mainfg/20 mt-4"
 		>
 			{#if !currentHistEntry}
-				<div class="text-center p-4 text-mainfg/50 italic">
+				<div class="text-center p-4 text-mainfg/50 italic col-span-2">
 					No winners on this day
 				</div>
 			{:else}
@@ -178,7 +178,9 @@
 					>
 						<div class="flex flex-row gap-2 min-w-0">
 							<span class="min-w-6 self-center">{i + 1}</span>
-							<span class="text-mainfg/80 self-center">{winner.name}</span>
+							<span class="text-mainfg/80 self-center overflow-hidden"
+								>{winner.name}</span
+							>
 						</div>
 						<div class="relative">
 							<button
@@ -200,6 +202,7 @@
 									/></svg
 								>
 							</button>
+							<!-- TODO: opening menu when at bottom will cause a scrollbar -->
 							{#if openMenuId === winner.id}
 								<div
 									class="absolute right-0 top-full bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
