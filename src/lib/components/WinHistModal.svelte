@@ -1,18 +1,7 @@
 <script lang="ts">
-	import Modal from "./Modal.svelte";
 	import { browser } from "$app/environment";
-
-	interface Winner {
-		id: number;
-		name: string;
-		timestamp: string; // exact time
-		markedPresent: boolean;
-	}
-
-	interface WinnerHistoryEntry {
-		date: string; // Date (YYYY-MM-DD format)
-		winners: Winner[];
-	}
+	import Modal from "./Modal.svelte";
+	import { type Winner, type WinnerHistoryEntry } from "$lib/winTypes";
 
 	let { showModal = $bindable(false) } = $props();
 	let winnerHistory = $state<WinnerHistoryEntry[]>([]);
@@ -57,7 +46,7 @@
 	});
 
 	// Add winner and store
-	export function addWinner(name: string): void {
+	export function addWinner(name: string): Winner {
 		const now = new Date();
 		const today = getLocalDateString(now);
 		const timestamp = now.toLocaleTimeString();
@@ -83,6 +72,8 @@
 			];
 			selectedDate = today;
 		}
+
+		return newWinner;
 	}
 
 	let currentHistEntry: WinnerHistoryEntry | null = $derived.by(() => {
@@ -107,7 +98,7 @@
 		curEntry?.winners.splice(i, 1);
 	}
 
-	function togglePresent(id: number) {
+	export function togglePresent(id: number) {
 		const curEntry = winnerHistory.find((e) => e.date === selectedDate);
 		if (!curEntry) {
 			console.error("No entry found for date", selectedDate);

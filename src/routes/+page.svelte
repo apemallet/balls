@@ -6,6 +6,7 @@
 	import WinModal from "$lib/components/WinModal.svelte";
 	import WinHistModal from "$lib/components/WinHistModal.svelte";
 	import Matter from "$lib/svelteMatter.svelte";
+	import { type Winner } from "$lib/winTypes";
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
 	import { getThemer } from "$lib/theme.svelte";
@@ -17,7 +18,7 @@
 	let crank: CrankSim;
 	let canCrank = $state(true); // prevents rapid cranking
 
-	let lastWinner = $state("?"); // initial value should be unreachable
+	let lastWinner: Winner | undefined = $state(); // initial value should be unreachable
 	const wheelRadius = 300; // in planck units
 
 	// maintain theme
@@ -65,9 +66,9 @@
 			if (!balls) return;
 			balls.onReveal.do((i: number) => {
 				canCrank = true;
-				lastWinner = importModal.nameOf(i);
-				if (!lastWinner) return;
-				winHistModal.addWinner(lastWinner);
+				const winnerName = importModal.nameOf(i);
+				if (!winnerName) return;
+				lastWinner = winHistModal.addWinner(winnerName);
 				winModalOpen = true;
 			});
 		});
@@ -95,6 +96,12 @@
 			balls?.destroy();
 		};
 	});
+
+	function togglePresent() {
+		if (!lastWinner) return;
+		winHistModal.togglePresent(lastWinner!.id);
+		lastWinner!.markedPresent = !lastWinner!.markedPresent;
+	}
 </script>
 
 <svelte:window on:resize={onResize} />
@@ -103,19 +110,19 @@
 	<ThemePicker bind:menuOpen={palleteMenuOpen} />
 </div>
 
-<div class="fixed z-30 top-0 p-4">
-	<WinModal winner={lastWinner} bind:showModal={winModalOpen} />
+<div class="fixed z-30 top-0">
+	<WinModal winner={lastWinner} {togglePresent} bind:showModal={winModalOpen} />
 </div>
 
-<div class="fixed z-30 top-0 p-4">
+<div class="fixed z-30 top-0">
 	<WinHistModal bind:this={winHistModal} bind:showModal={winHistModalOpen} />
 </div>
 
-<div class="fixed z-30 top-0 p-4">
+<div class="fixed z-30 top-0">
 	<InfoModal bind:showModal={infoModalOpen} />
 </div>
 
-<div class="fixed z-30 top-0 p-4">
+<div class="fixed z-30 top-0">
 	<ImportModal bind:this={importModal} bind:showModal={importModalOpen} />
 </div>
 
@@ -133,7 +140,9 @@
 			lg:text-2xl
 			xl:text-4xl"
 		style="left: {x}px; top: {y}px;"
-	>{text}</div>
+	>
+		{text}
+	</div>
 {/each}
 
 <div class="fixed z-20 bottom-0 right-0">
