@@ -87,6 +87,11 @@
 			console.error("Failed to copy text:", e);
 		});
 	}
+
+	function deleteEntry(i: number) {
+		const curEntry = winnerHistory.find((e) => e.date === selectedDate);
+		curEntry?.winners.splice(i, 1);
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -105,7 +110,7 @@
 
 		<div class="bg-mainbg/50 rounded-md border border-mainfg/20 mt-4">
 			<div
-				class="max-h-64 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent"
+				class="grid md:grid-cols-2 gap-2 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-mainfg/20 scrollbar-track-transparent"
 			>
 				{#if !currentHistEntry}
 					<div class="text-center p-4 text-mainfg/50 italic">
@@ -118,7 +123,12 @@
 						>
 							<span class="text-mainfg/80">{i + 1}. </span>
 							<span class="text-mainfg/80">{winner.name}</span>
-							<span class="text-mainfg/80">{winner.timestamp}</span>
+							<button
+								class="text-red-500/80 hover:text-red-500/100 transition-colors bg-red-500/10 p-1 rounded-sm"
+								onclick={() => deleteEntry(i)}
+							>
+								x
+							</button>
 						</div>
 					{/each}
 				{/if}
