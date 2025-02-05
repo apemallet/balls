@@ -16,7 +16,10 @@
 		onkeydown={(e) => e.key === "Enter" && closeModal()}
 		transition:fade={{ duration: 200 }}
 	></div>
-	<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
+	<div
+		id="modal"
+		class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60"
+	>
 		<div
 			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-[90dvw] md:min-w-[70dvw] max-h-[70dvh] w-full gradient-border"
 			transition:scale={{ duration: 150 }}

@@ -140,6 +140,9 @@
 			[0, 0, 0] as [number, number, number],
 		);
 	}
+
+	let menuTop = $state<number>(0);
+	let menuRight = $state<number>(0);
 </script>
 
 <Modal bind:isOpen={showModal}>
@@ -183,6 +186,10 @@
 								class="crackedButton text-mainfg/60 hover:text-mainfg/80 transition-colors bg-mainfg/10 hover:bg-mainfg/20 p-1! rounded-sm"
 								onclick={(e) => {
 									e.stopPropagation();
+									const cogWheel = e.currentTarget.getBoundingClientRect();
+									const modalEl = document.getElementById("modal")!;
+									menuTop = cogWheel.bottom -modalEl.getBoundingClientRect().top;
+									menuRight = cogWheel.left -modalEl.getBoundingClientRect().left;
 									openMenuId = openMenuId === winner.id ? null : winner.id;
 								}}
 							>
@@ -201,7 +208,8 @@
 							<!-- TODO: opening menu when at bottom will cause a scrollbar -->
 							{#if openMenuId === winner.id}
 								<div
-									class="absolute right-0 top-full bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
+									class="fixed bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
+									style="top: {menuTop}px; right: {menuRight}px;"
 									transition:slide={{ duration: 200 }}
 								>
 									<div class="flex flex-col gap-1 p-1 min-w-32">
