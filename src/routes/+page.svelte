@@ -144,6 +144,7 @@
 
 {#each labels as { x, y, text }, i}
 	<div
+		class="
 			absolute
 			-translate-x-1/2
 			-translate-y-1/2
