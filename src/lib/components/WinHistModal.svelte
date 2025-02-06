@@ -187,9 +187,27 @@
 								onclick={(e) => {
 									e.stopPropagation();
 									const cogWheel = e.currentTarget.getBoundingClientRect();
-									const modalEl = document.getElementById("histModal")!;
-									menuTop = cogWheel.bottom - modalEl.getBoundingClientRect().top;
-									menuLeft = cogWheel.left - modalEl.getBoundingClientRect().left;
+									const modalRect = document.getElementById("histModal")!.getBoundingClientRect();
+									console.log(`ModalRect: ${modalRect}`);
+									let computedTop = cogWheel.bottom - modalRect.top;
+									let computedLeft = cogWheel.left - modalRect.left;
+
+									// assuming fixed minimenu height 5 padding
+									const menuWidth = 128 + 5; 
+
+									// check if the menu would overflow the modal on the right and adjust accoridngly
+									const rightEdge = modalRect.right + modalRect.x;
+									console.log(`Right edge: ${rightEdge}`);
+									console.log(`Computed left: ${computedLeft}`);
+									console.log(`Menu width: ${menuWidth}`);
+									console.log(``);
+									if (computedLeft + menuWidth + modalRect.x > rightEdge) {
+										computedLeft -= (computedLeft + menuWidth + modalRect.x) - rightEdge;
+									}
+
+									menuTop = computedTop;
+									menuLeft = computedLeft;
+
 									openMenuId = openMenuId === winner.id ? null : winner.id;
 								}}
 							>
