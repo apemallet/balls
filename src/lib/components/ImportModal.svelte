@@ -1,7 +1,10 @@
 <script lang="ts">
 	import Modal from "./Modal.svelte";
 	import { browser } from "$app/environment";
+	import Matter from "$lib/svelteMatter.svelte";
 	let { showModal = $bindable(false) } = $props();
+
+	let {Body, Common, Events} = $derived(Matter() || Object);
 
 	function clipboardToNamesArray() {
 			navigator.clipboard.readText().then((text) => {
@@ -54,7 +57,7 @@
 					.map(word => word.substring(0, 2))
 					.join("")));
 
-	const shuffleIdx = $derived(namesList.map((_, i) => i).sort(() => Math.random()));
+	const shuffleIdx = $derived(namesList.map((_, i) => i).sort(() => Common.random()));
 
 	export function shortOf(i: number) {
 		return short[shuffleIdx[i % namesAmnt]];

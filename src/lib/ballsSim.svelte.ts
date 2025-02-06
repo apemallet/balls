@@ -3,8 +3,10 @@ import {MatterSim} from "$lib/sim.svelte";
 import {type Body} from "matter-js";
 import type {CrankSim} from "$lib/crankSim.svelte";
 import {Event} from "$lib/utils";
+import {popSound, revealSound, wheelSound} from "$lib/sound";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
+
 
 const lerp = (a, b, dt) => a + (b - a) * dt;
 
@@ -224,7 +226,7 @@ export class BallsSim extends MatterSim {
 
     const ball = this.buildBall();
     ball.collisionFilter = this.ghostBallCollisionFilter;
-    ball.frictionAir = 0.04;
+    ball.frictionAir = 0.03;
 
     Body.setPosition(ball, {
       x: this.center[0],
@@ -253,6 +255,10 @@ export class BallsSim extends MatterSim {
 
   public revealBall() {
     setTimeout(() => {
+      revealSound();
+    }, 5000);
+
+    setTimeout(() => {
       let targetIdx = -1;
       let targetBall = null;
 
@@ -267,11 +273,12 @@ export class BallsSim extends MatterSim {
 
       if (!targetBall) return;
       targetBall.collisionFilter = this.ghostBallCollisionFilter;
-      targetBall.frictionAir = 0.04;
+      targetBall.frictionAir = 0.03;
 
       setTimeout(() => {
         this.onReveal.fire(targetIdx);
-      }, 3000);
+        popSound();
+      }, 1000);
     }, 6000);
   }
 
@@ -280,6 +287,9 @@ export class BallsSim extends MatterSim {
     this.spin = lerp(this.spin, restSpin, deltaTime);
     Body.rotate(this.wheel, this.spin * deltaTime);
     Body.setAngularVelocity(this.wheel, this.spin/60);
+
+    const soundFreq = this.spin > .35 ? this.spin + 1 : 0;
+    wheelSound(soundFreq);
   }
 }
 
