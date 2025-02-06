@@ -159,8 +159,7 @@
 			md:text-xl
 			lg:text-2xl
 			xl:text-4xl"
-      style="left: {x}px; top: {y}px; color: {color}"
-  >
+      style="left: {x}px; top: {y}px; color: {color}">
     {text}
   </div>
 {/each}

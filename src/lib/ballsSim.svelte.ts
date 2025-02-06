@@ -88,7 +88,7 @@ export class BallsSim extends MatterSim {
   }
 
   public ballColor(i: number) {
-    const idx = i % this.theme.palette.length;
+    const idx = i % this.theme.alts.length;
     return this.theme.palette[idx];
   }
 
