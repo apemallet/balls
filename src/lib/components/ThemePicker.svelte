@@ -80,11 +80,11 @@
 					in:fade={{ duration: 200 }}
 					class="flex justify-between gap-2 p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20
                    border-2 border-red-500/20 hover:border-red-500/40
-                   text-red-500/80 hover:text-red-500/100
+                   text-red-500/80 hover:text-red-500/100 whitespace-nowrap
                    transform hover:scale-105 transition-all duration-300 ease-out"
 					on:click={() => colorThemer.reset()}
 				>
-					Reset
+					Reset dominant
 					<svg
 						viewBox="0 0 1024 1024"
 						class="w-4 h-4 self-center"

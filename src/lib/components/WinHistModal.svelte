@@ -188,8 +188,7 @@
 									e.stopPropagation();
 									const cogWheel = e.currentTarget.getBoundingClientRect();
 									const modalRect = document.getElementById("histModal")!.getBoundingClientRect();
-									console.log(`ModalRect: ${modalRect}`);
-									let computedTop = cogWheel.bottom - modalRect.top;
+									menuTop = cogWheel.bottom - modalRect.top;
 									let computedLeft = cogWheel.left - modalRect.left;
 
 									// assuming fixed minimenu height 5 padding
@@ -197,15 +196,10 @@
 
 									// check if the menu would overflow the modal on the right and adjust accoridngly
 									const rightEdge = modalRect.right + modalRect.x;
-									console.log(`Right edge: ${rightEdge}`);
-									console.log(`Computed left: ${computedLeft}`);
-									console.log(`Menu width: ${menuWidth}`);
-									console.log(``);
 									if (computedLeft + menuWidth + modalRect.x > rightEdge) {
 										computedLeft -= (computedLeft + menuWidth + modalRect.x) - rightEdge;
 									}
 
-									menuTop = computedTop;
 									menuLeft = computedLeft;
 
 									openMenuId = openMenuId === winner.id ? null : winner.id;
@@ -223,7 +217,6 @@
 									/></svg
 								>
 							</button>
-							<!-- TODO: opening menu when at bottom will cause a scrollbar -->
 							{#if openMenuId === winner.id}
 								<div
 									class="fixed bg-mainbg border border-mainfg/20 rounded-md shadow-lg z-50"
