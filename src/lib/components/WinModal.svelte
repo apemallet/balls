@@ -16,7 +16,7 @@
 	} = $props();
 
 	function computeNumSuffix(num: number): string {
-		if (num % 10 == 1)
+		if (num % 10 == 1 && num.toString().slice(-2) != "11")
 			return "st";
 		if (num % 10 == 2)
 			return "nd"
@@ -44,7 +44,7 @@
 
 	<svelte:fragment slot="content">
 		<div class="flex flex-row gap-4">
-		<p class="self-center flex flex-row gap-1">Are they here? Mark them
+		<p class="self-center flex flex-row gap-1">Mark them present
 			<svg xmlns="http://www.w3.org/2000/svg" 
 				viewBox="0 0 448 512" 
 				class="w-4 h-4 self-center" 
