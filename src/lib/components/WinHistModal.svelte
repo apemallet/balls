@@ -141,6 +141,11 @@
 		);
 	}
 
+	export function countWinsToday(): number {
+		if (!currentHistEntry) return 0;
+		return currentHistEntry.winners.length;
+	}
+
 	let menuTop = $state<number>(0);
 	let menuLeft = $state<number>(0);
 </script>

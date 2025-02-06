@@ -5,18 +5,35 @@
 		winner,
 		togglePresent,
 		countWins,
+		countWinsToday,
 		showModal = $bindable(false),
 	}: {
 		winner: Winner | undefined;
 		togglePresent: () => void;
 		countWins: () => [number, number, number] | undefined;
+		countWinsToday: () => number | undefined;
 		showModal: boolean;
 	} = $props();
+
+	function computeSuffix(num: number): string {
+		if (num % 10 == 1)
+			return "st";
+		if (num % 10 == 2)
+			return "nd"
+		if (num % 10 == 3)
+			return "rd"
+		return "th"
+	}
 </script>
 
 <Modal bind:isOpen={showModal}>
 	<svelte:fragment slot="title">
-		🏆 {winner ? winner.name : "error: undefined"} 🏆
+		<div class="flex flex-row justify-between">
+			<span>🏆 {winner ? winner.name : "error: undefined"} 🏆</span>
+			<span class="text-mainfg/60">
+				({countWinsToday() ? countWinsToday() + computeSuffix(countWinsToday()!) : "0th"} win today)
+			</span>
+		</div>
 	</svelte:fragment>
 
 	<svelte:fragment slot="content">

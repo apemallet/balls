@@ -107,6 +107,11 @@
 		if (!lastWinner) return;
 		return winHistModal.countWins(lastWinner!.name);
 	}
+
+	function countWinsToday(): number | undefined {
+		if (!lastWinner) return;
+		return winHistModal.countWinsToday();
+	}
 </script>
 
 <svelte:window on:resize={onResize} />
@@ -120,6 +125,7 @@
 		winner={lastWinner}
 		{togglePresent}
 		{countWins}
+		{countWinsToday}
 		bind:showModal={winModalOpen}
 	/>
 </div>
