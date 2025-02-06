@@ -26,7 +26,7 @@
 		>
 			<!-- content slots -->
 			<div class="space-y-4">
-				<h2 class="text-xl font-bold text-mainfg/80">
+				<h2 class="text-xl md:text-2xl font-bold text-mainfg/80">
 					<slot name="title">Default title</slot>
 				</h2>
 
