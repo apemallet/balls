@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade, scale } from "svelte/transition";
-	let { isOpen = $bindable(false) } = $props();
+	let { isOpen = $bindable(false), id = "modal" } = $props();
 
 	function closeModal() {
 		isOpen = false;
@@ -16,14 +16,17 @@
 		onkeydown={(e) => e.key === "Enter" && closeModal()}
 		transition:fade={{ duration: 200 }}
 	></div>
-	<div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60">
+	<div
+		{id}
+		class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60"
+	>
 		<div
-			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-2xl w-full gradient-border"
+			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-[95dvw] min-w-[90dvw] max-h-[90dvh] md:min-w-[70dvw] md:max-h-[70dvh] w-full gradient-border"
 			transition:scale={{ duration: 150 }}
 		>
 			<!-- content slots -->
 			<div class="space-y-4">
-				<h2 class="text-xl font-semibold text-mainfg/80">
+				<h2 class="text-xl font-bold text-mainfg/80">
 					<slot name="title">Default title</slot>
 				</h2>
 

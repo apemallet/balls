@@ -30,7 +30,9 @@ export interface Themer {
   get alt4(): string;
   get alt5(): string;
   get alts(): string[];
+  get altsFG(): string[];
   get palette(): string[];
+  get palletteFG(): string[];
   reset(): void;
   isDefault(): boolean;
 }
@@ -145,12 +147,28 @@ export function getThemer(): Themer {
     get alts() {
       return [alt1, alt2, alt3, alt4, alt5];
     },
+    get altsFG() {
+      return [
+        getContrastingColor(alt1),
+        getContrastingColor(alt2),
+        getContrastingColor(alt3),
+        getContrastingColor(alt4),
+        getContrastingColor(alt5),
+      ];
+    },
     get palette() {
       return [dominant, alt1, alt2, alt3, alt4, alt5];
     },
-    // TODO: Get alts variated. It returns a super long list
-    // of at least 25 to account for all balls and slightly
-    // variates the alt colors to add some depth
+    get palletteFG() {
+      return [
+        getContrastingColor(dominant),
+        getContrastingColor(alt1),
+        getContrastingColor(alt2),
+        getContrastingColor(alt3),
+        getContrastingColor(alt4),
+        getContrastingColor(alt5),
+      ];
+    },
     reset() {
       dominant = DEFAULT_DOMINANT;
     },
