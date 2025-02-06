@@ -279,6 +279,7 @@ export class BallsSim extends MatterSim {
     const restSpin = 0.3 + 2 * Math.min(5, this.anger);
     this.spin = lerp(this.spin, restSpin, deltaTime);
     Body.rotate(this.wheel, this.spin * deltaTime);
+    Body.setAngularVelocity(this.wheel, this.spin/60);
   }
 }
 
