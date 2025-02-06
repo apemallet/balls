@@ -119,7 +119,7 @@
 								 color: var(--color-alt{index + 1}fg)"
 				>
 					<span
-						class="font-bold text-sm select-none p-1"
+						class="font-bold text-sm p-1"
 						style="color: var(--color-alt{index + 1}fg)"
 					>
 						{altHex}
