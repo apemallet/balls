@@ -10,6 +10,7 @@
 	export let menuOpen = true;
 
 	// Copy paste handler. Maybe add cracked animation later
+	// TODO: Deprecated, need to add a "copied" message and stuff, not intuitive enough yet
 	function handleCopy(altHex: string, _: MouseEvent) {
 		navigator.clipboard.writeText(altHex);
 	}
@@ -58,7 +59,7 @@
 				<button
 					in:fade={{ duration: 200 }}
 					class="flex justify-between gap-2 crackedButton"
-					on:click={() => colorPickerElement.click()}
+					onclick={() => colorPickerElement.click()}
 				>
 					<span class="truncate">Select dominant</span>
 					<svg
@@ -82,7 +83,7 @@
                    border-2 border-red-500/20 hover:border-red-500/40
                    text-red-500/80 hover:text-red-500/100 whitespace-nowrap
                    transform hover:scale-105 transition-all duration-300 ease-out"
-					on:click={() => colorThemer.reset()}
+					onclick={() => colorThemer.reset()}
 				>
 					Reset dominant
 					<svg
@@ -112,19 +113,18 @@
 
 		<div class="flex flex-wrap gap-2 rounded-xl grow">
 			{#each colorThemer.alts as altHex, index (index)}
-				<button
-					class="flex-1 w-24 overflow-hidden whitespace-nowrap rounded-sm shadow-md transition-all hover:scale-105 cursor-pointer select-none min-w-0"
+				<div
+					class="flex justify-around flex-1 w-24 overflow-hidden whitespace-nowrap rounded-sm shadow-md transition-all min-w-0"
 					style="background-color: {altHex}; 
 								 color: var(--color-alt{index + 1}fg)"
-					on:click={(e) => handleCopy(altHex, e)}
 				>
 					<span
-						class="font-bold text-sm px-0.5"
+						class="font-bold text-sm select-none p-1"
 						style="color: var(--color-alt{index + 1}fg)"
 					>
 						{altHex}
 					</span>
-				</button>
+				</div>
 			{/each}
 		</div>
 	</div>
