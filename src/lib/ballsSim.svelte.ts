@@ -87,9 +87,14 @@ export class BallsSim extends MatterSim {
     }, 5000);
   }
 
-  private colorBallOf(i: number) {
+  public ballColor(i: number) {
     const idx = i % this.theme.palette.length;
     return this.theme.palette[idx];
+  }
+
+  public ballTextColor(i: number) {
+    const idx = i % this.theme.altsFG.length;
+    return this.theme.altsFG[idx];
   }
 
   public reTheme(): void {
@@ -106,7 +111,7 @@ export class BallsSim extends MatterSim {
     for (const i: number in this.balls) {
       // TODO: change based on ticket data
       const ticket = this.balls[i];
-      const color = this.colorBallOf(i);
+      const color = this.ballColor(i);
       ticket.render.fillStyle = color;
     }
   }
@@ -186,7 +191,7 @@ export class BallsSim extends MatterSim {
       frictionStatic: 0,
       collisionFilter: this.ballCollisionFilter,
       render: {
-        fillStyle: this.colorBallOf(this.balls.length)
+        fillStyle: this.ballColor(this.balls.length)
       }
     });
   }

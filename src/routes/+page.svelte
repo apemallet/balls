@@ -138,9 +138,7 @@
 
 {#each labels as { x, y, text }, i}
 	<div
-		class="
 			absolute
-			text-mainbg
 			-translate-x-1/2
 			-translate-y-1/2
 			font-bold
@@ -149,7 +147,7 @@
 			md:text-xl
 			lg:text-2xl
 			xl:text-4xl"
-		style="left: {x}px; top: {y}px;"
+		style="left: {x}px; top: {y}px; color: {balls.ballTextColor(i)}"
 	>
 		{text}
 	</div>
