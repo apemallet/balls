@@ -1,3 +1,4 @@
+// TODO: Attempt fix for sound playing on tab out indefinitely
 let revalSounder;
 export function revealSound() {
   if (!revalSounder) {
@@ -20,7 +21,7 @@ export function wheelSound(speed) {
     return;
   }
 
-  wheelSounder.volume = Math.min(0.3, (speed - 1.3)/6);
+  wheelSounder.volume = Math.min(0.3, (speed - 1.3) / 6);
   wheelSounder.playbackRate = speed;
   wheelSounder.play();
 }
@@ -34,3 +35,4 @@ export function popSound() {
 
   popSounder.play();
 }
+

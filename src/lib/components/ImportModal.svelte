@@ -2,6 +2,7 @@
 	import Modal from "./Modal.svelte";
 	import { browser } from "$app/environment";
 	import Matter from "$lib/svelteMatter.svelte";
+	import {slide, fade} from "svelte/transition";
 	let { showModal = $bindable(false) } = $props();
 
 	let {Body, Common, Events} = $derived(Matter() || Object);
@@ -120,7 +121,7 @@
 		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
 			{#if importType === 'clipboard'}
 				<!-- Clipboard import section -->
-				<div class="flex flex-row justify-between gap-4">
+				<div class="flex flex-row justify-between gap-4" in:fade={{duration: 300}}>
 						<div class="flex flex-row gap-4 flex-1">
 								<button 
 										class="crackedButton flex flex-row gap-2 justify-between flex-1"
@@ -153,7 +154,9 @@
 				</div>
 
 				{#if showSettings}
-						<div class="bg-mainfg/5 p-2 rounded-md flex flex-col gap-4">
+						<div class="bg-mainfg/5 p-2 rounded-md flex flex-col gap-4"
+						transition:slide={{ duration: 300 }}
+						>
 								<input
 										type="text"
 										class="appearance-none p-2 rounded-md border border-mainfg/20"
@@ -193,7 +196,7 @@
 				{/if}
 			{:else}
 				<!-- Manual entry section -->
-				<div class="flex flex-row gap-4">
+				<div class="flex flex-row gap-4" in:fade={{duration: 300}}>
 					<input
 						type="text"
 						class="appearance-none p-2 rounded-md border border-mainfg/20 flex-1"

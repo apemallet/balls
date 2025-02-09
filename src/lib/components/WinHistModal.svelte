@@ -150,6 +150,9 @@
 	let menuLeft = $state<number>(0);
 </script>
 
+<!-- TODO: Probably wise to add a clear all button for the current date -->
+<!-- might also want a way to navigate only dates that actually have entries -->
+
 <Modal bind:isOpen={showModal} id="histModal">
 	<svelte:fragment slot="title">Winner history</svelte:fragment>
 
