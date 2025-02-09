@@ -27,7 +27,7 @@
 		>
 			<select
 				bind:value={colorThemer.colorHarmony}
-				class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
+				class="appearance-none crackedButton bg-mainbg! pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
       focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
       transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
