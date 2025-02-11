@@ -21,7 +21,7 @@ export class BallsSim extends MatterSim {
   private nextBallId: number = 0;
 
   private spin: number = 0;
-  private spinSpeed: number = 10;
+  private spinSpeed: number = 8.5;
   private restSpin: number = 0.03;
   private targetSpin: number = this.restSpin;
 
