@@ -304,6 +304,8 @@ export class BallsSim extends MatterSim {
     await sleep(4000);
     this.targetSpin = this.restSpin;
     await sleep(3000);
+    revealSound();
+    await sleep(1000);
 
     // find the lowest ball
 
@@ -322,8 +324,6 @@ export class BallsSim extends MatterSim {
     // ghost it
 
     if (targetBody) {
-      revealSound();
-      await sleep(1000);
       targetBody.collisionFilter = this.ghostBallCollisionFilter;
       targetBody.frictionAir = 0.03;
     }
