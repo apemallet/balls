@@ -26,6 +26,7 @@ export class BallsSim extends MatterSim {
   private targetSpin: number = this.restSpin;
 
   private readonly bigBallSize = 70;
+  private readonly enableSound: boolean;
 
   private ballTextColor(i: number) {
     const idx = i % this.theme.palletteFG.length;
@@ -75,10 +76,11 @@ export class BallsSim extends MatterSim {
   }
 
   // wheelRadius is in planck units
-  public constructor(canvas: HTMLCanvasElement, crankSim: CrankSim, wheelRadius: number) {
+  public constructor(canvas: HTMLCanvasElement, crankSim: CrankSim, wheelRadius: number, enableSound = true) {
     console.log("Initializing BALLS sim.");
     super(canvas);
     this.crankSim = crankSim;
+    this.enableSound = enableSound;
 
     this.balls = Array(this.carryingCapacity)
       .fill(0)
@@ -304,7 +306,7 @@ export class BallsSim extends MatterSim {
     await sleep(4000);
     this.targetSpin = this.restSpin;
     await sleep(3000);
-    revealSound();
+    if (this.enableSound) revealSound();
     await sleep(1000);
 
     // find the lowest ball
@@ -329,7 +331,7 @@ export class BallsSim extends MatterSim {
     }
 
     await sleep(1000);
-    popSound();
+    if (this.enableSound) popSound();
     return this.balls[targetIdx].id;
   }
 
@@ -340,7 +342,7 @@ export class BallsSim extends MatterSim {
     Body.setAngularVelocity(this.wheel, spin/60);
 
     const soundFreq = spin > .35 ? spin + 1 : 0;
-    wheelSound(soundFreq);
+    if (this.enableSound) wheelSound(soundFreq);
   }
 }
 

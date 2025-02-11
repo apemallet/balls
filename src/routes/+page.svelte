@@ -19,18 +19,10 @@
 	let crank: CrankSim;
 	let canCrank = $state(true); // prevents rapid cranking
 
-	const isMobile = $derived(navigator.userAgentData?.mobile);
-
-	$effect(() => {
-		if (isMobile) {
-			console.log("Mobile device detected");
-		} else {
-			console.log("Desktop or larger device detected");
-		}
-	});
-
 	let lastWinner: Winner | undefined = $state(); // initial value should be unreachable
 	const wheelRadius = 300; // in planck units
+
+	const isMobile = $derived(navigator.userAgentData?.mobile);
 
 	// maintain theme
 	$effect(() => {
@@ -65,7 +57,7 @@
 		if (crank || balls) return;
 
 		crank = new CrankSim(canvasTop, wheelRadius + 5);
-		balls = new BallsSim(canvasBot, crank, wheelRadius);
+		balls = new BallsSim(canvasBot, crank, wheelRadius, !isMobile);
 	});
 
 	// maintain labels
