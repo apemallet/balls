@@ -19,3 +19,8 @@ export function Event<T extends unknown[]>(): Event<T> {
         }
     }
 }
+
+export function sleep(ms: number) {
+    // shit should be built in!!
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

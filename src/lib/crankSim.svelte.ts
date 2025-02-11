@@ -1,13 +1,12 @@
 import {MatterSim} from "$lib/sim.svelte";
 import Matter from "$lib/svelteMatter.svelte";
-import {Event} from "$lib/utils.ts";
+import {Event, sleep} from "$lib/utils.ts";
+import type {Body} from "matter-js";
 
 let {Constraint, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
 
 export class CrankSim extends MatterSim {
-  public anger: number = 0; // affects crank angular velocity
-  public readonly onBust: Event<void> = Event();
-
+  private anger: number = 0; // affects crank angular velocity
   private readonly handle: Body;
   private readonly shaft: Body;
   private readonly base: Body;
@@ -98,21 +97,22 @@ export class CrankSim extends MatterSim {
     this.reTheme();
   }
 
-  public smackHandle() {
-    this.handleForce(0.02 * this.planck);
-    if (this.anger > 1) return;
-    this.anger = Math.min(1, this.anger + .6);
-    if (this.anger > .9) this.bust();
+  public async smackHandle(degree: number) {
+    // smacks the handle with a force proportional to the degree of smack.
+    // degree is a number between -1 and 1 where 1 initiates a bust.
+    if (degree >= 1) {
+      await this.bust();
+      return;
+    }
+
+    this.handleForce(degree * 0.3 * this.planck);
   }
 
-  public bust() {
+  private async bust() {
     // turns very quickly then stops suddenly; zeroes anger
     this.anger = 10;
-    this.onBust.fire();
-
-    setTimeout(() => {
-      this.anger = 0;
-    }, 4000);
+    await sleep(4000);
+    this.anger = 0;
   }
 
   private handleForce(force: number): void {

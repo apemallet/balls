@@ -2,7 +2,7 @@ import Matter from "$lib/svelteMatter.svelte";
 import {MatterSim} from "$lib/sim.svelte";
 import {type Body} from "matter-js";
 import type {CrankSim} from "$lib/crankSim.svelte";
-import {Event} from "$lib/utils";
+import {sleep} from "$lib/utils";
 import {popSound, revealSound, wheelSound} from "$lib/sound";
 
 let {Engine, Render, Runner, Bodies, Composite, Body, Common, Events} = $derived(Matter() || Object);
@@ -12,16 +12,42 @@ const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
   public carryingCapacity = 8;
-  public onReveal: Event<number> = Event();
 
   private readonly wheelRadius: number;
   private readonly wheel: Body;
   private readonly crankSim: CrankSim;
-  private balls: Body[] = [];
+
+  private balls: { body: Body, id: number }[] = [];
+  private nextBallId: number = 0;
+
   private spin: number = 0;
+  private spinSpeed: number = 10;
+  private restSpin: number = 0.03;
+  private targetSpin: number = this.restSpin;
+
+  private readonly bigBallSize = 70;
+
+  private ballTextColor(i: number) {
+    const idx = i % this.theme.palletteFG.length;
+    return this.theme.palletteFG[idx];
+  }
+
+  public get ballsTextColor() {
+    return this.balls.map(ball => this.ballTextColor(ball.id));
+  }
+
+  public get ballIds() {
+    return this.balls.map(ball => ball.id);
+  }
 
   public get ballsPos() {
-    return this.balls.map(ticket => ticket.position);
+    return this.balls.map(ball => ball.body.position);
+  }
+
+  private readonly emptyCollisionFilter = {
+    category: 0b1000,
+    mask: 0b0000,
+    group: 0
   }
 
   private readonly ballCollisionFilter = {
@@ -48,10 +74,6 @@ export class BallsSim extends MatterSim {
     group: 0
   }
 
-  private get anger() {
-    return this.crankSim.anger;
-  }
-
   // wheelRadius is in planck units
   public constructor(canvas: HTMLCanvasElement, crankSim: CrankSim, wheelRadius: number) {
     console.log("Initializing BALLS sim.");
@@ -72,29 +94,23 @@ export class BallsSim extends MatterSim {
 
     const tray = this.buildTray();
 
-    Composite.add(this.engine.world, [tray, this.wheel, ...this.balls]);
+    const ballBodies = this.balls.map(ball => ball.body);
+    Composite.add(this.engine.world, [tray, this.wheel, ...ballBodies]);
     this.reTheme();
 
     // try to add new balls & garbage collect
     setInterval(() => {
       this.balls = this.balls.filter(ticket => {
-        const keep = ticket.position.y < this.height + 100;
+        const keep = ticket.body.position.y < this.height + 100;
         if (!keep) Composite.remove(this.engine.world, ticket);
         return keep;
       });
-
-      this.tryAddBall();
     }, 5000);
   }
 
   public ballColor(i: number) {
     const idx = i % this.theme.palette.length;
     return this.theme.palette[idx];
-  }
-
-  public ballTextColor(i: number) {
-    const idx = i % this.theme.palletteFG.length;
-    return this.theme.palletteFG[idx];
   }
 
   public reTheme(): void {
@@ -108,11 +124,10 @@ export class BallsSim extends MatterSim {
 
     // 2. Ticket colors
 
-    for (const i: number in this.balls) {
+    for (const ball of this.balls) {
       // TODO: change based on ticket data
-      const ticket = this.balls[i];
-      const color = this.ballColor(i);
-      ticket.render.fillStyle = color;
+      const { body, id } = ball;
+      body.render.fillStyle = this.ballColor(id);
     }
   }
 
@@ -183,17 +198,24 @@ export class BallsSim extends MatterSim {
   }
 
   private buildBall() {
-    const size = Common.random(40, 80) * this.planck;
-    return Bodies.circle(...this.center, size, {
+    const id = this.nextBallId++;
+    const size = Common.random(.67 * this.bigBallSize, this.bigBallSize) * this.planck;
+
+    const body = Bodies.circle(...this.center, size, {
       restitution: 0.9,
       frictionAir: 0,
       friction: 0,
       frictionStatic: 0,
       collisionFilter: this.ballCollisionFilter,
       render: {
-        fillStyle: this.ballColor(this.balls.length)
+        fillStyle: this.ballColor(id)
       }
     });
+
+    return {
+      body,
+      id
+    }
   }
 
   private buildTray() {
@@ -217,83 +239,107 @@ export class BallsSim extends MatterSim {
   }
 
   private isBallActive(ball): boolean {
-    if (ball.position.y > this.center[1] + this.wheelRadius * this.planck * 1.1) return false;
-    if (ball.collisionFilter.category !== this.ballCollisionFilter.category) return false;
+    const body = ball.body;
+    if (body.position.y > this.center[1] + this.wheelRadius * this.planck * 1.1) return false;
+    if (body.collisionFilter.category !== this.ballCollisionFilter.category) return false;
     return true;
   }
 
-  private currentCapacity() {
-    return this.balls.filter(ticket => this.isBallActive(ticket)).length;
+  public currentCapacity() {
+    return this.balls.filter(ball => this.isBallActive(ball)).length;
   }
 
-  public tryAddBall() {
+  public async tryAddBall() {
     if (this.carryingCapacity <= this.currentCapacity()) return;
 
     const ball = this.buildBall();
-    ball.collisionFilter = this.ghostBallCollisionFilter;
-    ball.frictionAir = 0.03;
+    const body = ball.body;
+    body.collisionFilter = this.emptyCollisionFilter;
 
-    Body.setPosition(ball, {
+    Body.setPosition(body, {
       x: this.center[0],
-      y: 0
+      y: -50
     });
 
     this.balls.push(ball);
-    Composite.add(this.engine.world, [ball]);
+    Composite.add(this.engine.world, [body]);
 
     // try to catch the ball
 
     const radius = this.wheelRadius * this.planck;
 
-    const poll = setInterval(() => {
-      if (ball.position.y > this.center[1] - radius * 0.8) {
-        ball.collisionFilter = this.ballCollisionFilter;
-        ball.frictionAir = 0;
-        clearInterval(poll);
-      }
-    }, 100);
+    while (body.position.y < this.center[1] - radius * 0.8) {
+      await sleep(100);
+    }
 
-    setTimeout(() => {
-      clearInterval(poll);
-    }, 5000);
+    body.collisionFilter = this.ballCollisionFilter;
   }
 
-  public revealBall() {
-    setTimeout(() => {
-      revealSound();
-    }, 5000);
+  public async flush() {
+    for (const ball of this.balls) {
+      if (!this.isBallActive(ball)) continue;
+      ball.body.collisionFilter = this.emptyCollisionFilter;
+    }
 
-    setTimeout(() => {
-      let targetIdx = -1;
-      let targetBall = null;
+    await sleep(1000);
 
-      for (let i = 0; i < this.balls.length; i++) {
-        const ticket = this.balls[i];
-        if (!this.isBallActive(ticket)) continue;
-        if (targetBall == null || (ticket.position.y > targetBall!.position.y)) {
-          targetIdx = i;
-          targetBall = ticket;
-        }
+    for (let i = 0; i < this.carryingCapacity; i++) {
+      this.tryAddBall();
+      await sleep(200);
+    }
+
+    // ensure we did in fact meet capacity
+    while (this.currentCapacity() < this.carryingCapacity) {
+      await this.tryAddBall();
+      await sleep(200);
+    }
+
+    await sleep(1000);
+  }
+
+  public async roll() {
+    this.targetSpin = -0.5;
+    await sleep(1000);
+    this.targetSpin = 1;
+    await sleep(4000);
+    this.targetSpin = this.restSpin;
+    await sleep(3000);
+
+    // find the lowest ball
+
+    let targetIdx = -1;
+    let targetBody = null;
+
+    for (let i = 0; i < this.balls.length; i++) {
+      const ball = this.balls[i];
+      if (!this.isBallActive(ball)) continue;
+      if (targetBody == null || (ball.body.position.y > targetBody!.position.y)) {
+        targetIdx = i;
+        targetBody = ball.body;
       }
+    }
 
-      if (!targetBall) return;
-      targetBall.collisionFilter = this.ghostBallCollisionFilter;
-      targetBall.frictionAir = 0.03;
+    // ghost it
 
-      setTimeout(() => {
-        this.onReveal.fire(targetIdx);
-        popSound();
-      }, 1000);
-    }, 6000);
+    if (targetBody) {
+      revealSound();
+      await sleep(1000);
+      targetBody.collisionFilter = this.ghostBallCollisionFilter;
+      targetBody.frictionAir = 0.03;
+    }
+
+    await sleep(1000);
+    popSound();
+    return this.balls[targetIdx].id;
   }
 
   protected fixedUpdate(deltaTime: number) {
-    const restSpin = 0.3 + 2 * Math.min(5, this.anger);
-    this.spin = lerp(this.spin, restSpin, deltaTime);
-    Body.rotate(this.wheel, this.spin * deltaTime);
-    Body.setAngularVelocity(this.wheel, this.spin/60);
+    this.spin = lerp(this.spin, this.targetSpin, deltaTime);
+    const spin = this.spin * this.spinSpeed;
+    Body.rotate(this.wheel, spin * deltaTime);
+    Body.setAngularVelocity(this.wheel, spin/60);
 
-    const soundFreq = this.spin > .35 ? this.spin + 1 : 0;
+    const soundFreq = spin > .35 ? spin + 1 : 0;
     wheelSound(soundFreq);
   }
 }

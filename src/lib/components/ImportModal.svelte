@@ -58,7 +58,6 @@
 			name.split(" ")
 					.map(word => word.substring(0, 2))
 					.join("")));
-	
 
 	const shuffleIdx = $derived.by(() => {
 		const indices = namesList.map((_, i) => i);

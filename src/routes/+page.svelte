@@ -11,6 +11,7 @@
 	import { CrankSim } from "$lib/crankSim.svelte";
 	import { getThemer } from "$lib/theme.svelte";
 	import { onMount } from "svelte";
+	import {sleep} from "$lib/utils";
 
 	let canvasBot: HTMLCanvasElement | undefined;
 	let canvasTop: HTMLCanvasElement | undefined;
@@ -55,23 +56,6 @@
 
 		crank = new CrankSim(canvasTop, wheelRadius + 5);
 		balls = new BallsSim(canvasBot, crank, wheelRadius);
-
-		crank.onBust.do(() => {
-			balls!.revealBall();
-			canCrank = false;
-		});
-
-		// react to winner
-		$effect(() => {
-			if (!balls) return;
-			balls.onReveal.do((i: number) => {
-				canCrank = true;
-				const winnerName = importModal.nameOf(i);
-				if (!winnerName) return;
-				lastWinner = winHistModal.addWinner(winnerName);
-				winModalOpen = true;
-			});
-		});
 	});
 
 	// maintain labels
@@ -80,27 +64,40 @@
 	onMount(() => {
 		setInterval(() => {
 			const pos = balls.ballsPos;
-			const text = pos.map((_, i) => importModal.shortOf(i));
-			labels = text.map((t, i) => ({
+			const color = balls.ballsTextColor;
+			const text = balls.ballIds.map((id: number) => importModal.shortOf(id));
+
+			// zip
+			labels = text.map((_, i: number) => ({
 				x: pos[i].x,
 				y: pos[i].y,
-				text: t,
-				color: balls.ballTextColor(i),
+				text: text[i],
+				color: color[i]
 			}));
 		}, 10);
 	});
 
-	function hitCrank() {
+	async function hitCrank() {
 		if (!canCrank) return;
-		crank?.smackHandle();
-	}
+		canCrank = false;
 
-	onMount(() => {
-		window["kill"] = () => {
-			crank?.destroy();
-			balls?.destroy();
-		};
-	});
+		crank?.smackHandle(0.5);
+		await balls?.flush();
+
+		await crank?.smackHandle(-0.4);
+		const roll = balls?.roll(); // start roll in parallel
+		await sleep(1000);
+		await crank?.smackHandle(1);
+		const winnerId = await roll;
+
+		canCrank = true;
+
+		// if there's a name on the winner ball: announce it
+		const winnerName = importModal.nameOf(winnerId);
+		if (!winnerName) return;
+		lastWinner = winHistModal.addWinner(winnerName);
+		winModalOpen = true;
+	}
 
 	function togglePresent() {
 		if (!lastWinner) return;
