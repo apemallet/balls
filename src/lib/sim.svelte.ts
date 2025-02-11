@@ -11,6 +11,9 @@ export abstract class MatterSim {
   protected readonly engine: Engine;
   protected readonly render: Render;
 
+  private oldWidth: number;
+  private oldHeight: number;
+
   protected get width(): number {
     return this.canvas.clientWidth;
   }
@@ -32,6 +35,9 @@ export abstract class MatterSim {
     if (!Matter()) throw new Error("Matter.js not loaded.");
 
     this.canvas = canvas;
+    this.oldWidth = this.width;
+    this.oldHeight = this.height;
+
     this.engine = Engine.create();
 
     this.render = Render.create({
@@ -64,10 +70,18 @@ export abstract class MatterSim {
   public abstract reTheme(): void;
 
   public reLayout(width, height) {
-    const oldWidth = this.width;
-    const oldHeight = this.height;
+    const oldWidth = this.oldWidth;
+    const oldHeight = this.oldHeight;
 
     const render = this.render;
+
+    for (const body of Composite.allBodies(render.engine.world)) {
+      const pos = body.position;
+      const x = pos.x + (width - oldWidth) / 2;
+      const y = pos.y + (height - oldHeight) / 2;
+      Body.setPosition(body, {x, y});
+    }
+
     render.bounds.max.x = width;
     render.bounds.max.y = height;
     render.options.width = width;
@@ -76,12 +90,8 @@ export abstract class MatterSim {
     render.canvas.height = height;
     Render.setPixelRatio(render, window.devicePixelRatio); // added this
 
-    for (const body of Composite.allBodies(render.engine.world)) {
-      const pos = body.position;
-      const x = pos.x + (width - oldWidth) / 2;
-      const y = pos.y + (height - oldHeight) / 2;
-      Body.setPosition(body, {x, y});
-    }
+    this.oldWidth = width;
+    this.oldHeight = height;
   }
 
   public destroy() {
