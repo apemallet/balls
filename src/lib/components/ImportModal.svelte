@@ -58,8 +58,16 @@
 			name.split(" ")
 					.map(word => word.substring(0, 2))
 					.join("")));
+	
 
-	const shuffleIdx = $derived(namesList.map((_, i) => i).sort(() => Common.random()));
+	const shuffleIdx = $derived.by(() => {
+		const indices = namesList.map((_, i) => i);
+		for (let i = indices.length - 1; i > 0; i--) {
+			const j = Math.floor(Common.random() * (i + 1));
+			[indices[i], indices[j]] = [indices[j], indices[i]];
+		}
+		return indices;
+	});
 
 	export function shortOf(i: number) {
 		return short[shuffleIdx[i % namesAmnt]];
