@@ -44,7 +44,7 @@
 
 	<svelte:fragment slot="content">
 		<div class="flex flex-row gap-4">
-		<p class="self-center flex flex-row gap-1">Mark them present
+		<p class="self-center flex flex-row gap-1">Mark their status
 			<svg xmlns="http://www.w3.org/2000/svg" 
 				viewBox="0 0 448 512" 
 				class="w-4 h-4 self-center" 
