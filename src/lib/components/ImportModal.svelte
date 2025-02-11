@@ -3,7 +3,7 @@
 	import { browser } from "$app/environment";
 	import Matter from "$lib/svelteMatter.svelte";
 	import {slide, fade} from "svelte/transition";
-	let { showModal = $bindable(false) } = $props();
+	let { showModal = $bindable(false) } : {showModal: boolean} = $props();
 
 	let {Body, Common, Events} = $derived(Matter() || Object);
 
@@ -92,10 +92,12 @@
 	}
 </script>
 
-<Modal bind:isOpen={showModal}>
-	<svelte:fragment slot="title">Manage lottery names</svelte:fragment>
+<Modal bind:isOpen={showModal} id="importModal">
+	{#snippet title()}
+		Manage lottery names
+	{/snippet}
 
-	<svelte:fragment slot="content">
+	{#snippet content()}
 		<div
 			class="relative group min-w-fit transition-all duration-300 pb-4"
 		>
@@ -249,5 +251,5 @@
 				{/each}
 			{/if}
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </Modal>

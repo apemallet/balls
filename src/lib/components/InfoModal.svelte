@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
 	import Modal from "./Modal.svelte";
-	let { showModal = $bindable(false) } = $props();
+	let { showModal = $bindable(false) } : {showModal: boolean} = $props();
 </script>
 
 <Modal bind:isOpen={showModal}>
-	<svelte:fragment slot="title">Details, shmetails, and code</svelte:fragment>
+    {#snippet title()}
+			Details, shmetails, and code
+    {/snippet}
 
-	<svelte:fragment slot="content">
+    {#snippet content()}
 		Made in full by <a href="https://masonbott.com" target="_blank"
 			>Mason Bott</a
 		>
@@ -19,7 +21,7 @@
 				Click here to see the code 🔥🔥🔥
 			</a>
 		</li>
-	</svelte:fragment>
+    {/snippet}
 </Modal>
 
 <style>

@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { fade, scale } from "svelte/transition";
-	let { isOpen = $bindable(false), id = "modal" } = $props();
+	import { type Snippet } from "svelte";
+	let {
+		isOpen = $bindable(false),
+		id = "modal",
+		title,
+		content,
+	}: { isOpen: boolean; id?: string; title?: Snippet, content?: Snippet } = $props();
 
 	function closeModal() {
 		isOpen = false;
@@ -27,13 +33,19 @@
 			<!-- content slots -->
 			<div class="space-y-4">
 				<h2 class="text-xl md:text-2xl font-bold text-mainfg/80">
-					<slot name="title">Default title</slot>
+					{#if title}
+						{@render title()}
+					{:else}
+						Default title
+					{/if}
 				</h2>
 
 				<p class="text-mainfg/80">
-					<slot name="content">
+					{#if content}
+						{@render content()}
+					{:else}
 						This is a default modal content. Add your message here.
-					</slot>
+					{/if}
 				</p>
 			</div>
 

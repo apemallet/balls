@@ -4,7 +4,8 @@
 	import { slide } from "svelte/transition";
 	import { type Winner, type WinnerHistoryEntry } from "$lib/winTypes";
 
-	let { showModal = $bindable(false) } = $props();
+	let { showModal = $bindable(false) } : { showModal: boolean } = $props();
+
 	let winnerHistory = $state<WinnerHistoryEntry[]>([]);
 	let selectedDate = $state<string>(getLocalDateString(new Date()));
 	let openMenuId = $state<number | null>(null); // mini menu state
@@ -153,10 +154,12 @@
 <!-- TODO: Probably wise to add a clear all button for the current date -->
 <!-- might also want a way to navigate only dates that actually have entries -->
 
-<Modal bind:isOpen={showModal} id="histModal">
-	<svelte:fragment slot="title">Winner history</svelte:fragment>
+<Modal bind:isOpen={showModal}>
+	{#snippet title()}
+		Winner history
+	{/snippet}
 
-	<svelte:fragment slot="content">
+	{#snippet content()}
 		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
 			<div class="flex flex-row justify-between gap-2">
 				<p>Date picker</p>
@@ -274,7 +277,7 @@
 				{/each}
 			{/if}
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </Modal>
 
 <style>

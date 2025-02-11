@@ -33,16 +33,16 @@
 </script>
 
 <Modal bind:isOpen={showModal}>
-	<svelte:fragment slot="title">
+	{#snippet title()}
 		<div class="flex flex-row justify-between">
 			<span>🏆 {winner ? winner.name : "error: undefined"} 🏆</span>
 			<span class="text-mainfg/50">
 				({countWinsToday() ? countWinsToday() + computeNumSuffix(countWinsToday()!) : "0th"} winner today)
 			</span>
 		</div>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="content">
+	{#snippet content()}
 		<div class="flex flex-row gap-4">
 		<p class="self-center flex flex-row gap-1">Mark their status
 			<svg xmlns="http://www.w3.org/2000/svg" 
@@ -78,7 +78,7 @@
 		{:else}
 			No win data found for this winner.
 		{/if}
-	</svelte:fragment>
+	{/snippet}
 </Modal>
 
 <style>
