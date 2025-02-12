@@ -10,8 +10,9 @@
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
 	import { getThemer } from "$lib/theme.svelte";
+	import { browser } from "$app/environment";
+	import { sleep } from "$lib/utils";
 	import { onMount } from "svelte";
-	import {sleep} from "$lib/utils";
 
 	let canvasBot: HTMLCanvasElement | undefined;
 	let canvasTop: HTMLCanvasElement | undefined;
@@ -22,7 +23,15 @@
 	let lastWinner: Winner | undefined = $state(); // initial value should be unreachable
 	const wheelRadius = 300; // in planck units
 
-	const isMobile = $derived(navigator.userAgentData?.mobile);
+	// TODO: Proper mobile check support
+	const isMobile: boolean = $derived.by(() => {
+		if (browser) {
+			if (navigator.userAgent) {
+				console.log(navigator.userAgent);
+			}
+		}
+		return false;
+	});
 
 	// maintain theme
 	$effect(() => {
@@ -74,7 +83,7 @@
 				x: pos[i].x,
 				y: pos[i].y,
 				text: text[i],
-				color: color[i]
+				color: color[i],
 			}));
 		}, 10);
 	});
@@ -157,7 +166,8 @@
 			sm:text-sm
 			md:text-xl
 			lg:text-2xl
-			xl:text-4xl"
+			xl:text-4xl
+			"
 		style="left: {x}px; top: {y}px; color: {color}"
 	>
 		{text}
@@ -176,9 +186,16 @@
 <!-- TODO: raise issue: tailwind4 does not recognize svelte5 conditional classes -->
 
 <canvas
-	class={`absolute w-screen h-dvh cursor-pointer transition-filter
+	class={`absolute w-screen h-dvh cursor-pointer transition-filte max-w-screen max-h-dvh
 		${canCrank ? "active:invert-15" : "invert-35"}`}
 	bind:this={canvasTop}
 	onclick={hitCrank}
 ></canvas>
-<canvas class="absolute w-screen h-dvh -z-10" bind:this={canvasBot}></canvas>
+<canvas class="absolute w-screen h-dvh -z-10 max-h-dvh!" bind:this={canvasBot}
+></canvas>
+
+<style>
+	:global(body) {
+		overflow: hidden;
+	}
+</style>

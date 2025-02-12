@@ -154,7 +154,7 @@
 <!-- TODO: Probably wise to add a clear all button for the current date -->
 <!-- might also want a way to navigate only dates that actually have entries -->
 
-<Modal bind:isOpen={showModal}>
+<Modal bind:isOpen={showModal} id="histModal">
 	{#snippet title()}
 		Winner history
 	{/snippet}
