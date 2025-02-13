@@ -13,7 +13,7 @@
 	import { browser } from "$app/environment";
 	import { sleep } from "$lib/utils";
 	import { onMount } from "svelte";
-	import {popSound} from "$lib/sound";
+	import { popSound } from "$lib/sound";
 
 	let canvasBot: HTMLCanvasElement | undefined;
 	let canvasTop: HTMLCanvasElement | undefined;
@@ -58,8 +58,8 @@
 	let winModalOpen = $state(false);
 	let winHistModalOpen = $state(false);
 	let importModalOpen = $state(false);
-	let importModal: ImportModal = $state();
-	let winHistModal: WinHistModal = $state();
+	let importModal: ImportModal | undefined = $state();
+	let winHistModal: WinHistModal | undefined = $state();
 
 	// initialize the simulation
 	$effect(() => {
@@ -79,14 +79,14 @@
 		setInterval(() => {
 			const pos = balls.ballsPos;
 			const color = balls.ballsTextColor;
-			const text = balls.ballIds.map((id: number) => importModal.shortOf(id));
+			const text = balls.ballIds.map((id: number) => importModal!.shortOf(id));
 
 			// zip
 			labels = text.map((_, i: number) => ({
 				x: pos[i].x,
 				y: pos[i].y,
 				text: text[i],
-				color: color[i]
+				color: color[i],
 			}));
 		}, 10);
 	});
@@ -96,7 +96,7 @@
 		await sleep(1400);
 		// 2. modal
 		if (balls.enableSound) popSound();
-		lastWinner = winHistModal.addWinner(winner);
+		lastWinner = winHistModal!.addWinner(winner);
 		winModalOpen = true;
 		// 3. reset
 		await sleep(500);
@@ -122,7 +122,7 @@
 		const winnerId = await roll;
 
 		// if there's a name on the winner ball: announce it
-		const winnerName = importModal.nameOf(winnerId);
+		const winnerName = importModal!.nameOf(winnerId);
 		if (!winnerName) return;
 		await revealWinner(winnerName);
 		canCrank = true;
@@ -130,18 +130,18 @@
 
 	function togglePresent() {
 		if (!lastWinner) return;
-		winHistModal.togglePresent(lastWinner!.id);
+		winHistModal!.togglePresent(lastWinner!.id);
 		lastWinner!.markedPresent = !lastWinner!.markedPresent;
 	}
 
 	function countWins(): [number, number, number] | undefined {
 		if (!lastWinner) return;
-		return winHistModal.countWins(lastWinner!.name);
+		return winHistModal!.countWins(lastWinner!.name);
 	}
 
 	function countWinsToday(): number | undefined {
 		if (!lastWinner) return;
-		return winHistModal.countWinsToday();
+		return winHistModal!.countWinsToday();
 	}
 </script>
 
