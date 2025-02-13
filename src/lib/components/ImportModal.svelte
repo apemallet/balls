@@ -1,11 +1,8 @@
 <script lang="ts">
 	import Modal from "./Modal.svelte";
 	import { browser } from "$app/environment";
-	import Matter from "$lib/svelteMatter.svelte";
 	import {slide, fade} from "svelte/transition";
 	let { showModal = $bindable(false) } : {showModal: boolean} = $props();
-
-	let { Common } = $derived(Matter() || Object);
 
 	function clipboardToNamesArray() {
 			navigator.clipboard.readText().then((text) => {
