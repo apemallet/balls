@@ -12,17 +12,19 @@
 	import { getThemer } from "$lib/theme.svelte";
 	import { onMount } from "svelte";
 	import {sleep} from "$lib/utils";
+	import {popSound} from "$lib/sound";
 
 	let canvasBot: HTMLCanvasElement | undefined;
 	let canvasTop: HTMLCanvasElement | undefined;
 	let balls: BallsSim;
 	let crank: CrankSim;
+
 	let canCrank = $state(true); // prevents rapid cranking
-
 	let lastWinner: Winner | undefined = $state(); // initial value should be unreachable
-	const wheelRadius = 300; // in planck units
+	let onFirstRun = $state(true);
 
-	const isMobile = $derived(navigator.userAgentData?.mobile);
+	const wheelRadius = 300; // in planck units
+	let isMobile = $derived(navigator.userAgentData?.mobile);
 
 	// maintain theme
 	$effect(() => {
@@ -79,12 +81,30 @@
 		}, 10);
 	});
 
+	async function revealWinner(winner: string) {
+		// 1. suspense
+		await sleep(1400);
+		// 2. modal
+		if (balls.enableSound) popSound();
+		lastWinner = winHistModal.addWinner(winner);
+		winModalOpen = true;
+		// 3. reset
+		await sleep(500);
+		await balls?.flush();
+	}
+
 	async function hitCrank() {
 		if (!canCrank) return;
 		canCrank = false;
 
-		crank?.smackHandle(0.5);
-		await balls?.flush();
+
+		// 1. initial flush
+		if (onFirstRun) {
+			onFirstRun = false;
+			// indicates click received
+			await crank?.smackHandle(0.4);
+			await balls?.flush();
+		}
 
 		await crank?.smackHandle(-0.4);
 		const roll = balls?.roll(); // start roll in parallel
@@ -92,13 +112,11 @@
 		await crank?.smackHandle(1);
 		const winnerId = await roll;
 
-		canCrank = true;
-
 		// if there's a name on the winner ball: announce it
 		const winnerName = importModal.nameOf(winnerId);
 		if (!winnerName) return;
-		lastWinner = winHistModal.addWinner(winnerName);
-		winModalOpen = true;
+		await revealWinner(winnerName);
+		canCrank = true;
 	}
 
 	function togglePresent() {

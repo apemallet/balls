@@ -12,6 +12,7 @@ const lerp = (a, b, dt) => a + (b - a) * dt;
 
 export class BallsSim extends MatterSim {
   public carryingCapacity = 8;
+  public readonly enableSound: boolean;
 
   private readonly wheelRadius: number;
   private readonly wheel: Body;
@@ -26,7 +27,6 @@ export class BallsSim extends MatterSim {
   private targetSpin: number = this.restSpin;
 
   private readonly bigBallSize = 70;
-  private readonly enableSound: boolean;
 
   private ballTextColor(i: number) {
     const idx = i % this.theme.palletteFG.length;
@@ -82,13 +82,8 @@ export class BallsSim extends MatterSim {
     this.crankSim = crankSim;
     this.enableSound = enableSound;
 
-    this.balls = Array(this.carryingCapacity)
-      .fill(0)
-      .map(() => this.buildBall());
-
     this.wheelRadius = wheelRadius;
     const physicalWheelRadius = wheelRadius * this.planck;
-
     this.wheel = this.buildWheel(
       this.center[0],
       this.center[1],
@@ -96,15 +91,14 @@ export class BallsSim extends MatterSim {
 
     const tray = this.buildTray();
 
-    const ballBodies = this.balls.map(ball => ball.body);
-    Composite.add(this.engine.world, [tray, this.wheel, ...ballBodies]);
+    Composite.add(this.engine.world, [tray, this.wheel]);
     this.reTheme();
 
     // try to add new balls & garbage collect
     setInterval(() => {
-      this.balls = this.balls.filter(ticket => {
-        const keep = ticket.body.position.y < this.height + 100;
-        if (!keep) Composite.remove(this.engine.world, ticket);
+      this.balls = this.balls.filter(ball => {
+        const keep = ball.body.position.y < this.height + 100;
+        if (!keep) Composite.remove(this.engine.world, ball);
         return keep;
       });
     }, 5000);
@@ -204,10 +198,10 @@ export class BallsSim extends MatterSim {
     const size = Common.random(.67 * this.bigBallSize, this.bigBallSize) * this.planck;
 
     const body = Bodies.circle(...this.center, size, {
-      restitution: 0.9,
-      frictionAir: 0,
-      friction: 0,
-      frictionStatic: 0,
+      restitution: 0.85,
+      frictionAir: 0.01,
+      friction: 0.01,
+      frictionStatic: 0.01,
       collisionFilter: this.ballCollisionFilter,
       render: {
         fillStyle: this.ballColor(id)
@@ -286,12 +280,16 @@ export class BallsSim extends MatterSim {
     await sleep(1000);
 
     for (let i = 0; i < this.carryingCapacity; i++) {
+      // note the lack of await
+      // ball drop to catch is handled in the async call so it needs
+      // to be called concurrently to speed it up.
       this.tryAddBall();
       await sleep(200);
     }
 
     // ensure we did in fact meet capacity
     while (this.currentCapacity() < this.carryingCapacity) {
+      // note await
       await this.tryAddBall();
       await sleep(200);
     }
@@ -305,9 +303,9 @@ export class BallsSim extends MatterSim {
     this.targetSpin = 1;
     await sleep(4000);
     this.targetSpin = this.restSpin;
-    await sleep(3000);
+    await sleep(2500);
     if (this.enableSound) revealSound();
-    await sleep(1000);
+    await sleep(700);
 
     // find the lowest ball
 
@@ -330,8 +328,6 @@ export class BallsSim extends MatterSim {
       targetBody.frictionAir = 0.03;
     }
 
-    await sleep(1000);
-    if (this.enableSound) popSound();
     return this.balls[targetIdx].id;
   }
 
