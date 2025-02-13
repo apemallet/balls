@@ -147,7 +147,7 @@
 
 <svelte:window on:resize={onResize} />
 
-<div class="fixed z-20 w-screen p-4">
+<div class="fixed z-20 w-dvw p-4">
 	<ThemePicker bind:menuOpen={palleteMenuOpen} />
 </div>
 
@@ -203,13 +203,12 @@
 <!-- TODO: raise issue: tailwind4 does not recognize svelte5 conditional classes -->
 
 <canvas
-	class={`absolute w-screen h-dvh cursor-pointer transition-filter
+	class={`absolute w-dvw h-dvh cursor-pointer transition-filter
 		${canCrank ? "active:invert-15" : "invert-35"}`}
 	bind:this={canvasTop}
 	onclick={hitCrank}
 ></canvas>
-<canvas class="absolute w-screen h-dvh -z-10 max-h-dvh!" bind:this={canvasBot}
-></canvas>
+<canvas class="absolute w-dvw h-dvh -z-10" bind:this={canvasBot}></canvas>
 
 <style>
 	:global(body) {

@@ -5,7 +5,7 @@
 	import {slide, fade} from "svelte/transition";
 	let { showModal = $bindable(false) } : {showModal: boolean} = $props();
 
-	let {Body, Common, Events} = $derived(Matter() || Object);
+	let { Common } = $derived(Matter() || Object);
 
 	function clipboardToNamesArray() {
 			navigator.clipboard.readText().then((text) => {
@@ -62,7 +62,7 @@
 	const shuffleIdx = $derived.by(() => {
 		const indices = namesList.map((_, i) => i);
 		for (let i = indices.length - 1; i > 0; i--) {
-			const j = Math.floor(Common.random() * (i + 1));
+			const j = Math.floor(Math.random() * (i + 1));
 			[indices[i], indices[j]] = [indices[j], indices[i]];
 		}
 		return indices;
