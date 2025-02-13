@@ -3,9 +3,11 @@
 	import Modal from "./Modal.svelte";
 	import { slide } from "svelte/transition";
 	import { type Winner, type WinnerHistoryEntry } from "$lib/winTypes";
+	import { getThemer, type Themer } from "$lib/theme.svelte";
+
+	const themer: Themer = getThemer();
 
 	let { showModal = $bindable(false) } : { showModal: boolean } = $props();
-
 	let winnerHistory = $state<WinnerHistoryEntry[]>([]);
 	let selectedDate = $state<string>(getLocalDateString(new Date()));
 	let openMenuId = $state<number | null>(null); // mini menu state
@@ -154,7 +156,7 @@
 <!-- TODO: Probably wise to add a clear all button for the current date -->
 <!-- might also want a way to navigate only dates that actually have entries -->
 
-<Modal bind:isOpen={showModal}>
+<Modal bind:isOpen={showModal} id="histModal">
 	{#snippet title()}
 		Winner history
 	{/snippet}
@@ -163,7 +165,7 @@
 		<div class="bg-mainfg/10 p-2 rounded-md flex flex-col gap-4">
 			<div class="flex flex-row justify-between gap-2">
 				<p>Date picker</p>
-				<input type="date" bind:value={selectedDate} />
+				<input type="date" class="{themer.isDark() ? 'scheme-dark' : 'scheme-light'}" bind:value={selectedDate} />
 			</div>
 			<button class="crackedButton" onclick={copyWinnersList}>
 				Copy winners as list

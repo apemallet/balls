@@ -21,6 +21,8 @@ export function wheelSound(speed) {
     return;
   }
 
+  // TODO: Uncaught errors on playback rate being too high. Not sure what constriants
+  // are but a simple check with constraints will do the trick
   wheelSounder.volume = Math.min(0.3, (speed - 1.3) / 6);
   wheelSounder.playbackRate = speed;
   wheelSounder.play();
@@ -35,4 +37,3 @@ export function popSound() {
 
   popSounder.play();
 }
-

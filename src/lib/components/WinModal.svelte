@@ -18,9 +18,9 @@
 	function computeNumSuffix(num: number): string {
 		if (num % 10 == 1 && num.toString().slice(-2) != "11")
 			return "st";
-		if (num % 10 == 2)
+		if (num % 10 == 2 && num.toString().slice(-2) != "12")
 			return "nd"
-		if (num % 10 == 3)
+		if (num % 10 == 3 && num.toString().slice(-2) != "13")
 			return "rd"
 		return "th"
 	}

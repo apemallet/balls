@@ -10,8 +10,9 @@
 	import { BallsSim } from "$lib/ballsSim.svelte";
 	import { CrankSim } from "$lib/crankSim.svelte";
 	import { getThemer } from "$lib/theme.svelte";
+	import { browser } from "$app/environment";
+	import { sleep } from "$lib/utils";
 	import { onMount } from "svelte";
-	import {sleep} from "$lib/utils";
 	import {popSound} from "$lib/sound";
 
 	let canvasBot: HTMLCanvasElement | undefined;
@@ -24,7 +25,16 @@
 	let onFirstRun = $state(true);
 
 	const wheelRadius = 300; // in planck units
-	let isMobile = $derived(navigator.userAgentData?.mobile);
+
+	// TODO: Proper mobile check support
+	let isMobile: boolean = $derived.by(() => {
+		if (browser) {
+			if (navigator.userAgent) {
+				// console.log(navigator.userAgent);
+			}
+		}
+		return false;
+	});
 
 	// maintain theme
 	$effect(() => {
@@ -96,7 +106,6 @@
 	async function hitCrank() {
 		if (!canCrank) return;
 		canCrank = false;
-
 
 		// 1. initial flush
 		if (onFirstRun) {
@@ -199,4 +208,11 @@
 	bind:this={canvasTop}
 	onclick={hitCrank}
 ></canvas>
-<canvas class="absolute w-screen h-dvh -z-10" bind:this={canvasBot}></canvas>
+<canvas class="absolute w-screen h-dvh -z-10 max-h-dvh!" bind:this={canvasBot}
+></canvas>
+
+<style>
+	:global(body) {
+		overflow: hidden;
+	}
+</style>

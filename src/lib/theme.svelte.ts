@@ -34,6 +34,7 @@ export interface Themer {
   get palette(): string[];
   get palletteFG(): string[];
   reset(): void;
+  isDark(): boolean;
   isDefault(): boolean;
 }
 
@@ -174,6 +175,9 @@ export function getThemer(): Themer {
     },
     isDefault() {
       return dominant == DEFAULT_DOMINANT;
+    },
+    isDark() {
+      return mainBG === MAIN_DARK;
     },
   };
 
