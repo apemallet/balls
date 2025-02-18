@@ -26,13 +26,9 @@
 
 	const wheelRadius = 300; // in planck units
 
-	// TODO: Proper mobile check support
+	// INFO: Super basic and non-exhaustive mobile detection. Probably good enough.
 	let isMobile: boolean = $derived.by(() => {
-		if (browser) {
-			if (navigator.userAgent) {
-				// console.log(navigator.userAgent);
-			}
-		}
+		if (browser) return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 		return false;
 	});
 
