@@ -97,21 +97,21 @@ export class CrankSim extends MatterSim {
     this.reTheme();
   }
 
-  public async smackHandle(degree: number) {
+  public async smackHandle(degree: number, duration=4000) {
     // smacks the handle with a force proportional to the degree of smack.
     // degree is a number between -1 and 1 where 1 initiates a bust.
     if (degree >= 1) {
-      await this.bust();
+      await this.bust(duration);
       return;
     }
 
     this.handleForce(degree * 0.3 * this.planck);
   }
 
-  private async bust() {
+  private async bust(duration) {
     // turns very quickly then stops suddenly; zeroes anger
     this.anger = 10;
-    await sleep(4000);
+    await sleep(duration);
     this.anger = 0;
   }
 
