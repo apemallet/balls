@@ -93,7 +93,6 @@
 		winModalOpen = true;
 		// 3. reset
 		if (balls.enableSound) popSound();
-		await sleep(100);
 		balls.chill();
 		await balls?.flush();
 	}
@@ -113,7 +112,7 @@
 		await crank?.smackHandle(-0.4);
 		const roll = balls?.roll(); // start roll in parallel
 		await sleep(1000);
-		await crank?.smackHandle(1);
+		await crank?.smackHandle(1, 4000);
 		const winnerId = await roll;
 
 		// if there's a name on the winner ball: announce it

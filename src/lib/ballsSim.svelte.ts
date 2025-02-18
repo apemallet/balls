@@ -297,8 +297,6 @@ export class BallsSim extends MatterSim {
       await this.tryAddBall();
       await sleep(200);
     }
-
-    await sleep(1000);
   }
 
   public async roll() {
