@@ -112,7 +112,7 @@
 		await crank?.smackHandle(-0.4);
 		const roll = balls?.roll(); // start roll in parallel
 		await sleep(1000);
-		await crank?.smackHandle(1, 4000);
+		await crank?.smackHandle(1, 3000);
 		const winnerId = await roll;
 
 		// if there's a name on the winner ball: announce it
@@ -193,6 +193,15 @@
 		bind:winHistModalOpen
 	/>
 </div>
+
+<!-- Wins today text -->
+{#if countWinsToday()}
+	<div class="absolute right-0 bottom-[50dvh] translate-y-1/1 z-20 m-10 pointer-events-none">
+		<h1 class="text-mainbg text-5xl invert-70 font-extrabold opacity-10">
+				{countWinsToday() ?? ""}
+		</h1>
+	</div>
+{/if}
 
 <!-- TODO: raise issue: tailwind4 does not recognize svelte5 conditional classes -->
 
