@@ -271,6 +271,10 @@ export class BallsSim extends MatterSim {
     body.collisionFilter = this.ballCollisionFilter;
   }
 
+  public chill() {
+    this.targetSpin = this.restSpin;
+  }
+
   public async flush() {
     for (const ball of this.balls) {
       if (!this.isBallActive(ball)) continue;
@@ -301,31 +305,35 @@ export class BallsSim extends MatterSim {
     this.targetSpin = -0.5;
     await sleep(1000);
     this.targetSpin = 1;
-    await sleep(4000);
-    this.targetSpin = this.restSpin;
-    await sleep(2500);
+    await sleep(1000);
     if (this.enableSound) revealSound();
-    await sleep(700);
+    await sleep(1200);
 
     // find the lowest ball
 
     let targetIdx = -1;
-    let targetBody = null;
+    let prev = -1;
+
+    function mag2(vector) {
+      return vector.x * vector.x + vector.y * vector.y;
+    }
 
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
       if (!this.isBallActive(ball)) continue;
-      if (targetBody == null || (ball.body.position.y > targetBody!.position.y)) {
+      const next = mag2(ball.body.velocity);
+      if (next > prev) {
         targetIdx = i;
-        targetBody = ball.body;
+        prev = next;
       }
     }
+
+    const targetBody = this.balls[targetIdx].body;
 
     // ghost it
 
     if (targetBody) {
       targetBody.collisionFilter = this.ghostBallCollisionFilter;
-      targetBody.frictionAir = 0.03;
     }
 
     return this.balls[targetIdx].id;

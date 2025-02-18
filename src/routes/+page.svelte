@@ -88,14 +88,13 @@
 	});
 
 	async function revealWinner(winner: string) {
-		// 1. suspense
-		await sleep(1400);
 		// 2. modal
-		if (balls.enableSound) popSound();
 		lastWinner = winHistModal!.addWinner(winner);
 		winModalOpen = true;
 		// 3. reset
-		await sleep(500);
+		if (balls.enableSound) popSound();
+		await sleep(100);
+		balls.chill();
 		await balls?.flush();
 	}
 
