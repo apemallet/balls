@@ -59,7 +59,8 @@ export abstract class MatterSim {
 
     let tLast = Common.now();
     Events.on(this.engine, 'beforeUpdate', () => {
-      const deltaTime = (Common.now() - tLast) / 1000;
+      let deltaTime = (Common.now() - tLast) / 1000;
+      deltaTime = Math.min(deltaTime, 1 / 20);
       tLast = Common.now();
       this.fixedUpdate(deltaTime);
     });
