@@ -7,13 +7,16 @@
 	const colorThemer: Themer = getThemer();
 
 	// Menu state
-	export let menuOpen = true;
+	let { menuOpen = true }: { menuOpen: boolean } = $props();
+	let colorPickerOpen = $state(false);
 
-	// Copy paste handler. Maybe add cracked animation later
-	// TODO: Deprecated, need to add a "copied" message and stuff, not intuitive enough yet
-	function handleCopy(altHex: string, _: MouseEvent) {
-		navigator.clipboard.writeText(altHex);
-	}
+	const handleClick = () => {
+		colorPickerOpen = true;
+	};
+
+	const handleClose = () => {
+		colorPickerOpen = false;
+	};
 </script>
 
 {#if menuOpen}
@@ -103,12 +106,24 @@
 				</button>
 			{/if}
 
-			<input
-				bind:this={colorPickerElement}
-				class="h-8 min-w-8 bg-transparent backdrop-blur-sm border-transparent cursor-pointer appearance-none self-center grow md:shrink"
-				type="color"
-				bind:value={colorThemer.dominant}
-			/>
+			<div class="relative self-center">
+				<input
+					bind:this={colorPickerElement}
+					class="z-50 h-8 min-w-8 relative bg-transparent backdrop-blur-sm border-transparent cursor-pointer appearance-none self-center grow md:shrink"
+					onfocus={() => (colorPickerOpen = true)}
+					onblur={() => (colorPickerOpen = false)}
+					type="color"
+					bind:value={colorThemer.dominant}
+				/>
+
+				{#if colorPickerOpen}
+					<div
+						role="button"
+						class="fixed inset-0 z-40 bg-mainfg/[3%] transition-all duration-300"
+						transition:fade={{ duration: 200 }}
+					></div>
+				{/if}
+			</div>
 		</div>
 
 		<div class="flex flex-wrap gap-2 rounded-xl grow">
