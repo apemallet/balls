@@ -3,25 +3,28 @@
 	import { fade, slide } from "svelte/transition";
 
 	// Theme stuff
-	let colorPickerElement: HTMLInputElement;
+	let colorPickerElement: HTMLInputElement | undefined = $state();
 	const colorThemer: Themer = getThemer();
 
 	// Menu state
-	let { menuOpen = true }: { menuOpen: boolean } = $props();
+	let { menuOpen = $bindable(true), classList }: { menuOpen: boolean, classList: string | undefined } = $props();
 	let colorPickerOpen = $state(false);
-
-	const handleClick = () => {
-		colorPickerOpen = true;
-	};
-
-	const handleClose = () => {
-		colorPickerOpen = false;
-	};
 </script>
+
+
+{#if colorPickerOpen}
+<!-- z 19 to be placed under theme settings section -->
+<div
+role="button"
+class="fixed inset-0 z-[19] bg-mainfg/10 backdrop-blur-sm transition-all duration-300"
+transition:fade={{ duration: 200 }}
+></div>
+{/if}
 
 {#if menuOpen}
 	<div
-		class="flex flex-col md:flex-row gap-4 md:items-center w-full"
+		class="flex flex-col md:flex-row gap-4 md:items-center w-full 
+		{classList ? classList : ''}" 
 		transition:slide={{ duration: 750, axis: "x" }}
 	>
 		<!-- color harmony dropdown -->
@@ -30,7 +33,7 @@
 		>
 			<select
 				bind:value={colorThemer.colorHarmony}
-				class="appearance-none crackedButton bg-mainbg! pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
+				class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
       focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
       transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
@@ -62,7 +65,7 @@
 				<button
 					in:fade={{ duration: 200 }}
 					class="flex justify-between gap-2 crackedButton"
-					onclick={() => colorPickerElement.click()}
+					onclick={() => colorPickerElement!.click()}
 				>
 					<span class="truncate">Select dominant</span>
 					<svg
@@ -106,24 +109,14 @@
 				</button>
 			{/if}
 
-			<div class="relative self-center">
-				<input
-					bind:this={colorPickerElement}
-					class="z-50 h-8 min-w-8 relative bg-transparent backdrop-blur-sm border-transparent cursor-pointer appearance-none self-center grow md:shrink"
-					onfocus={() => (colorPickerOpen = true)}
-					onblur={() => (colorPickerOpen = false)}
-					type="color"
-					bind:value={colorThemer.dominant}
-				/>
-
-				{#if colorPickerOpen}
-					<div
-						role="button"
-						class="fixed inset-0 z-40 bg-mainfg/[3%] transition-all duration-300"
-						transition:fade={{ duration: 200 }}
-					></div>
-				{/if}
-			</div>
+			<input
+				bind:this={colorPickerElement}
+				class="z-30 h-8 min-w-8 relative bg-transparent backdrop-blur-sm border-transparent cursor-pointer appearance-none self-center grow md:shrink"
+				onfocus={() => (colorPickerOpen = true)}
+				onblur={() => (colorPickerOpen = false)}
+				type="color"
+				bind:value={colorThemer.dominant}
+			/>
 		</div>
 
 		<div class="flex flex-wrap gap-2 rounded-xl grow">

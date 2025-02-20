@@ -141,9 +141,8 @@
 
 <svelte:window on:resize={onResize} />
 
-<div class="fixed z-20 w-dvw p-4">
-	<ThemePicker bind:menuOpen={palleteMenuOpen} />
-</div>
+<!-- z index determined internally for modal stuff -->
+<ThemePicker bind:menuOpen={palleteMenuOpen} classList="fixed dvw p-4 z-20" />
 
 <div class="fixed z-30 top-0">
 	<WinModal
@@ -196,9 +195,11 @@
 
 <!-- Wins today text -->
 {#if countWinsToday()}
-	<div class="absolute right-0 bottom-[50dvh] translate-y-1/1 z-20 m-10 pointer-events-none">
+	<div
+		class="absolute right-0 bottom-[50dvh] translate-y-1/1 z-20 m-10 pointer-events-none"
+	>
 		<h1 class="text-mainbg text-5xl invert-70 font-extrabold opacity-10">
-				{countWinsToday() ?? ""}
+			{countWinsToday() ?? ""}
 		</h1>
 	</div>
 {/if}
