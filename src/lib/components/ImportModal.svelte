@@ -54,7 +54,9 @@
 	const short = $derived(namesList.map(name =>
 			name.split(" ")
 					.map(word => word.substring(0, 2))
-					.join("")));
+					.join("")
+					.substring(0,4))
+					);
 
 	const shuffleIdx = $derived.by(() => {
 		const indices = namesList.map((_, i) => i);
@@ -95,12 +97,12 @@
 
 	{#snippet content()}
 		<div
-			class="relative group min-w-fit transition-all duration-300 pb-4"
+			class="relative group min-w-fit transition-all duration-300 mb-4"
 		>
 			<select
 				bind:value={importType}
 				class="appearance-none crackedButton pr-8 mr-6 group-hover:border-mainfg/80 group-hover:text-mainfg/80
-			focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10
+			focus:outline-none focus:ring-1 focus:ring-mainfg/30 hover:bg-mainfg/10 hover:scale-[102%]!
 			transform transition-all duration-300 ease-out cursor-pointer w-full"
 			>
 				<option value="clipboard">Import from clipboard</option>
@@ -110,7 +112,7 @@
 			<!-- chevron svg -->
 			<svg
 				class="absolute right-2 top-3 h-5 w-5 text-mainfg/60 group-hover:text-mainfg/80
-					 pointer-events-none transition-transform duration-300 group-hover:scale-105"
+					 pointer-events-none transition-transform duration-300 group-hover:translate-x-1"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke="currentColor"
@@ -130,7 +132,7 @@
 				<div class="flex flex-row justify-between gap-4" in:fade={{duration: 300}}>
 						<div class="flex flex-row gap-4 flex-1">
 								<button 
-										class="crackedButton flex flex-row gap-2 justify-between flex-1"
+										class="crackedButton flex flex-row gap-2 justify-between flex-1 hover:scale-[103%]!"
 										onclick={clipboardToNamesArray}
 								>
 										Click to import

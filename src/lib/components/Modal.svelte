@@ -27,7 +27,7 @@
 		class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-60"
 	>
 		<div
-			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-[95dvw] min-w-[90dvw] max-h-[90dvh] md:min-w-[70dvw] md:max-h-[70dvh] w-full gradient-border overflow-y-auto"
+			class="relative bg-mainbg rounded-lg p-6 shadow-xl max-w-[95dvw] min-w-[90dvw] max-h-[90dvh] md:min-w-[70dvw] md:max-h-[70dvh] w-full gradient-border overflow-y-auto overflow-x-clip"
 			transition:scale={{ duration: 150 }}
 		>
 			<!-- content slots -->
