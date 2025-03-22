@@ -89,8 +89,11 @@
 
 	async function revealWinner(winner: string) {
 		// 2. modal
-		lastWinner = winHistModal!.addWinner(winner);
-		winModalOpen = true;
+		if (winner) {
+			// the winner can sometimes be blank
+			lastWinner = winHistModal!.addWinner(winner);
+			winModalOpen = true;
+		}
 		// 3. reset
 		if (balls.enableSound) popSound();
 		balls.chill();
@@ -117,7 +120,6 @@
 
 		// if there's a name on the winner ball: announce it
 		const winnerName = importModal!.nameOf(winnerId);
-		if (!winnerName) return;
 		await revealWinner(winnerName);
 		canCrank = true;
 	}
